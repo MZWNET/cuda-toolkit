@@ -30,9 +30,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Rebuild the dist/ directory
-        run: |
-          npm run build
-          npm run package
+        run: npm run bundle
 
       - name: correct vercel/ncc crlf output
         run: |
@@ -44,13 +42,14 @@ jobs:
           git clone https://github-action:${{ secrets.GITHUB_TOKEN }}@github.com/MZWNET/cuda-toolkit.git -b mod cache
           rm -rf cache/dist/index.js
           cp dist/index.js cache/dist/index.js
+          cp dist/index.js.map cache/dist/index.js.map
           cd cache
           if ! git diff --quiet HEAD -- dist/index.js; then
             echo "dist/index.js has changes."
             git config --local user.email "actions@github.com"
             git config --local user.name "GitHub Actions Bot"
             git status
-            git add dist/index.js
+            git add dist/index.js dist/index.js.map
             git commit -m "feat: update dist/index.js"
             git push origin mod
           else
