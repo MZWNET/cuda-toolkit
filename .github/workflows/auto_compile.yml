@@ -1,0 +1,58 @@
+# `dist/index.js` is a special file in Actions.
+# When you reference an action with `uses:` in a workflow,
+# `index.js` is the code that will run.
+# For our project, we generate this file through a build process from other source files.
+# We need to make sure the checked-in `index.js` actually matches what we expect it to be.
+name: Auto Compile dist/index.js
+
+on:
+  push:
+    branches:
+      - master
+      - compile
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  auto_compile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild the dist/ directory
+        run: npm run bundle
+
+      - name: correct vercel/ncc crlf output
+        run: |
+          # See https://github.com/vercel/ncc/issues/638
+          sed -i 's/\x0D$//' ./dist/*
+
+      - name: Upload dist/index.js to GitHub Repository
+        run: |
+          git clone https://github-action:${{ secrets.GITHUB_TOKEN }}@github.com/MZWNET/cuda-toolkit.git -b master cache
+          rm -rf cache/dist/index.js
+          cp dist/index.js cache/dist/index.js
+          cp dist/index.js.map cache/dist/index.js.map
+          cd cache
+          if ! git diff --quiet HEAD -- dist/index.js; then
+            echo "dist/index.js has changes."
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions Bot"
+            git status
+            git add dist/index.js dist/index.js.map
+            git commit -m "feat: update dist/index.js"
+            git push origin master
+          else
+            echo "No changes in dist/index.js."
+          fi
