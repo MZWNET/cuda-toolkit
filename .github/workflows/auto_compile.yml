@@ -6,13 +6,18 @@
 name: Auto Compile dist/index.js
 
 on:
+  workflow_dispatch:
+    inputs:
+      force_compile:
+        description: 'Force compile the dist/index.js file'
+        required: false
+        type: boolean
   push:
     branches:
       - master
       - compile
     paths-ignore:
       - '**.md'
-  workflow_dispatch:
 
 jobs:
   auto_compile:
