@@ -83,7 +83,7 @@ jobs:
         os: [ubuntu-22.04, ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: Jimver/cuda-toolkit@master
+    - uses: MZWNET/cuda-toolkit@master
       id: cuda-toolkit
       with:
         log-file-suffix: '${{matrix.os}}.txt'
@@ -106,10 +106,10 @@ The path where cuda is installed (same as `CUDA_PATH` in `GITHUB_ENV`).
 
 ```yaml
 steps:
-- uses: Jimver/cuda-toolkit@v0.2.30
+- uses: MZWNET/cuda-toolkit@master
   id: cuda-toolkit
   with:
-    cuda: '13.1.0'
+    cuda: '13.2.0'
 
 - run: echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
 
