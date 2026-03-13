@@ -45,21 +45,22 @@ jobs:
       - name: Rebuild the dist/ directory
         run: pnpm run package
 
-      - name: Upload dist/index.mjs to GitHub Repository
+      - name: Upload dist/index.cjs to GitHub Repository
         run: |
           git clone https://github-action:${{ secrets.GITHUB_TOKEN }}@github.com/MZWNET/cuda-toolkit.git -b master cache
-          rm -rf cache/dist/index.mjs
-          cp dist/index.mjs cache/dist/index.mjs
-          cp dist/index.mjs.map cache/dist/index.mjs.map
+          mkdir -p cache/dist
+          rm -rf cache/dist/index.cjs
+          cp dist/index.cjs cache/dist/index.cjs
+          cp dist/index.cjs.map cache/dist/index.cjs.map
           cd cache
-          if ! git diff --quiet HEAD -- dist/index.mjs; then
-            echo "dist/index.mjs has changes."
+          if ! git diff --quiet HEAD -- dist/index.cjs; then
+            echo "dist/index.cjs has changes."
             git config --local user.email "actions@github.com"
             git config --local user.name "GitHub Actions Bot"
             git status
-            git add dist/index.mjs dist/index.mjs.map
-            git commit -m "feat: update dist/index.mjs"
+            git add dist/index.cjs dist/index.cjs.map
+            git commit -m "feat: update dist/index.cjs"
             git push origin master
           else
-            echo "No changes in dist/index.mjs."
+            echo "No changes in dist/index.cjs."
           fi

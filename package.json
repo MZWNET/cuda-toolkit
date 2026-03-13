@@ -5,10 +5,7 @@
   "private": true,
   "packageManager": "pnpm@10.32.1",
   "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
-  "author": [
-    "Jim Verheijde",
-    "mzwing"
-  ],
+  "author": "Jim Verheijde",
   "license": "MIT",
   "homepage": "https://github.com/MZWNET/cuda-toolkit",
   "repository": {
@@ -27,7 +24,7 @@
     "toolkit"
   ],
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": "./dist/index.cjs"
   },
   "engines": {
     "node": ">=24"
@@ -38,7 +35,7 @@
     "knip": "knip",
     "lint": "eslint .",
     "local-action": "@github/local-action . src/main.ts .env",
-    "package": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --tree-shaking --minify --sourcemap --tsconfig=tsconfig.build.json",
+    "package": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --tree-shaking=true --sourcemap --tsconfig=tsconfig.build.json",
     "package:watch": "pnpm run package --watch",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
