@@ -9,7 +9,7 @@ vi.mock('node:os', async (importOriginal) => {
   return {
     ...mod,
     default: {
-      ...(mod as any).default,
+      ...mod,
       platform: () => (isDarwin ? 'linux' : mod.platform()),
     },
     platform: () => (isDarwin ? 'linux' : mod.platform()),
@@ -23,7 +23,7 @@ it.concurrent('getLinks gives a valid ILinks class', async () => {
     ).toBeTruthy()
   }
   catch (error) {
-    throw new Error(`Error getting links: ${error}`)
+    throw new Error(`Error getting links: ${String(error)}`)
     // Other OS
   }
 })

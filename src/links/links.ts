@@ -9,9 +9,9 @@ export abstract class AbstractLinks {
   }
 
   async getLocalURLFromCudaVersion(version: SemVer): Promise<URL> {
-    const urlString = this.cudaVersionToURL.get(`${version}`)
+    const urlString = this.cudaVersionToURL.get(`${version.toString()}`)
     if (urlString === undefined) {
-      throw new Error(`Invalid version: ${version}`)
+      throw new Error(`Invalid version: ${version.toString()}`)
     }
     return new URL(urlString)
   }

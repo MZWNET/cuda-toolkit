@@ -9,7 +9,7 @@ vi.mock('node:os', async (importOriginal) => {
   return {
     ...mod,
     default: {
-      ...(mod as any).default,
+      ...mod,
       platform: () => (isDarwin ? 'linux' : mod.platform()),
     },
     platform: () => (isDarwin ? 'linux' : mod.platform()),
@@ -26,7 +26,7 @@ it.each<Method>(['local', 'network'])(
       expect(version.compare(new SemVer(versionString))).toBe(0)
     }
     catch (error) {
-      throw new Error(`Error parsing version: ${error}`)
+      throw new Error(`Error parsing version: ${String(error)}`)
       // Other OS
     }
   },
@@ -53,7 +53,7 @@ it.each<Method>(['local', 'network'])(
       )
     }
     catch (error) {
-      throw new Error(`Error checking version availability: ${error}`)
+      throw new Error(`Error checking version availability: ${String(error)}`)
       // Other OS
     }
   },

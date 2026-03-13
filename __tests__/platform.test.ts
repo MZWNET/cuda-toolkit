@@ -11,8 +11,15 @@ it.concurrent('return either windows of linux platform', async () => {
     case 'linux':
       expected = OSType.linux
       break
-    default:
-      // eslint-disable-next-line jest/no-conditional-expect
+    case 'aix':
+    case 'android':
+    case 'darwin':
+    case 'freebsd':
+    case 'haiku':
+    case 'openbsd':
+    case 'sunos':
+    case 'cygwin':
+    case 'netbsd':
       await expect(getOs()).rejects.toThrow(`Unsupported OS: ${osString}`)
       return
   }

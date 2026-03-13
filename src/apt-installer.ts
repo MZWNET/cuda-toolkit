@@ -1,5 +1,6 @@
 import type { SemVer } from 'semver'
 import type { Method } from './method.js'
+import process from 'node:process'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 import { CPUArch, getArch } from './arch.js'
@@ -17,7 +18,7 @@ export async function aptSetup(version: SemVer): Promise<void> {
       `apt setup can only be run on linux runners! Current os type: ${osType}`,
     )
   }
-  core.debug(`Setup packages for ${version}`)
+  core.debug(`Setup packages for ${version.toString()}`)
   const ubuntuVersion: string = await execReturnOutput('lsb_release', ['-sr'])
   const ubuntuVersionNoDot = ubuntuVersion.replace('.', '')
 
@@ -29,7 +30,7 @@ export async function aptSetup(version: SemVer): Promise<void> {
     }
   }
   catch (error) {
-    core.debug(`Error detecting architecture: ${error}`)
+    core.debug(`Error detecting architecture: ${String(error)}`)
     core.warning(`Could not detect architecture, using default ${arch}`)
   }
   core.debug(
@@ -87,7 +88,7 @@ export async function aptInstall(
         nonCudaSubPackage =>
           `${nonCudaSubPackage}-${version.major}-${version.minor}`,
       )
-    core.debug(`Only install subpackages: ${versionedSubPackages}`)
+    core.debug(`Only install subpackages: ${versionedSubPackages.join(', ')}`)
     return exec(`sudo apt-get -y install`, versionedSubPackages)
   }
 }

@@ -26,7 +26,7 @@ When adding new versions, the following files should be updated:
   installer. The link can be copied by right clicking the green `Download`
   button and selecting `Copy Link address`.
 
-  #### Windows - Local installer:
+  ### Windows - Local installer:
 
   ![Windows link local copy](images/windows-link-local.jpg)
 

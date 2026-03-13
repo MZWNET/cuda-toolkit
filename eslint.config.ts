@@ -6,4 +6,7 @@ export default antfu({
   typescript: {
     tsconfigPath: 'tsconfig.json',
   },
+  rules: {
+    'ts/no-explicit-any': 'error',
+  },
 })

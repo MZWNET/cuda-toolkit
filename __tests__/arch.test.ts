@@ -11,8 +11,14 @@ it.concurrent('return either x64 or arm64 architecture', async () => {
     case 'arm64':
       expected = CPUArch.arm64
       break
-    default:
-      // eslint-disable-next-line jest/no-conditional-expect
+    case 'arm':
+    case 'ia32':
+    case 'loong64':
+    case 'mips':
+    case 'mipsel':
+    case 'ppc64':
+    case 'riscv64':
+    case 's390x':
       await expect(getArch()).rejects.toThrow(
         `Unsupported architecture: ${archString}`,
       )

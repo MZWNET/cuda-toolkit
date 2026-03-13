@@ -13,7 +13,15 @@ export async function getOs(): Promise<OSType> {
       return OSType.windows
     case 'linux':
       return OSType.linux
-    default:
+    case 'aix':
+    case 'android':
+    case 'darwin':
+    case 'freebsd':
+    case 'haiku':
+    case 'openbsd':
+    case 'sunos':
+    case 'cygwin':
+    case 'netbsd':
       debug(`Unsupported OS: ${osPlatform}`)
       throw new Error(`Unsupported OS: ${osPlatform}`)
   }

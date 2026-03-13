@@ -20,7 +20,7 @@ export async function getFilesRecursive(dir: string): Promise<string[]> {
     await walk(dir)
   }
   catch (e) {
-    core.debug(`Error reading files from ${dir}: ${e}`)
+    core.debug(`Error reading files from ${dir}: ${String(e)}`)
     return []
   }
   return results
@@ -34,7 +34,7 @@ export async function filterReadable(paths: string[]): Promise<string[]> {
       readable.push(path)
     }
     catch (e) {
-      core.debug(`Path not readable: ${path} - ${e}`)
+      core.debug(`Path not readable: ${path} - ${String(e)}`)
     }
   }
   return readable

@@ -483,7 +483,7 @@ export class WindowsLinks extends AbstractLinks {
   }
 
   static get Instance(): WindowsLinks {
-    return this._instance || (this._instance = new this())
+    return this._instance ?? (this._instance = new this())
   }
 
   getAvailableNetworkCudaVersions(): SemVer[] {
@@ -491,9 +491,9 @@ export class WindowsLinks extends AbstractLinks {
   }
 
   getNetworkURLFromCudaVersion(version: SemVer): URL {
-    const urlString = this.cudaVersionToNetworkUrl.get(`${version}`)
+    const urlString = this.cudaVersionToNetworkUrl.get(`${version.toString()}`)
     if (urlString === undefined) {
-      throw new Error(`Invalid version: ${version}`)
+      throw new Error(`Invalid version: ${version.toString()}`)
     }
     return new URL(urlString)
   }

@@ -1,5 +1,6 @@
 import type { SemVer } from 'semver'
 import * as path from 'node:path'
+import process from 'node:process'
 import * as core from '@actions/core'
 import { getOs, OSType } from './platform.js'
 
@@ -30,9 +31,7 @@ export async function updatePath(version: SemVer): Promise<string> {
   // Update LD_LIBRARY_PATH on linux, see: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#environment-setup
   if ((await getOs()) === OSType.linux) {
     // Get LD_LIBRARY_PATH
-    const libPath = process.env.LD_LIBRARY_PATH
-      ? process.env.LD_LIBRARY_PATH
-      : ''
+    const libPath = process.env.LD_LIBRARY_PATH ?? ''
     // Get CUDA lib path
     const cudaLibPath = path.join(cudaPath, 'lib64')
     // Check if CUDA lib path is already in LD_LIBRARY_PATH

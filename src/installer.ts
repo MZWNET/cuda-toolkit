@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import type { SemVer } from 'semver'
 import * as os from 'node:os'
 import { DefaultArtifactClient } from '@actions/artifact'
@@ -67,7 +68,7 @@ export async function install(
     core.debug(`Installer exit code: ${exitCode}`)
   }
   catch (error) {
-    core.warning(`Error during installation: ${error}`)
+    core.warning(`Error during installation: ${String(error)}`)
     throw error
   }
   finally {
@@ -93,7 +94,7 @@ export async function install(
           files,
           rootDirectory,
         )
-        core.debug(`Upload result: ${uploadResult}`)
+        core.debug(`Upload result: ${JSON.stringify(uploadResult)}`)
       }
       else {
         core.debug(`No log file to upload`)

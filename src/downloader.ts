@@ -27,10 +27,10 @@ export async function download(
   const toolId = `${toolName}-${osType}-${osRelease}-${cpuArch}`
   // Path that contains the executable file
   let executableDirectory: string | undefined
-  const cacheKey = `${toolId}-${version}`
+  const cacheKey = `${toolId}-${version.toString()}`
   const cacheDirectory = cacheKey
   if (useLocalCache) {
-    const toolPath = tc.find(toolId, `${version}`)
+    const toolPath = tc.find(toolId, `${version.toString()}`)
     if (toolPath) {
       // Tool is already in cache
       core.debug(`Found in local machine cache ${toolPath}`)
@@ -62,7 +62,7 @@ export async function download(
     // Get intsaller filename extension depending on OS
     const fileExtension: string = getFileExtension(osType)
     const downloadDirectory = `cuda_download`
-    const destFileName = `${toolId}_${version}.${fileExtension}`
+    const destFileName = `${toolId}_${version.toString()}.${fileExtension}`
     const destFilePath = `${downloadDirectory}/${destFileName}`
     // Check if file already exists
     if (!(await fileExists(destFilePath))) {
@@ -79,7 +79,7 @@ export async function download(
         destFilePath,
         destFileName,
         `${toolName}-${osType}-${cpuArch}`,
-        `${version}`,
+        `${version.toString()}`,
       )
       core.debug(
         `Cached download to local machine cache at ${localCacheDirectory}`,
@@ -154,11 +154,11 @@ function getFileExtension(osType: OSType): string {
 async function fileExists(filePath: string): Promise<boolean> {
   try {
     const stats = await fs.promises.stat(filePath)
-    core.debug(`Got the following stats for ${filePath}: ${stats}`)
-    return !!stats
+    core.debug(`Got the following stats for ${filePath}: ${JSON.stringify(stats)}`)
+    return stats !== null
   }
   catch (e) {
-    core.debug(`Got error while checking if ${filePath} exists: ${e}`)
+    core.debug(`Got error while checking if ${filePath} exists: ${String(e)}`)
     return false
   }
 }

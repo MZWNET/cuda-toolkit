@@ -31,13 +31,13 @@ export async function getVersion(
           break
       }
   }
-  core.debug(`Available versions: ${versions}`)
+  core.debug(`Available versions: ${versions.map(v => v.toString()).join(', ')}`)
   if (versions.some(v => v.compare(version) === 0)) {
-    core.debug(`Version available: ${version}`)
+    core.debug(`Version available: ${version.toString()}`)
     return version
   }
   else {
     core.debug(`Version not available error!`)
-    throw new Error(`Version not available: ${version}`)
+    throw new Error(`Version not available: ${version.toString()}`)
   }
 }

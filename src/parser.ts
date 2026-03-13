@@ -6,10 +6,10 @@ export async function parsePackages(
 ): Promise<string[]> {
   let subPackagesArray: string[] = []
   try {
-    subPackagesArray = JSON.parse(subPackages)
+    subPackagesArray = JSON.parse(subPackages) as string[]
   }
   catch (error) {
-    core.debug(`Json parsing error: ${error}`)
+    core.debug(`Json parsing error: ${String(error)}`)
     const errString = `Error parsing input '${parameterName}' to a JSON string array: ${subPackages}`
     core.debug(errString)
     throw new Error(errString)

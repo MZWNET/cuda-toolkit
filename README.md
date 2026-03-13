@@ -106,14 +106,14 @@ The path where cuda is installed (same as `CUDA_PATH` in `GITHUB_ENV`).
 
 ```yaml
 steps:
-- uses: MZWNET/cuda-toolkit@master
-  id: cuda-toolkit
-  with:
-    cuda: '13.2.0'
+  - uses: MZWNET/cuda-toolkit@master
+    id: cuda-toolkit
+    with:
+      cuda: 13.2.0
 
-- run: echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
+  - run: 'echo "Installed cuda version is: ${{ steps.cuda-toolkit.outputs.cuda }}"'
 
-- run: echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
+  - run: 'echo "Cuda install location: ${{ steps.cuda-toolkit.outputs.CUDA_PATH }}"'
 
-- run: nvcc -V
+  - run: nvcc -V
 ```

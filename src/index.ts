@@ -52,11 +52,11 @@ async function run(): Promise<void> {
     // Parse linuxLocalArgs array
     let linuxLocalArgsArray: string[] = []
     try {
-      linuxLocalArgsArray = JSON.parse(linuxLocalArgs)
+      linuxLocalArgsArray = JSON.parse(linuxLocalArgs) as string[]
       // TODO verify that elements are valid package names (--samples, --driver, --toolkit, etc.)
     }
     catch (error) {
-      core.debug(`Json parsing error: ${error}`)
+      core.debug(`Json parsing error: ${String(error)}`)
       const errString = `Error parsing input 'linux-local-args' to a JSON string array: ${linuxLocalArgs}`
       core.debug(errString)
       throw new Error(errString)
@@ -123,4 +123,4 @@ async function run(): Promise<void> {
   }
 }
 
-run()
+void run()

@@ -253,6 +253,6 @@ export class LinuxLinks extends AbstractLinks {
   }
 
   static get Instance(): LinuxLinks {
-    return this._instance || (this._instance = new this())
+    return this._instance ?? (this._instance = new this())
   }
 }
