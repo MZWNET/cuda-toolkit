@@ -10,6 +10,7 @@
     "__fixtures__/**/*.ts",
     "tests/**/*.ts",
     "src/**/*.ts",
+    "src/**/*.json",
     "eslint.config.ts",
     "vitest.config.ts",
     "rollup.config.ts"

@@ -1,5 +1,10 @@
 import { SemVer } from 'semver'
 
+/**
+ * Shared type for CUDA version-to-URL mapping used by both Linux and Windows links.
+ */
+export type CudaVersionUrlMap = Record<string, string>
+
 // Interface for getting cuda versions and corresponding download URLs
 export abstract class AbstractLinks {
   protected cudaVersionToURL: Map<string, string> = new Map()
