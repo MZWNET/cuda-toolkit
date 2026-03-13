@@ -38,8 +38,8 @@
     "knip": "knip",
     "lint": "eslint .",
     "local-action": "@github/local-action . src/main.ts .env",
-    "package": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --tree-shaking --minify --sourcemap --tsconfig=tsconfig.build.json",
-    "package:watch": "pnpm run package --watch",
+    "package": "node scripts/build.mjs",
+    "package:watch": "node scripts/build.mjs --watch",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
     "all": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run coverage && pnpm run package"
