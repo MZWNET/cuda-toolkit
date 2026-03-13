@@ -1,10 +1,11 @@
-import type { CudaVersionUrlMap } from './links.js'
+import type { CudaLinksModel } from './links.js'
 import { SemVer } from 'semver'
 import { AbstractLinks } from './links.js'
 import windowsLinks from './windows-links.json' with { type: 'json' }
 
-const cudaVersionToLocalData: CudaVersionUrlMap = windowsLinks.local
-const cudaVersionToNetworkData: CudaVersionUrlMap = windowsLinks.network
+const windowsLinksModel = windowsLinks as unknown as CudaLinksModel
+const cudaVersionToLocalData = windowsLinksModel.local
+const cudaVersionToNetworkData = windowsLinksModel.network!
 
 /**
  * Singleton class for windows links.

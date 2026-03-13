@@ -5,6 +5,14 @@ import { SemVer } from 'semver'
  */
 export type CudaVersionUrlMap = Record<string, string>
 
+/**
+ * Unified structure for links JSON files.
+ */
+export interface CudaLinksModel {
+  local: CudaVersionUrlMap
+  network?: CudaVersionUrlMap
+}
+
 // Interface for getting cuda versions and corresponding download URLs
 export abstract class AbstractLinks {
   protected cudaVersionToURL: Map<string, string> = new Map()

@@ -1,10 +1,7 @@
 import type { SemVer } from 'semver'
-import type { CudaVersionUrlMap } from './links.js'
 import { CPUArch, getArch } from '../arch.js'
 import { AbstractLinks } from './links.js'
 import linuxLinks from './linux-links.json' with { type: 'json' }
-
-const cudaVersionToURLData: CudaVersionUrlMap = linuxLinks
 
 /**
  * Singleton class for linux links.
@@ -17,7 +14,7 @@ export class LinuxLinks extends AbstractLinks {
   private constructor() {
     super()
     // Map of cuda SemVer version to download URL
-    this.cudaVersionToURL = new Map(Object.entries(cudaVersionToURLData))
+    this.cudaVersionToURL = new Map(Object.entries(linuxLinks.local as unknown as Record<string, string>))
   }
 
   async getLocalURLFromCudaVersion(version: SemVer): Promise<URL> {

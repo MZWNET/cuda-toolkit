@@ -1,58 +1,74 @@
 import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { filterReadable, getFilesRecursive } from '../src/fs-utils.js'
 
+vi.mock('node:fs', () => ({
+  default: {
+    promises: {
+      readdir: vi.fn(),
+      access: vi.fn(),
+    },
+    constants: {
+      R_OK: 4,
+    },
+  },
+}))
+
+vi.mock('@actions/core', () => ({
+  debug: vi.fn(),
+}))
+
 describe('fs-utils', () => {
-  const tmpRoot = path.join(os.tmpdir(), `cuda-toolkit-test-${Date.now()}`)
-
-  beforeAll(async () => {
-    await fs.promises.mkdir(tmpRoot, { recursive: true })
-    // create files and nested directories
-    await fs.promises.mkdir(path.join(tmpRoot, 'subdir'))
-    await fs.promises.writeFile(path.join(tmpRoot, 'a.txt'), 'a')
-    await fs.promises.writeFile(path.join(tmpRoot, 'subdir', 'b.txt'), 'b')
-
-    // create a non-readable file (if platform supports chmod)
-    try {
-      const p = path.join(tmpRoot, 'noaccess.txt')
-      await fs.promises.writeFile(p, 'x')
-      await fs.promises.chmod(p, 0o000)
-    }
-    catch {
-      // ignore chmod failures on platforms that don't support it
-    }
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  afterAll(async () => {
-    try {
-      const p = path.join(tmpRoot, 'noaccess.txt')
-      await fs.promises.chmod(p, 0o644)
-    }
-    catch {
-      // ignore
-    }
-    await fs.promises.rm(tmpRoot, { recursive: true, force: true })
+  describe('getFilesRecursive', () => {
+    it('should return all files under directory recursively', async () => {
+      const mockDir = '/mock/root'
+
+      // Mock readdir for root
+      vi.mocked(fs.promises.readdir).mockResolvedValueOnce([
+        { name: 'file1.txt', isDirectory: () => false, isFile: () => true },
+        { name: 'subdir', isDirectory: () => true, isFile: () => false },
+      ] as unknown as Awaited<ReturnType<typeof fs.promises.readdir>>)
+
+      // Mock readdir for subdir
+      vi.mocked(fs.promises.readdir).mockResolvedValueOnce([
+        { name: 'file2.txt', isDirectory: () => false, isFile: () => true },
+      ] as unknown as Awaited<ReturnType<typeof fs.promises.readdir>>)
+
+      const files = await getFilesRecursive(mockDir)
+
+      expect(files).toEqual([
+        path.join(mockDir, 'file1.txt'),
+        path.join(mockDir, 'subdir', 'file2.txt'),
+      ])
+      expect(fs.promises.readdir).toHaveBeenCalledTimes(2)
+    })
+
+    it('should return empty array if readdir fails', async () => {
+      vi.mocked(fs.promises.readdir).mockRejectedValue(new Error('Read error'))
+      const files = await getFilesRecursive('/invalid/path')
+      expect(files).toEqual([])
+    })
   })
 
-  it('getFilesRecursive returns all files under directory', async () => {
-    const files = await getFilesRecursive(tmpRoot)
+  describe('filterReadable', () => {
+    it('should filter out non-readable or missing files', async () => {
+      const files = ['/path/readable.txt', '/path/missing.txt', '/path/noaccess.txt']
 
-    const normalizedNames = files.map(f => path.relative(tmpRoot, f)).sort()
+      vi.mocked(fs.promises.access).mockImplementation(async (p) => {
+        if (p === '/path/readable.txt')
+          return Promise.resolve()
+        throw new Error('Access denied or not found')
+      })
 
-    expect(normalizedNames).toEqual(
-      ['a.txt', 'noaccess.txt', path.join('subdir', 'b.txt')].sort(),
-    )
-  })
+      const result = await filterReadable(files)
 
-  it('filterReadable filters out non-readable or missing files', async () => {
-    const a = path.join(tmpRoot, 'a.txt')
-    const nosuch = path.join(tmpRoot, 'does-not-exist.txt')
-    const noaccess = path.join(tmpRoot, 'noaccess.txt')
-
-    const result = await filterReadable([a, nosuch, noaccess])
-
-    expect(result).toContain(a)
-    expect(result).not.toContain(nosuch)
+      expect(result).toEqual(['/path/readable.txt'])
+      expect(fs.promises.access).toHaveBeenCalledTimes(3)
+    })
   })
 })

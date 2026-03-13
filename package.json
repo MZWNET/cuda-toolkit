@@ -39,14 +39,13 @@
     "package:watch": "pnpm run package --watch",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
-    "all": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run coverage && pnpm run package"
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run coverage && pnpm run package"
   },
   "dependencies": {
     "@actions/artifact": "^6.2.1",
     "@actions/cache": "^6.0.0",
     "@actions/core": "^3.0.0",
     "@actions/exec": "^3.0.0",
-    "@actions/glob": "^0.6.1",
     "@actions/io": "^3.0.2",
     "@actions/tool-cache": "^4.0.0",
     "@types/semver": "^7.7.1",
