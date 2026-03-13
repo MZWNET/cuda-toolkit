@@ -32,7 +32,11 @@ jobs:
         with:
           node-version-file: .node-version
           check-latest: true
-          package-manager-cache: true
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          cache: true
 
       - name: Install dependencies
         run: |
