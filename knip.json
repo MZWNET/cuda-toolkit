@@ -1,11 +1,9 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignore": [
-    "dist/**",
-    "__fixtures__/**"
+    "dist/**"
   ],
   "ignoreDependencies": [
-    "@github/local-action",
-    "@jest/globals"
+    "@github/local-action"
   ]
 }

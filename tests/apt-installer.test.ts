@@ -1,36 +1,17 @@
-import { exec } from '@actions/exec'
 import { SemVer } from 'semver'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { CPUArch } from '../fixtures/arch.js'
+import { exec } from '../fixtures/exec.js'
+import { OSType } from '../fixtures/platform.js'
 import { aptInstall, aptSetup, useApt } from '../src/apt-installer.js'
-import { CPUArch, getArch } from '../src/arch.js'
-import { getOs, OSType } from '../src/platform.js'
+import { getArch } from '../src/arch.js'
+import { getOs } from '../src/platform.js'
 import { execReturnOutput } from '../src/run-command.js'
 
-vi.mock('@actions/core', () => ({
-  debug: vi.fn(),
-  warning: vi.fn(),
-}))
-
-vi.mock('@actions/exec', () => ({
-  exec: vi.fn(),
-}))
-
-vi.mock('../src/platform.js', () => ({
-  getOs: vi.fn(),
-  OSType: {
-    windows: 'windows',
-    linux: 'linux',
-  },
-}))
-
-vi.mock('../src/arch.js', () => ({
-  getArch: vi.fn(),
-  CPUArch: {
-    x86_64: 'x86_64',
-    arm64: 'arm64',
-  },
-}))
-
+vi.mock('@actions/core', async () => import('../fixtures/core.js'))
+vi.mock('@actions/exec', async () => import('../fixtures/exec.js'))
+vi.mock('../src/platform.js', async () => import('../fixtures/platform.js'))
+vi.mock('../src/arch.js', async () => import('../fixtures/arch.js'))
 vi.mock('../src/run-command.js', () => ({
   execReturnOutput: vi.fn(),
 }))
@@ -67,7 +48,7 @@ describe('apt-installer', () => {
       await expect(aptSetup(version)).rejects.toThrow('apt setup can only be run on linux runners!')
     })
 
-    it('should successfully set up apt repository on Ubuntu x86_64', async () => {
+    it('successfully set up apt repository on Ubuntu x86_64', async () => {
       vi.mocked(getOs).mockResolvedValue(OSType.linux)
       vi.mocked(execReturnOutput).mockResolvedValue('22.04')
       vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
@@ -84,7 +65,7 @@ describe('apt-installer', () => {
       expect(exec).toHaveBeenCalledWith('sudo apt-get update')
     })
 
-    it('should successfully set up apt repository on Ubuntu arm64 (sbsa)', async () => {
+    it('successfully set up apt repository on Ubuntu arm64 (sbsa)', async () => {
       vi.mocked(getOs).mockResolvedValue(OSType.linux)
       vi.mocked(execReturnOutput).mockResolvedValue('20.04')
       vi.mocked(getArch).mockResolvedValue(CPUArch.arm64)
@@ -111,7 +92,7 @@ describe('apt-installer', () => {
       expect(exec).toHaveBeenCalledWith('sudo apt-get -y install', ['cuda-12-1'])
     })
 
-    it('should install specific sub-packages and non-cuda prefix packages', async () => {
+    it('install specific sub-packages and non-cuda prefix packages', async () => {
       vi.mocked(getOs).mockResolvedValue(OSType.linux)
       const version = new SemVer('12.1.0')
       const subPackages = ['nvcc', 'toolkit']

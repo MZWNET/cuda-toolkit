@@ -7,7 +7,7 @@
     "noEmit": true
   },
   "include": [
-    "__fixtures__/**/*.ts",
+    "fixtures/**/*.ts",
     "tests/**/*.ts",
     "src/**/*.ts",
     "src/**/*.json",
