@@ -8,7 +8,7 @@
   },
   "include": [
     "__fixtures__/**/*.ts",
-    "__tests__/**/*.ts",
+    "tests/**/*.ts",
     "src/**/*.ts",
     "eslint.config.ts",
     "vitest.config.ts",
