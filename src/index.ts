@@ -1,12 +1,13 @@
+import type { Method } from './method.js'
 import * as core from '@actions/core'
-import { Method, parseMethod } from './method.js'
-import { OSType, getOs } from './platform.js'
 import { aptInstall, aptSetup, useApt } from './apt-installer.js'
 import { download } from './downloader.js'
-import { getVersion } from './version.js'
 import { install } from './installer.js'
-import { updatePath } from './update-path.js'
+import { parseMethod } from './method.js'
 import { parsePackages } from './parser.js'
+import { getOs, OSType } from './platform.js'
+import { updatePath } from './update-path.js'
+import { getVersion } from './version.js'
 
 async function run(): Promise<void> {
   try {
@@ -32,13 +33,13 @@ async function run(): Promise<void> {
     // Parse subPackages array
     const subPackagesArray: string[] = await parsePackages(
       subPackages,
-      subPackagesArgName
+      subPackagesArgName,
     )
 
     // Parse nonCudaSubPackages array
     const nonCudaSubPackagesArray: string[] = await parsePackages(
       nonCudaSubPackages,
-      nonCudaSubPackagesArgName
+      nonCudaSubPackagesArgName,
     )
 
     // Parse method
@@ -53,7 +54,8 @@ async function run(): Promise<void> {
     try {
       linuxLocalArgsArray = JSON.parse(linuxLocalArgs)
       // TODO verify that elements are valid package names (--samples, --driver, --toolkit, etc.)
-    } catch (error) {
+    }
+    catch (error) {
       core.debug(`Json parsing error: ${error}`)
       const errString = `Error parsing input 'linux-local-args' to a JSON string array: ${linuxLocalArgs}`
       core.debug(errString)
@@ -62,12 +64,12 @@ async function run(): Promise<void> {
 
     // Check if subPackages are specified in 'local' method on Linux
     if (
-      methodParsed === 'local' &&
-      subPackagesArray.length > 0 &&
-      (await getOs()) === OSType.linux
+      methodParsed === 'local'
+      && subPackagesArray.length > 0
+      && (await getOs()) === OSType.linux
     ) {
       throw new Error(
-        `Subpackages on 'local' method is not supported on Linux, use 'network' instead`
+        `Subpackages on 'local' method is not supported on Linux, use 'network' instead`,
       )
     }
 
@@ -80,16 +82,17 @@ async function run(): Promise<void> {
       const installResult = await aptInstall(
         version,
         subPackagesArray,
-        nonCudaSubPackagesArray
+        nonCudaSubPackagesArray,
       )
       core.debug(`Install result: ${installResult}`)
-    } else {
+    }
+    else {
       // Download
       const executablePath: string = await download(
         version,
         methodParsed,
         useLocalCache,
-        useGitHubCache
+        useGitHubCache,
       )
 
       // Install
@@ -99,7 +102,7 @@ async function run(): Promise<void> {
         subPackagesArray,
         linuxLocalArgsArray,
         methodString,
-        logFileSuffix
+        logFileSuffix,
       )
     }
 
@@ -109,10 +112,12 @@ async function run(): Promise<void> {
     // Set output variables
     core.setOutput('cuda', cuda)
     core.setOutput('CUDA_PATH', cudaPath)
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof Error) {
       core.setFailed(error)
-    } else {
+    }
+    else {
       core.setFailed('Unknown error')
     }
   }

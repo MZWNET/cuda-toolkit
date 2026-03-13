@@ -1,7 +1,7 @@
-import fs from 'fs'
-import os from 'os'
-import path from 'path'
-import { getFilesRecursive, filterReadable } from '../src/fs-utils.js'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { filterReadable, getFilesRecursive } from '../src/fs-utils.js'
 
 describe('fs-utils', () => {
   const tmpRoot = path.join(os.tmpdir(), `cuda-toolkit-test-${Date.now()}`)
@@ -18,7 +18,8 @@ describe('fs-utils', () => {
       const p = path.join(tmpRoot, 'noaccess.txt')
       await fs.promises.writeFile(p, 'x')
       await fs.promises.chmod(p, 0o000)
-    } catch {
+    }
+    catch {
       // ignore chmod failures on platforms that don't support it
     }
   })
@@ -27,23 +28,24 @@ describe('fs-utils', () => {
     try {
       const p = path.join(tmpRoot, 'noaccess.txt')
       await fs.promises.chmod(p, 0o644)
-    } catch {
+    }
+    catch {
       // ignore
     }
     await fs.promises.rm(tmpRoot, { recursive: true, force: true })
   })
 
-  test('getFilesRecursive returns all files under directory', async () => {
+  it('getFilesRecursive returns all files under directory', async () => {
     const files = await getFilesRecursive(tmpRoot)
 
-    const normalizedNames = files.map((f) => path.relative(tmpRoot, f)).sort()
+    const normalizedNames = files.map(f => path.relative(tmpRoot, f)).sort()
 
     expect(normalizedNames).toEqual(
-      ['a.txt', 'noaccess.txt', path.join('subdir', 'b.txt')].sort()
+      ['a.txt', 'noaccess.txt', path.join('subdir', 'b.txt')].sort(),
     )
   })
 
-  test('filterReadable filters out non-readable or missing files', async () => {
+  it('filterReadable filters out non-readable or missing files', async () => {
     const a = path.join(tmpRoot, 'a.txt')
     const nosuch = path.join(tmpRoot, 'does-not-exist.txt')
     const noaccess = path.join(tmpRoot, 'noaccess.txt')

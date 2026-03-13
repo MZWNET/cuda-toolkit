@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import * as core from '@actions/core'
 
 export async function getFilesRecursive(dir: string): Promise<string[]> {
@@ -10,14 +10,16 @@ export async function getFilesRecursive(dir: string): Promise<string[]> {
       const fullPath = path.join(current, entry.name)
       if (entry.isDirectory()) {
         await walk(fullPath)
-      } else if (entry.isFile()) {
+      }
+      else if (entry.isFile()) {
         results.push(fullPath)
       }
     }
   }
   try {
     await walk(dir)
-  } catch (e) {
+  }
+  catch (e) {
     core.debug(`Error reading files from ${dir}: ${e}`)
     return []
   }
@@ -30,7 +32,8 @@ export async function filterReadable(paths: string[]): Promise<string[]> {
     try {
       await fs.promises.access(path, fs.constants.R_OK)
       readable.push(path)
-    } catch (e) {
+    }
+    catch (e) {
       core.debug(`Path not readable: ${path} - ${e}`)
     }
   }

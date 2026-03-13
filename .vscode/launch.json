@@ -5,11 +5,19 @@
       "name": "Debug Action",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "npx",
+      "runtimeExecutable": "pnpx",
       "cwd": "${workspaceRoot}",
-      "args": ["@github/local-action", ".", "src/main.ts", ".env"],
+      "args": [
+        "@github/local-action",
+        ".",
+        "src/main.ts",
+        ".env"
+      ],
       "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**", "node_modules/**"]
+      "skipFiles": [
+        "<node_internals>/**",
+        "node_modules/**"
+      ]
     }
   ]
 }

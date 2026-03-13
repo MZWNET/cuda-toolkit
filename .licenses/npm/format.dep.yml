@@ -1,0 +1,14 @@
+---
+name: format
+version: 0.2.2
+type: npm
+summary: printf, sprintf, and vsprintf for JavaScript
+homepage: http://samhuri.net/proj/format
+license: mit
+licenses:
+- sources: Readme.md
+  text: |-
+    Copyright 2010 - 2014 Sami Samhuri sami@samhuri.net
+
+    [MIT license](http://sjs.mit-license.org)
+notices: []

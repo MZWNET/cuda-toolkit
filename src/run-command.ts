@@ -3,7 +3,7 @@ import { exec } from '@actions/exec'
 
 export async function execReturnOutput(
   command: string,
-  args: string[] = []
+  args: string[] = [],
 ): Promise<string> {
   let result = ''
   const execOptions = {
@@ -13,8 +13,8 @@ export async function execReturnOutput(
       },
       stderr: (data: Buffer) => {
         core.debug(`Error: ${data.toString()}`)
-      }
-    }
+      },
+    },
   }
   const exitCode = await exec(command, args, execOptions)
   if (exitCode) {

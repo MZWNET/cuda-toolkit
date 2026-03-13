@@ -1,10 +1,10 @@
+import type { SemVer } from 'semver'
+import type { Method } from './method.js'
 import * as core from '@actions/core'
-import { OSType, getOs } from './platform.js'
-import { Method } from './method.js'
-import { SemVer } from 'semver'
 import { exec } from '@actions/exec'
-import { execReturnOutput } from './run-command.js'
 import { CPUArch, getArch } from './arch.js'
+import { getOs, OSType } from './platform.js'
+import { execReturnOutput } from './run-command.js'
 
 export async function useApt(method: Method): Promise<boolean> {
   return method === 'network' && (await getOs()) === OSType.linux
@@ -14,7 +14,7 @@ export async function aptSetup(version: SemVer): Promise<void> {
   const osType = await getOs()
   if (osType !== OSType.linux) {
     throw new Error(
-      `apt setup can only be run on linux runners! Current os type: ${osType}`
+      `apt setup can only be run on linux runners! Current os type: ${osType}`,
     )
   }
   core.debug(`Setup packages for ${version}`)
@@ -27,12 +27,13 @@ export async function aptSetup(version: SemVer): Promise<void> {
     if ((await getArch()) === CPUArch.arm64) {
       arch = 'sbsa' // This might not work in the future, they are merging arm64 and sbsa
     }
-  } catch (error) {
+  }
+  catch (error) {
     core.debug(`Error detecting architecture: ${error}`)
     core.warning(`Could not detect architecture, using default ${arch}`)
   }
   core.debug(
-    `Detected architecture: ${process.arch}, using arch string: ${arch}`
+    `Detected architecture: ${process.arch}, using arch string: ${arch}`,
   )
 
   const pinFilename = `cuda-ubuntu${ubuntuVersionNoDot}.pin`
@@ -53,7 +54,7 @@ export async function aptSetup(version: SemVer): Promise<void> {
   core.debug('Adding CUDA Repository')
   await exec(`wget ${pinUrl}`)
   await exec(
-    `sudo mv ${pinFilename} /etc/apt/preferences.d/cuda-repository-pin-600`
+    `sudo mv ${pinFilename} /etc/apt/preferences.d/cuda-repository-pin-600`,
   )
   await exec(`sudo add-apt-repository "deb ${repoUrl} /"`)
   await exec(`sudo apt-get update`)
@@ -62,31 +63,31 @@ export async function aptSetup(version: SemVer): Promise<void> {
 export async function aptInstall(
   version: SemVer,
   subPackages: string[],
-  nonCudaSubPackages: string[]
+  nonCudaSubPackages: string[],
 ): Promise<number> {
   const osType = await getOs()
   if (osType !== OSType.linux) {
     throw new Error(
-      `apt install can only be run on linux runners! Current os type: ${osType}`
+      `apt install can only be run on linux runners! Current os type: ${osType}`,
     )
   }
   if (subPackages.length === 0) {
     // Install everything
     const packageName = `cuda-${version.major}-${version.minor}`
     core.debug(`Install package: ${packageName}`)
-    return await exec(`sudo apt-get -y install`, [packageName])
-  } else {
+    return exec(`sudo apt-get -y install`, [packageName])
+  }
+  else {
     // Only install specified packages
     const prefixedSubPackages = subPackages.map(
-      (subPackage) => `cuda-${subPackage}`
+      subPackage => `cuda-${subPackage}`,
     )
-    const versionedSubPackages = prefixedSubPackages
-      .concat(nonCudaSubPackages)
+    const versionedSubPackages = [...prefixedSubPackages, ...nonCudaSubPackages]
       .map(
-        (nonCudaSubPackage) =>
-          `${nonCudaSubPackage}-${version.major}-${version.minor}`
+        nonCudaSubPackage =>
+          `${nonCudaSubPackage}-${version.major}-${version.minor}`,
       )
     core.debug(`Only install subpackages: ${versionedSubPackages}`)
-    return await exec(`sudo apt-get -y install`, versionedSubPackages)
+    return exec(`sudo apt-get -y install`, versionedSubPackages)
   }
 }

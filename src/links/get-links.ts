@@ -1,5 +1,5 @@
-import { OSType, getOs } from '../platform.js'
-import { AbstractLinks } from './links.js'
+import type { AbstractLinks } from './links.js'
+import { getOs, OSType } from '../platform.js'
 import { LinuxLinks } from './linux-links.js'
 import { WindowsLinks } from './windows-links.js'
 

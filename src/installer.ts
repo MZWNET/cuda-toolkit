@@ -1,10 +1,10 @@
+import type { SemVer } from 'semver'
+import * as os from 'node:os'
 import { DefaultArtifactClient } from '@actions/artifact'
 import * as core from '@actions/core'
-import { filterReadable } from './fs-utils.js'
-import { OSType, getOs, getRelease } from './platform.js'
-import { SemVer } from 'semver'
 import { exec } from '@actions/exec'
-import * as os from 'os'
+import { filterReadable } from './fs-utils.js'
+import { getOs, getRelease, OSType } from './platform.js'
 
 export async function install(
   executablePath: string,
@@ -12,7 +12,7 @@ export async function install(
   subPackagesArray: string[],
   linuxLocalArgsArray: string[],
   method: string,
-  logFileSuffix: string
+  logFileSuffix: string,
 ): Promise<void> {
   // Install arguments, see: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#runfile-advanced
   // and https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
@@ -32,8 +32,8 @@ export async function install(
       },
       stderr: (data: Buffer) => {
         core.debug(`Error: ${data.toString()}`)
-      }
-    }
+      },
+    },
   }
 
   // Configure OS dependent run command and args
@@ -42,7 +42,7 @@ export async function install(
       // Root permission needed on linux
       command = `sudo ${executablePath}`
       // Install silently, and add additional arguments
-      installArgs = ['--silent'].concat(linuxLocalArgsArray)
+      installArgs = [...['--silent'], ...linuxLocalArgsArray]
       break
     case OSType.windows:
       // Windows handles permissions automatically
@@ -50,15 +50,13 @@ export async function install(
       // Install silently
       installArgs = ['-s']
       // Add subpackages to command args (if any)
-      installArgs = installArgs.concat(
-        subPackages.map((subPackage) => {
-          // Display driver sub package name is not dependent on version
-          if (subPackage === 'Display.Driver') {
-            return subPackage
-          }
-          return `${subPackage}_${version.major}.${version.minor}`
-        })
-      )
+      installArgs = [...installArgs, ...subPackages.map((subPackage) => {
+        // Display driver sub package name is not dependent on version
+        if (subPackage === 'Display.Driver') {
+          return subPackage
+        }
+        return `${subPackage}_${version.major}.${version.minor}`
+      })]
       break
   }
 
@@ -67,10 +65,12 @@ export async function install(
     core.debug(`Running install executable: ${executablePath}`)
     const exitCode = await exec(command, installArgs, execOptions)
     core.debug(`Installer exit code: ${exitCode}`)
-  } catch (error) {
+  }
+  catch (error) {
     core.warning(`Error during installation: ${error}`)
     throw error
-  } finally {
+  }
+  finally {
     // Always upload installation log regardless of error
     const osType = await getOs()
     const osRelease = await getRelease()
@@ -91,10 +91,11 @@ export async function install(
         const uploadResult = await artifact.uploadArtifact(
           artifactName,
           files,
-          rootDirectory
+          rootDirectory,
         )
         core.debug(`Upload result: ${uploadResult}`)
-      } else {
+      }
+      else {
         core.debug(`No log file to upload`)
       }
     }

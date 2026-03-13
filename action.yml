@@ -1,11 +1,11 @@
-name: 'cuda-toolkit'
-description: 'Installs NVIDIA CUDA Toolkit and adds it to PATH'
-author: 'Jim Verheijde'
+name: cuda-toolkit
+description: Installs NVIDIA CUDA Toolkit and adds it to PATH
+author: Jim Verheijde
 inputs:
   cuda:
-    description: 'Cuda version'
+    description: Cuda version
     required: false
-    default: '13.2.0'
+    default: 13.2.0
   sub-packages:
     description:
       'Only installs specified subpackages, must be in the form of a JSON array.
@@ -32,7 +32,7 @@ inputs:
       'network' downloads a smaller executable which only downloads necessary
       packages which you can define in subPackages"
     required: false
-    default: 'local'
+    default: local
   linux-local-args:
     description:
       '(Linux and ''local'' method only) override arguments for the linux .run
@@ -42,26 +42,26 @@ inputs:
     default: '["--toolkit", "--samples"]'
   use-github-cache:
     description:
-      'Use GitHub cache to cache downloaded installer on GitHub servers'
+      Use GitHub cache to cache downloaded installer on GitHub servers
     required: false
     default: 'true'
   use-local-cache:
     description:
-      'Use local cache to cache downloaded installer on the local runner'
+      Use local cache to cache downloaded installer on the local runner
     required: false
     default: 'true'
   log-file-suffix:
-    description: 'Suffix of log file name in artifact'
+    description: Suffix of log file name in artifact
     required: false
-    default: 'log.txt'
+    default: log.txt
 outputs:
   CUDA_PATH:
-    description: 'Path to CUDA installation'
+    description: Path to CUDA installation
   cuda:
-    description: 'Version of CUDA installed'
+    description: Version of CUDA installed
 runs:
-  using: 'node20'
-  main: dist/index.js
+  using: node24
+  main: dist/index.mjs
 branding:
   icon: box
   color: green

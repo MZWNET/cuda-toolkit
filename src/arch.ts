@@ -1,9 +1,9 @@
+import os from 'node:os'
 import { debug } from '@actions/core'
-import os from 'os'
 
 export enum CPUArch {
   x86_64 = 'x64',
-  arm64 = 'arm64'
+  arm64 = 'arm64',
 }
 
 export async function getArch(): Promise<CPUArch> {

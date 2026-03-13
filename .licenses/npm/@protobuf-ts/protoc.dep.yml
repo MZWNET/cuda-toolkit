@@ -1,6 +1,6 @@
 ---
 name: "@protobuf-ts/protoc"
-version: 2.11.0
+version: 2.11.1
 type: npm
 summary: Installs the protocol buffer compiler "protoc" for you.
 homepage: https://github.com/timostamm/protobuf-ts

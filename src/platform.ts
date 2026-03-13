@@ -1,9 +1,9 @@
+import os from 'node:os'
 import { debug } from '@actions/core'
-import os from 'os'
 
 export enum OSType {
   windows = 'windows',
-  linux = 'linux'
+  linux = 'linux',
 }
 
 export async function getOs(): Promise<OSType> {

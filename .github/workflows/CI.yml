@@ -24,14 +24,13 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          [
-            windows-2025,
-            windows-2022,
-            ubuntu-24.04,
-            ubuntu-22.04,
-            ubuntu-24.04-arm,
-            ubuntu-22.04-arm
-          ]
+          - windows-2025
+          - windows-2022
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - ubuntu-24.04-arm
+          - ubuntu-22.04-arm
+
         method: [local, network]
     runs-on: ${{ matrix.os }}
 

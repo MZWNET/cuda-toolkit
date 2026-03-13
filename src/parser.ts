@@ -2,12 +2,13 @@ import * as core from '@actions/core'
 
 export async function parsePackages(
   subPackages: string,
-  parameterName: string
+  parameterName: string,
 ): Promise<string[]> {
   let subPackagesArray: string[] = []
   try {
     subPackagesArray = JSON.parse(subPackages)
-  } catch (error) {
+  }
+  catch (error) {
     core.debug(`Json parsing error: ${error}`)
     const errString = `Error parsing input '${parameterName}' to a JSON string array: ${subPackages}`
     core.debug(errString)

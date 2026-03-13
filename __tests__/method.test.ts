@@ -1,16 +1,16 @@
-import { parseMethod } from '../src/method'
+import { parseMethod } from '../src/method.js'
 
-test.concurrent.each(['local', 'network'])(
-  'Parse %s method',
+it.each(['local', 'network'])(
+  'parse %s method',
   async (methodString) => {
     const parsed = parseMethod(methodString)
     expect(parsed).toBe(methodString)
-  }
+  },
 )
 
-test.concurrent('Parse invalid method', async () => {
+it.concurrent('parse invalid method', async () => {
   const invalidMethod = 'invalidMethodString'
   expect(() => parseMethod(invalidMethod)).toThrow(
-    `Invalid method string: ${invalidMethod}`
+    `Invalid method string: ${invalidMethod}`,
   )
 })

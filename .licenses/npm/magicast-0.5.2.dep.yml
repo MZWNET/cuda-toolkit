@@ -1,0 +1,41 @@
+---
+name: magicast
+version: 0.5.2
+type: npm
+summary: Modify a JS/TS file and write back magically just like JSON!
+homepage:
+license: mit
+licenses:
+- sources: LICENSE
+  text: |
+    MIT License
+
+    Copyright (c) Pooya Parsa <pooya@pi0.io> and Anthony Fu <https://github.com/antfu>
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+- sources: README.md
+  text: "Made with \U0001F49B\n\nPublished under [MIT License](./LICENSE).\n\n<!--
+    Badges -->\n\n[npm-version-src]: https://img.shields.io/npm/v/magicast?style=flat&colorA=18181B&colorB=F0DB4F\n[npm-version-href]:
+    https://npmjs.com/package/magicast\n[npm-downloads-src]: https://img.shields.io/npm/dm/magicast?style=flat&colorA=18181B&colorB=F0DB4F\n[npm-downloads-href]:
+    https://npmjs.com/package/magicast\n[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/magicast/main?style=flat&colorA=18181B&colorB=F0DB4F\n[codecov-href]:
+    https://codecov.io/gh/unjs/magicast\n[bundle-src]: https://img.shields.io/bundlephobia/minzip/magicast?style=flat&colorA=18181B&colorB=F0DB4F\n[bundle-href]:
+    https://bundlephobia.com/result?p=magicast\n[license-src]: https://img.shields.io/github/license/unjs/magicast.svg?style=flat&colorA=18181B&colorB=F0DB4F\n[license-href]:
+    https://github.com/unjs/magicast/blob/main/LICENSE\n[jsdocs-src]: https://img.shields.io/badge/jsDocs.io-reference-18181B?style=flat&colorA=18181B&colorB=F0DB4F\n[jsdocs-href]:
+    https://www.jsdocs.io/package/magicast"
+notices: []

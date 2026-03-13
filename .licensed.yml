@@ -19,5 +19,5 @@ ignored:
     # Used by Rollup.js when building in GitHub Actions
     - '@rollup/rollup-linux-x64-gnu'
     - '@bufbuild/protobuf'
-    - 'buffers'
-    - 'chainsaw'
+    - buffers
+    - chainsaw

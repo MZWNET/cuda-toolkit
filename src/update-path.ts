@@ -1,7 +1,7 @@
+import type { SemVer } from 'semver'
+import * as path from 'node:path'
 import * as core from '@actions/core'
-import * as path from 'path'
-import { OSType, getOs } from './platform.js'
-import { SemVer } from 'semver'
+import { getOs, OSType } from './platform.js'
 
 export async function updatePath(version: SemVer): Promise<string> {
   let cudaPath: string
@@ -20,7 +20,7 @@ export async function updatePath(version: SemVer): Promise<string> {
   core.exportVariable(`CUDA_PATH_V${version.major}_${version.minor}`, cudaPath)
   core.exportVariable(
     'CUDA_PATH_VX_Y',
-    `CUDA_PATH_V${version.major}_${version.minor}`
+    `CUDA_PATH_V${version.major}_${version.minor}`,
   )
   // Add $CUDA_PATH/bin to $PATH
   const binPath = path.join(cudaPath, 'bin')
@@ -41,7 +41,7 @@ export async function updatePath(version: SemVer): Promise<string> {
       core.debug(`Adding to LD_LIBRARY_PATH: ${cudaLibPath}`)
       core.exportVariable(
         'LD_LIBRARY_PATH',
-        cudaLibPath + path.delimiter + libPath
+        cudaLibPath + path.delimiter + libPath,
       )
     }
   }

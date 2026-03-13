@@ -1,6 +1,6 @@
 ---
 name: "@types/semver"
-version: 7.7.0
+version: 7.7.1
 type: npm
 summary: TypeScript definitions for semver
 homepage: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/semver

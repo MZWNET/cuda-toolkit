@@ -1,7 +1,7 @@
-import { OSType, getOs, getRelease } from '../src/platform'
-import os from 'os'
+import os from 'node:os'
+import { getOs, getRelease, OSType } from '../src/platform.js'
 
-test.concurrent('Return either windows of linux platform', async () => {
+it.concurrent('return either windows of linux platform', async () => {
   const osString = os.platform()
   let expected: OSType
   switch (osString) {
@@ -20,7 +20,7 @@ test.concurrent('Return either windows of linux platform', async () => {
   expect(osPlatform).toBe(expected)
 })
 
-test.concurrent('Return version', async () => {
+it.concurrent('return version', async () => {
   const version = await getRelease()
   expect(version).toBeDefined()
 })

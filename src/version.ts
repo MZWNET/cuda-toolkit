@@ -1,15 +1,15 @@
+import type { AbstractLinks } from './links/links.js'
+import type { WindowsLinks } from './links/windows-links.js'
+import type { Method } from './method.js'
 import * as core from '@actions/core'
-import { OSType, getOs } from './platform.js'
-import { AbstractLinks } from './links/links.js'
-import { Method } from './method.js'
 import { SemVer } from 'semver'
-import { WindowsLinks } from './links/windows-links.js'
 import { getLinks } from './links/get-links.js'
+import { getOs, OSType } from './platform.js'
 
 // Helper for converting string to SemVer and verifying it exists in the links
 export async function getVersion(
   versionString: string,
-  method: Method
+  method: Method,
 ): Promise<SemVer> {
   const version = new SemVer(versionString)
   const links: AbstractLinks = await getLinks()
@@ -32,10 +32,11 @@ export async function getVersion(
       }
   }
   core.debug(`Available versions: ${versions}`)
-  if (versions.find((v) => v.compare(version) === 0) !== undefined) {
+  if (versions.some(v => v.compare(version) === 0)) {
     core.debug(`Version available: ${version}`)
     return version
-  } else {
+  }
+  else {
     core.debug(`Version not available error!`)
     throw new Error(`Version not available: ${version}`)
   }

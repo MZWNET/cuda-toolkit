@@ -1,17 +1,22 @@
 {
   "name": "cuda-toolkit",
-  "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
-  "version": "0.2.30",
-  "author": "Jim Verheijde",
   "type": "module",
+  "version": "0.2.30",
   "private": true,
-  "homepage": "https://github.com/Jimver/cuda-toolkit",
+  "packageManager": "pnpm@10.32.1",
+  "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
+  "author": [
+    "Jim Verheijde",
+    "mzwing"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/MZWNET/cuda-toolkit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jimver/cuda-toolkit.git"
+    "url": "git+https://github.com/MZWNET/cuda-toolkit.git"
   },
   "bugs": {
-    "url": "https://github.com/Jimver/cuda-toolkit/issues"
+    "url": "https://github.com/MZWNET/cuda-toolkit/issues"
   },
   "keywords": [
     "actions",
@@ -22,65 +27,47 @@
     "toolkit"
   ],
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
-    "bundle": "npm run format:write && npm run package",
-    "ci-test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
-    "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
-    "format:write": "npx prettier --write .",
-    "format:check": "npx prettier --check .",
-    "lint": "npx eslint .",
-    "local-action": "npx @github/local-action . src/main.ts .env",
-    "package": "npx rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
-    "package:watch": "npm run package -- --watch",
-    "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
-    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+    "ci-test": "vitest run",
+    "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
+    "knip": "knip",
+    "lint": "eslint .",
+    "local-action": "@github/local-action . src/main.ts .env",
+    "package": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.mjs --tree-shaking --minify --sourcemap --tsconfig=tsconfig.build.json",
+    "package:watch": "pnpm run package --watch",
+    "test": "vitest run",
+    "typecheck": "tsgo --noEmit",
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run coverage && pnpm run package"
   },
-  "license": "MIT",
   "dependencies": {
-    "@actions/artifact": "^2.3.2",
-    "@actions/cache": "^4.0.3",
-    "@actions/core": "^1.11.1",
-    "@actions/exec": "^1.1.1",
-    "@actions/glob": "^0.5.0",
-    "@actions/io": "^1.1.3",
-    "@actions/tool-cache": "^2.0.2",
-    "@types/semver": "^7.7.0",
-    "semver": "^7.7.2"
+    "@actions/artifact": "^6.2.1",
+    "@actions/cache": "^6.0.0",
+    "@actions/core": "^3.0.0",
+    "@actions/exec": "^3.0.0",
+    "@actions/glob": "^0.6.1",
+    "@actions/io": "^3.0.2",
+    "@actions/tool-cache": "^4.0.0",
+    "@types/semver": "^7.7.1",
+    "semver": "^7.7.4"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.9",
-    "@github/local-action": "^3.2.1",
-    "@jest/globals": "^29.7.0",
-    "@rollup/plugin-commonjs": "^28.0.1",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-typescript": "^12.1.1",
-    "@rollup/plugin-json": "^6.1.0",
-    "@types/jest": "^29.5.14",
-    "@types/node": "^20.17.48",
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
-    "@typescript-eslint/parser": "^8.32.1",
-    "cross-env": "^7.0.3",
-    "eslint": "^9.27.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-import-resolver-typescript": "^4.3.5",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jest": "^28.11.0",
-    "eslint-plugin-prettier": "^5.4.0",
-    "jest": "^29.7.0",
+    "@antfu/eslint-config": "^7.7.2",
+    "@github/local-action": "^7.0.1",
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "7.0.0-dev.20260312.1",
+    "@vitest/coverage-v8": "^4.1.0",
+    "esbuild": "^0.27.4",
+    "eslint": "^10.0.3",
+    "eslint-plugin-format": "^2.0.1",
+    "jiti": "^2.6.1",
+    "knip": "^5.86.0",
     "make-coverage-badge": "^1.2.0",
-    "prettier": "^3.5.3",
-    "prettier-eslint": "^16.4.2",
-    "rollup": "^4.41.0",
-    "ts-jest": "^29.3.4",
-    "ts-jest-resolver": "^2.0.1",
-    "typescript": "^5.8.3"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "*"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   }
 }

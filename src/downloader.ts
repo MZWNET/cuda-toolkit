@@ -1,23 +1,23 @@
+import type { SemVer } from 'semver'
+import type { AbstractLinks } from './links/links.js'
+import type { Method } from './method.js'
+import fs from 'node:fs'
 import * as cache from '@actions/cache'
 import * as core from '@actions/core'
-import * as tc from '@actions/tool-cache'
 import * as io from '@actions/io'
-import { OSType, getOs, getRelease } from './platform.js'
-import { AbstractLinks } from './links/links.js'
-import { Method } from './method.js'
-import { SemVer } from 'semver'
-import { WindowsLinks } from './links/windows-links.js'
-import fs from 'fs'
-import { getLinks } from './links/get-links.js'
+import * as tc from '@actions/tool-cache'
 import { getArch } from './arch.js'
 import { getFilesRecursive } from './fs-utils.js'
+import { getLinks } from './links/get-links.js'
+import { WindowsLinks } from './links/windows-links.js'
+import { getOs, getRelease, OSType } from './platform.js'
 
 // Download helper which returns the installer executable and caches it for next runs
 export async function download(
   version: SemVer,
   method: Method,
   useLocalCache: boolean,
-  useGitHubCache: boolean
+  useGitHubCache: boolean,
 ): Promise<string> {
   // First try to find tool with desired version in tool cache (local to machine)
   const toolName = 'cuda_installer'
@@ -35,7 +35,8 @@ export async function download(
       // Tool is already in cache
       core.debug(`Found in local machine cache ${toolPath}`)
       executableDirectory = toolPath
-    } else {
+    }
+    else {
       core.debug(`Not found in local cache`)
     }
   }
@@ -43,12 +44,13 @@ export async function download(
     // Second option, get tool from GitHub cache if enabled
     const cacheResult: string | undefined = await cache.restoreCache(
       [cacheDirectory],
-      cacheKey
+      cacheKey,
     )
     if (cacheResult !== undefined) {
       core.debug(`Found in GitHub cache ${cacheDirectory}`)
       executableDirectory = cacheDirectory
-    } else {
+    }
+    else {
       core.debug(`Not found in GitHub cache`)
     }
   }
@@ -67,7 +69,8 @@ export async function download(
       core.debug(`File at ${destFilePath} does not exist, downloading`)
       // Download executable
       await tc.downloadTool(url.toString(), destFilePath)
-    } else {
+    }
+    else {
       core.debug(`File at ${destFilePath} already exists, skipping download`)
     }
     if (useLocalCache) {
@@ -76,10 +79,10 @@ export async function download(
         destFilePath,
         destFileName,
         `${toolName}-${osType}-${cpuArch}`,
-        `${version}`
+        `${version}`,
       )
       core.debug(
-        `Cached download to local machine cache at ${localCacheDirectory}`
+        `Cached download to local machine cache at ${localCacheDirectory}`,
       )
       executableDirectory = localCacheDirectory
     }
@@ -101,7 +104,8 @@ export async function download(
       const cacheId = await cache.saveCache([cacheDirectory], cacheKey)
       if (cacheId !== -1) {
         core.debug(`Cached download to GitHub cache with cache id ${cacheId}`)
-      } else {
+      }
+      else {
         core.debug(`Did not cache, cache possibly already exists`)
       }
       core.debug(`Tool was moved to cache directory ${cacheDirectory}`)
@@ -122,9 +126,11 @@ export async function download(
   }
   if (filesInCache.length > 1) {
     throw new Error(`Got multiple file in tool cache: ${filesInCache.length}`)
-  } else if (filesInCache.length === 0) {
+  }
+  else if (filesInCache.length === 0) {
     throw new Error(`Got no files in tool cache`)
-  } else {
+  }
+  else {
     fullExecutablePath = filesInCache[0]
   }
   // Make file executable on linux
@@ -150,7 +156,8 @@ async function fileExists(filePath: string): Promise<boolean> {
     const stats = await fs.promises.stat(filePath)
     core.debug(`Got the following stats for ${filePath}: ${stats}`)
     return !!stats
-  } catch (e) {
+  }
+  catch (e) {
     core.debug(`Got error while checking if ${filePath} exists: ${e}`)
     return false
   }
@@ -160,18 +167,18 @@ async function getDownloadURL(method: string, version: SemVer): Promise<URL> {
   const links: AbstractLinks = await getLinks()
   switch (method) {
     case 'local':
-      return await links.getLocalURLFromCudaVersion(version)
+      return links.getLocalURLFromCudaVersion(version)
     case 'network':
       if (!(links instanceof WindowsLinks)) {
         core.debug(`Tried to get windows links but got linux links instance`)
         throw new Error(
-          `Network mode is not supported by linux, shouldn't even get here`
+          `Network mode is not supported by linux, shouldn't even get here`,
         )
       }
       return links.getNetworkURLFromCudaVersion(version)
     default:
       throw new Error(
-        `Invalid method: expected either 'local' or 'network', got '${method}'`
+        `Invalid method: expected either 'local' or 'network', got '${method}'`,
       )
   }
 }
