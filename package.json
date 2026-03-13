@@ -35,7 +35,7 @@
     "knip": "knip",
     "lint": "eslint .",
     "local-action": "@github/local-action . src/main.ts .env",
-    "package": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --tree-shaking=true --sourcemap --tsconfig=tsconfig.build.json",
+    "package": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --tree-shaking=true --minify --sourcemap --tsconfig=tsconfig.build.json",
     "package:watch": "pnpm run package --watch",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
