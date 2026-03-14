@@ -30,16 +30,15 @@
     "node": ">=24"
   },
   "scripts": {
-    "ci-test": "vitest run",
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
     "knip": "knip",
     "lint": "eslint .",
     "local-action": "@github/local-action . src/main.ts .env",
-    "package": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --tree-shaking=true --minify --sourcemap --tsconfig=tsconfig.build.json",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --tree-shaking=true --minify --sourcemap --tsconfig=tsconfig.build.json",
     "package:watch": "pnpm run package --watch",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
-    "all": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run coverage && pnpm run package"
+    "all": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run coverage && pnpm run build"
   },
   "dependencies": {
     "@actions/artifact": "^6.2.1",

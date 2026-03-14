@@ -1,0 +1,47 @@
+name: Check Codebase
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: read
+  statuses: write
+
+jobs:
+  check:
+    name: Check Codebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          check-latest: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Lint Codebase
+        run: |
+          pnpm run lint
+          pnpm run typecheck
+          pnpm run knip
+
+      - name: Test Codebase
+        run: pnpm run test

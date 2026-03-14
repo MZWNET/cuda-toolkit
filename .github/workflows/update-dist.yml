@@ -1,0 +1,56 @@
+name: Auto Update dist/index.js
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  auto_compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          check-latest: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Rebuild the dist/ directory
+        run: pnpm run build
+
+      - name: Upload dist/index.cjs to GitHub Repository
+        run: |
+          git clone https://github-action:${{ secrets.GITHUB_TOKEN }}@github.com/MZWNET/cuda-toolkit.git -b master cache
+          mkdir -p cache/dist
+          rm -rf cache/dist/index.cjs
+          cp dist/index.cjs cache/dist/index.cjs
+          cp dist/index.cjs.map cache/dist/index.cjs.map
+          cd cache
+          if ! git diff --quiet HEAD -- dist/index.cjs; then
+            echo "dist/index.cjs has changes."
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions Bot"
+            git status
+            git add dist/index.cjs dist/index.cjs.map
+            git commit -m "feat: update dist/index.cjs"
+            git push origin master
+          else
+            echo "No changes in dist/index.cjs."
+          fi

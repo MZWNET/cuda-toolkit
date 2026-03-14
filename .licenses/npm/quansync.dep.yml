@@ -1,0 +1,48 @@
+---
+name: quansync
+version: 0.2.11
+type: npm
+summary: Create sync/async APIs with usable logic
+homepage: https://github.com/quansync-dev/quansync#readme
+license: mit
+licenses:
+- sources: LICENSE.md
+  text: |
+    MIT License
+
+    Copyright (c) 2025-PRESENT Anthony Fu <https://github.com/antfu> and Kevin Deng <https://github.com/sxzz>
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+- sources: README.md
+  text: |-
+    [MIT](./LICENSE) License © [Anthony Fu](https://github.com/antfu) and [Kevin Deng](https://github.com/sxzz)
+
+    <!-- Badges -->
+
+    [npm-version-src]: https://img.shields.io/npm/v/quansync?style=flat&colorA=080f12&colorB=1fa669
+    [npm-version-href]: https://npmjs.com/package/quansync
+    [npm-downloads-src]: https://img.shields.io/npm/dm/quansync?style=flat&colorA=080f12&colorB=1fa669
+    [npm-downloads-href]: https://npmjs.com/package/quansync
+    [bundle-src]: https://img.shields.io/bundlephobia/minzip/quansync?style=flat&colorA=080f12&colorB=1fa669&label=minzip
+    [bundle-href]: https://bundlephobia.com/result?p=quansync
+    [license-src]: https://img.shields.io/github/license/antfu/quansync.svg?style=flat&colorA=080f12&colorB=1fa669
+    [license-href]: https://github.com/antfu/quansync/blob/main/LICENSE
+    [jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
+    [jsdocs-href]: https://www.jsdocs.io/package/quansync
+notices: []

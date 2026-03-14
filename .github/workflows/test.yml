@@ -1,0 +1,111 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Test Action
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/test.yml
+      - 'dist/**'
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "test"
+  test:
+    # The type of runners that the job will run on
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2025
+          - windows-2022
+          - ubuntu-24.04
+          - ubuntu-22.04
+          - ubuntu-24.04-arm
+          - ubuntu-22.04-arm
+
+        method: [local, network]
+    runs-on: ${{ matrix.os }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          check-latest: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm run package
+
+      - name: Run the action on this runner with method ${{matrix.method}}
+        uses: ./
+        with:
+          method: ${{matrix.method}}
+          log-file-suffix: '${{matrix.method}}-${{matrix.os}}'
+
+      - name:
+          Run the action on this runner with nvcc and libcublas subpackages
+          (Linux)
+        if: runner.os == 'Linux' && matrix.method == 'network'
+        uses: ./
+        with:
+          method: ${{matrix.method}}
+          sub-packages: '["nvcc"]'
+          non-cuda-sub-packages: '["libcublas"]'
+          log-file-suffix: 'nvcc-libcublas-${{matrix.method}}-${{matrix.os}}'
+
+      - name: Run the action on this runner with nvcc subpackage only (Windows)
+        if: runner.os == 'Windows'
+        id: test-action
+        uses: ./
+        with:
+          method: ${{matrix.method}}
+          sub-packages: '["nvcc"]'
+          log-file-suffix: 'nvcc-${{matrix.method}}-${{matrix.os}}'
+
+      - name: Print output cuda version
+        run: echo "${{ steps.test-action.outputs.cuda }}"
+
+      - name: Print output CUDA_PATH
+        run: echo "${{ steps.test-action.outputs.CUDA_PATH }}"
+
+      - name: Test if nvcc is available
+        run: nvcc -V
+
+      - name: List paths (windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          ls $env:CUDA_PATH
+          ls $env:CUDA_PATH\bin
+          ls $env:CUDA_PATH\include
+
+      - name: List paths (linux)
+        if: runner.os == 'Linux'
+        run: |
+          ls $CUDA_PATH
+          ls $CUDA_PATH/bin
+          ls $CUDA_PATH/include
