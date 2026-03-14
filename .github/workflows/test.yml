@@ -63,7 +63,7 @@ jobs:
 
       - name: Build
         run: |
-          pnpm run package
+          pnpm run build
 
       - name: Run the action on this runner with method ${{matrix.method}}
         uses: ./
