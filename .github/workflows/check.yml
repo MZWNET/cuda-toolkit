@@ -38,11 +38,11 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
 
-      - name: Lint Codebase
+      - name: Run lint & typecheck & unused file check
         run: |
           pnpm run lint
           pnpm run typecheck
           pnpm run knip
 
-      - name: Test Codebase
+      - name: Run test
         run: pnpm run test
