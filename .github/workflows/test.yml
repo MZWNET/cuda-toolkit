@@ -8,6 +8,11 @@ on:
       - .github/workflows/test.yml
       - 'dist/**'
   pull_request:
+    branches:
+      - master
+    paths:
+      - .github/workflows/test.yml
+      - 'dist/**'
   workflow_dispatch:
 
 permissions:
@@ -29,7 +34,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
