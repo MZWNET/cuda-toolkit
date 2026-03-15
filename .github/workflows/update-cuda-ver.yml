@@ -1,0 +1,53 @@
+name: Auto Update CUDA Version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  auto_compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          check-latest: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Update CUDA Version
+        run: pnpm run update-links
+
+      - name: Upload src/links/*-links.json to GitHub Repository
+        run: |
+          git clone https://github-action:${{ secrets.GITHUB_TOKEN }}@github.com/MZWNET/cuda-toolkit.git -b master cache
+          mkdir -p cache/dist
+          rm -rf cache/src/links/linux-links.json cache/src/links/windows-links.json
+          cp src/links/linux-links.json cache/src/links/linux-links.json
+          cp src/links/windows-links.json cache/src/links/windows-links.json
+          cd cache
+          if ! git diff --quiet HEAD -- src/links/linux-links.json; then
+            echo "Found CUDA updates!"
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions Bot"
+            git status
+            git add src/links/linux-links.json src/links/windows-links.json
+            git commit -m "feat: update cuda version"
+            git push origin master
+          else
+            echo "No CUDA updates."
+          fi

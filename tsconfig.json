@@ -11,6 +11,7 @@
     "tests/**/*.ts",
     "src/**/*.ts",
     "src/**/*.json",
+    "scripts/**/*.ts",
     "eslint.config.ts",
     "vitest.config.ts",
     "rollup.config.ts"

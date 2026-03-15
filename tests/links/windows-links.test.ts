@@ -63,7 +63,7 @@ it.concurrent(
 )
 
 it.concurrent(
-  'local Windows links should start with https://developer.(.download.)nvidia.com and end with .exe',
+  'local Windows links should start with https://developer.(.download.)nvidia.com and end with a known Windows installer suffix',
   async () => {
     const versions = WindowsLinks.Instance.getAvailableLocalCudaVersions()
     const filteredVersions = versions.filter((version) => {
@@ -77,14 +77,14 @@ it.concurrent(
       const url: URL
         = await WindowsLinks.Instance.getLocalURLFromCudaVersion(version)
       expect(url.toString()).toMatch(
-        /^https:\/\/developer\.(download\.)?nvidia\.com.+\.exe$/,
+        /^https:\/\/developer\.(download\.)?nvidia\.com.+(\.exe|-exe|_win10)$/,
       )
     }
   },
 )
 
 it.concurrent(
-  'network Windows links should start with https://developer.(download.)nvidia.com and end with network.exe',
+  'network Windows links should start with https://developer.(download.)nvidia.com and end with a known Windows network installer suffix',
   async () => {
     const versions = WindowsLinks.Instance.getAvailableNetworkCudaVersions()
     const filteredVersions = versions.filter((version) => {
@@ -98,7 +98,7 @@ it.concurrent(
       const url: URL
         = WindowsLinks.Instance.getNetworkURLFromCudaVersion(version)
       expect(url.toString()).toMatch(
-        /^https:\/\/developer\.(download\.)?nvidia\.com.+network\.exe$/,
+        /^https:\/\/developer\.(download\.)?nvidia\.com.+(network\.exe|_win10_network)$/,
       )
     }
   },

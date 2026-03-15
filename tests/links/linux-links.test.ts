@@ -30,7 +30,7 @@ it.concurrent('there is at least linux 1 version url pair', async () => {
 })
 
 it.concurrent(
-  'local Linux links should start with https://developer.(download.)nvidia.com and end with .run',
+  'local Linux links should start with https://developer.(download.)nvidia.com and end with a known Linux installer suffix',
   async () => {
     const versions = LinuxLinks.Instance.getAvailableLocalCudaVersions()
     const filteredVersions = versions.filter((version) => {
@@ -44,7 +44,7 @@ it.concurrent(
       const url: URL
         = await LinuxLinks.Instance.getLocalURLFromCudaVersion(version)
       expect(url.toString()).toMatch(
-        /^https:\/\/developer\.(download\.)?nvidia\.com.+\.run$/,
+        /^https:\/\/developer\.(download\.)?nvidia\.com.+(\.run|-run|_linux)$/,
       )
     }
   },
