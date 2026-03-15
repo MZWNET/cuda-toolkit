@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  auto_compile:
+  update_cuda_version:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,7 +30,9 @@ jobs:
         run: pnpm i --frozen-lockfile
 
       - name: Update CUDA Version
-        run: pnpm run update-links
+        run: |
+          pnpm run update-links
+          pnpm run lint --fix
 
       - name: Upload src/links/*-links.json to GitHub Repository
         run: |
