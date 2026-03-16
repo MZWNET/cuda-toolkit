@@ -1,6 +1,12 @@
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('.', import.meta.url)),
+    },
+  },
   test: {
     globals: true,
     clearMocks: true,
@@ -8,7 +14,7 @@ export default defineConfig({
       provider: 'v8',
       enabled: true,
       include: ['src/**'],
-      exclude: ['node_modules/', 'dist/'],
+      exclude: ['dist/', 'node_modules/'],
       reportsDirectory: './coverage',
       reporter: ['json-summary', 'text', 'lcov'],
     },

@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { parsePackages } from '../src/parser.js'
+import { parsePackages } from '@/src/parser.js'
 
 vi.mock('@actions/core', () => ({
   debug: vi.fn(),

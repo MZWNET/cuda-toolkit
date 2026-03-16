@@ -1,7 +1,14 @@
 import type { SemVer } from 'semver'
-import { CPUArch, getArch } from '../arch.js'
-import { AbstractLinks } from './links.js'
-import linuxLinks from './linux-links.json' with { type: 'json' }
+import { CPUArch, getArch } from '@/src/arch.js'
+import { AbstractLinks } from '@/src/links/links.js'
+import linuxLinks from '@/src/links/linux-links.json' with { type: 'json' }
+
+interface LinuxLinksModel {
+  local: {
+    x86_64: Record<string, string>
+    arm64?: Record<string, string>
+  }
+}
 
 /**
  * Singleton class for linux links.
@@ -9,23 +16,27 @@ import linuxLinks from './linux-links.json' with { type: 'json' }
 export class LinuxLinks extends AbstractLinks {
   // Singleton instance
   private static _instance: LinuxLinks
+  private cudaVersionToArm64URL: Map<string, string>
 
   // Private constructor to prevent instantiation
   private constructor() {
     super()
     // Map of cuda SemVer version to download URL
-    this.cudaVersionToURL = new Map(Object.entries(linuxLinks.local as unknown as Record<string, string>))
+    const model = linuxLinks as unknown as LinuxLinksModel
+    this.cudaVersionToURL = new Map(Object.entries(model.local.x86_64))
+    this.cudaVersionToArm64URL = new Map(Object.entries(model.local.arm64 ?? {}))
   }
 
   async getLocalURLFromCudaVersion(version: SemVer): Promise<URL> {
-    const link = await super.getLocalURLFromCudaVersion(version)
     const arch: CPUArch = await getArch()
     if (arch === CPUArch.arm64) {
-      return new URL(link.toString().replace('_linux.run', '_linux_sbsa.run'))
+      const urlString = this.cudaVersionToArm64URL.get(`${version.toString()}`)
+      if (urlString === undefined) {
+        throw new Error(`CUDA Toolkit ${version.toString()} does not support ARM64 downloads`)
+      }
+      return new URL(urlString)
     }
-    else {
-      return link
-    }
+    return super.getLocalURLFromCudaVersion(version)
   }
 
   static get Instance(): LinuxLinks {

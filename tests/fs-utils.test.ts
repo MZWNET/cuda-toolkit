@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { filterReadable, getFilesRecursive } from '../src/fs-utils.js'
+import { filterReadable, getFilesRecursive } from '@/src/fs-utils.js'
 
 vi.mock('node:fs', () => ({
   default: {

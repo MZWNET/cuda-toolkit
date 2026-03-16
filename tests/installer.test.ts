@@ -3,9 +3,9 @@ import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 import { SemVer } from 'semver'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { filterReadable } from '../src/fs-utils.js'
-import { install } from '../src/installer.js'
-import { getOs, getRelease, OSType } from '../src/platform.js'
+import { filterReadable } from '@/src/fs-utils.js'
+import { install } from '@/src/installer.js'
+import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 vi.mock('@actions/artifact', () => {
   const DefaultArtifactClientMock = vi.fn()
@@ -32,7 +32,7 @@ vi.mock('node:os', async (importOriginal) => {
   }
 })
 
-vi.mock('../src/platform.js', () => ({
+vi.mock('@/src/platform.js', () => ({
   getOs: vi.fn(),
   getRelease: vi.fn(),
   OSType: {
@@ -41,7 +41,7 @@ vi.mock('../src/platform.js', () => ({
   },
 }))
 
-vi.mock('../src/fs-utils.js', () => ({
+vi.mock('@/src/fs-utils.js', () => ({
   filterReadable: vi.fn(),
 }))
 

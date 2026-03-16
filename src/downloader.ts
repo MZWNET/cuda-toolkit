@@ -1,16 +1,16 @@
 import type { SemVer } from 'semver'
-import type { AbstractLinks } from './links/links.js'
-import type { Method } from './method.js'
+import type { AbstractLinks } from '@/src/links/links.js'
+import type { Method } from '@/src/method.js'
 import fs from 'node:fs'
 import * as cache from '@actions/cache'
 import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
-import { getArch } from './arch.js'
-import { getFilesRecursive } from './fs-utils.js'
-import { getLinks } from './links/get-links.js'
-import { WindowsLinks } from './links/windows-links.js'
-import { getOs, getRelease, OSType } from './platform.js'
+import { getArch } from '@/src/arch.js'
+import { getFilesRecursive } from '@/src/fs-utils.js'
+import { getLinks } from '@/src/links/get-links.js'
+import { WindowsLinks } from '@/src/links/windows-links.js'
+import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 // Download helper which returns the installer executable and caches it for next runs
 export async function download(

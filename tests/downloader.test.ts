@@ -4,11 +4,11 @@ import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
 import { SemVer } from 'semver'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { CPUArch, getArch } from '../src/arch.js'
-import { download } from '../src/downloader.js'
-import { getFilesRecursive } from '../src/fs-utils.js'
-import { getLinks } from '../src/links/get-links.js'
-import { getOs, getRelease, OSType } from '../src/platform.js'
+import { CPUArch, getArch } from '@/src/arch.js'
+import { download } from '@/src/downloader.js'
+import { getFilesRecursive } from '@/src/fs-utils.js'
+import { getLinks } from '@/src/links/get-links.js'
+import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 vi.mock('@actions/cache', () => ({
   restoreCache: vi.fn(),
@@ -31,7 +31,7 @@ vi.mock('@actions/tool-cache', () => ({
   cacheFile: vi.fn(),
 }))
 
-vi.mock('../src/platform.js', () => ({
+vi.mock('@/src/platform.js', () => ({
   getOs: vi.fn(),
   OSType: {
     windows: 'windows',
@@ -40,7 +40,7 @@ vi.mock('../src/platform.js', () => ({
   getRelease: vi.fn(),
 }))
 
-vi.mock('../src/arch.js', () => ({
+vi.mock('@/src/arch.js', () => ({
   getArch: vi.fn(),
   CPUArch: {
     x86_64: 'x64',
@@ -48,11 +48,11 @@ vi.mock('../src/arch.js', () => ({
   },
 }))
 
-vi.mock('../src/fs-utils.js', () => ({
+vi.mock('@/src/fs-utils.js', () => ({
   getFilesRecursive: vi.fn(),
 }))
 
-vi.mock('../src/links/get-links.js', () => ({
+vi.mock('@/src/links/get-links.js', () => ({
   getLinks: vi.fn(),
 }))
 

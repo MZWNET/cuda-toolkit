@@ -1,11 +1,11 @@
 import type { SemVer } from 'semver'
-import type { Method } from './method.js'
+import type { Method } from '@/src/method.js'
 import process from 'node:process'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
-import { CPUArch, getArch } from './arch.js'
-import { getOs, OSType } from './platform.js'
-import { execReturnOutput } from './run-command.js'
+import { CPUArch, getArch } from '@/src/arch.js'
+import { getOs, OSType } from '@/src/platform.js'
+import { execReturnOutput } from '@/src/run-command.js'
 
 export async function useApt(method: Method): Promise<boolean> {
   return method === 'network' && (await getOs()) === OSType.linux

@@ -9,8 +9,8 @@ export type CudaVersionUrlMap = Record<string, string>
  * Unified structure for links JSON files.
  */
 export interface CudaLinksModel {
-  local: CudaVersionUrlMap
-  network?: CudaVersionUrlMap
+  local: Record<string, CudaVersionUrlMap>
+  network?: Record<string, CudaVersionUrlMap>
 }
 
 // Interface for getting cuda versions and corresponding download URLs

@@ -1,10 +1,10 @@
-import type { PageData } from './types.js'
+import type { PageData } from '@/scripts/update-links/types.js'
 import {
   REACT_PROPS_REGEX,
   URL_FILENAME_VERSION_REGEX,
   URL_VERSION_REGEX,
   VERSION_REGEX,
-} from './regex.js'
+} from '@/scripts/update-links/regex.js'
 
 function decodeHtmlEntities(input: string): string {
   return input

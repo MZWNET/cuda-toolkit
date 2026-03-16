@@ -1,11 +1,11 @@
-import type { CudaLinksModel } from './links.js'
+import type { CudaLinksModel } from '@/src/links/links.js'
 import { SemVer } from 'semver'
-import { AbstractLinks } from './links.js'
-import windowsLinks from './windows-links.json' with { type: 'json' }
+import { AbstractLinks } from '@/src/links/links.js'
+import windowsLinks from '@/src/links/windows-links.json' with { type: 'json' }
 
 const windowsLinksModel = windowsLinks as unknown as CudaLinksModel
-const cudaVersionToLocalData = windowsLinksModel.local
-const cudaVersionToNetworkData = windowsLinksModel.network!
+const cudaVersionToLocalData = windowsLinksModel.local.x86_64
+const cudaVersionToNetworkData = windowsLinksModel.network?.x86_64 ?? {}
 
 /**
  * Singleton class for windows links.

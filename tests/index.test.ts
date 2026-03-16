@@ -1,26 +1,26 @@
 import * as core from '@actions/core'
 import { SemVer } from 'semver'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { OSType } from '../fixtures/platform.js'
-import { aptInstall, aptSetup, useApt } from '../src/apt-installer.js'
-import { download } from '../src/downloader.js'
-import { install } from '../src/installer.js'
-import { parseMethod } from '../src/method.js'
-import { parsePackages } from '../src/parser.js'
-import { getOs } from '../src/platform.js'
-import { updatePath } from '../src/update-path.js'
-import { getVersion } from '../src/version.js'
+import { OSType } from '@/fixtures/platform.js'
+import { aptInstall, aptSetup, useApt } from '@/src/apt-installer.js'
+import { download } from '@/src/downloader.js'
+import { install } from '@/src/installer.js'
+import { parseMethod } from '@/src/method.js'
+import { parsePackages } from '@/src/parser.js'
+import { getOs } from '@/src/platform.js'
+import { updatePath } from '@/src/update-path.js'
+import { getVersion } from '@/src/version.js'
 
-vi.mock('@actions/core', async () => import('../fixtures/core.js'))
+vi.mock('@actions/core', async () => import('@/fixtures/core.js'))
 
-vi.mock('../src/downloader.js', () => ({ download: vi.fn() }))
-vi.mock('../src/installer.js', () => ({ install: vi.fn() }))
-vi.mock('../src/apt-installer.js', () => ({ aptInstall: vi.fn(), aptSetup: vi.fn(), useApt: vi.fn() }))
-vi.mock('../src/parser.js', () => ({ parsePackages: vi.fn() }))
-vi.mock('../src/method.js', () => ({ parseMethod: vi.fn() }))
-vi.mock('../src/version.js', () => ({ getVersion: vi.fn() }))
-vi.mock('../src/update-path.js', () => ({ updatePath: vi.fn() }))
-vi.mock('../src/platform.js', async () => import('../fixtures/platform.js'))
+vi.mock('@/src/downloader.js', () => ({ download: vi.fn() }))
+vi.mock('@/src/installer.js', () => ({ install: vi.fn() }))
+vi.mock('@/src/apt-installer.js', () => ({ aptInstall: vi.fn(), aptSetup: vi.fn(), useApt: vi.fn() }))
+vi.mock('@/src/parser.js', () => ({ parsePackages: vi.fn() }))
+vi.mock('@/src/method.js', () => ({ parseMethod: vi.fn() }))
+vi.mock('@/src/version.js', () => ({ getVersion: vi.fn() }))
+vi.mock('@/src/update-path.js', () => ({ updatePath: vi.fn() }))
+vi.mock('@/src/platform.js', async () => import('@/fixtures/platform.js'))
 
 describe('index', () => {
   const mockCudaPath = '/mock/cuda/path'
@@ -63,12 +63,12 @@ describe('index', () => {
     if ('isolateModulesAsync' in viUnknown && typeof viUnknown.isolateModulesAsync === 'function') {
       const isolateModulesAsync = viUnknown.isolateModulesAsync as (cb: () => Promise<void>) => Promise<void>
       await isolateModulesAsync(async () => {
-        await import('../src/index.js')
+        await import('@/src/index.js')
         await new Promise(resolve => setTimeout(resolve, 0))
       })
     }
     else {
-      await import('../src/index.js')
+      await import('@/src/index.js')
       await new Promise(resolve => setTimeout(resolve, 0))
     }
   }

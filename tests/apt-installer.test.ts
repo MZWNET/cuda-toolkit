@@ -1,18 +1,18 @@
 import { SemVer } from 'semver'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { CPUArch } from '../fixtures/arch.js'
-import { exec } from '../fixtures/exec.js'
-import { OSType } from '../fixtures/platform.js'
-import { aptInstall, aptSetup, useApt } from '../src/apt-installer.js'
-import { getArch } from '../src/arch.js'
-import { getOs } from '../src/platform.js'
-import { execReturnOutput } from '../src/run-command.js'
+import { CPUArch } from '@/fixtures/arch.js'
+import { exec } from '@/fixtures/exec.js'
+import { OSType } from '@/fixtures/platform.js'
+import { aptInstall, aptSetup, useApt } from '@/src/apt-installer.js'
+import { getArch } from '@/src/arch.js'
+import { getOs } from '@/src/platform.js'
+import { execReturnOutput } from '@/src/run-command.js'
 
-vi.mock('@actions/core', async () => import('../fixtures/core.js'))
-vi.mock('@actions/exec', async () => import('../fixtures/exec.js'))
-vi.mock('../src/platform.js', async () => import('../fixtures/platform.js'))
-vi.mock('../src/arch.js', async () => import('../fixtures/arch.js'))
-vi.mock('../src/run-command.js', () => ({
+vi.mock('@actions/core', async () => import('@/fixtures/core.js'))
+vi.mock('@actions/exec', async () => import('@/fixtures/exec.js'))
+vi.mock('@/src/platform.js', async () => import('@/fixtures/platform.js'))
+vi.mock('@/src/arch.js', async () => import('@/fixtures/arch.js'))
+vi.mock('@/src/run-command.js', () => ({
   execReturnOutput: vi.fn(),
 }))
 

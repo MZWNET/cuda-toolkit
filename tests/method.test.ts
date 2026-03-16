@@ -1,4 +1,4 @@
-import { parseMethod } from '../src/method.js'
+import { parseMethod } from '@/src/method.js'
 
 it.each(['local', 'network'])(
   'parse %s method',

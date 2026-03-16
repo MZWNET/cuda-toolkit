@@ -18,12 +18,14 @@ export interface ArchiveEntry {
 export interface DownloadLinks {
   version: string
   linuxUrl: string
+  linuxArm64Url: string | null
   windowsLocalUrl: string
   windowsNetworkUrl: string
 }
 
 export interface LegacyDownloadLinks {
   linuxUrl: string
+  linuxArm64Url: string | null
   windowsLocalUrl: string
   windowsNetworkUrl: string
 }

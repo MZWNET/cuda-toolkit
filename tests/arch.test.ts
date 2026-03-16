@@ -1,6 +1,6 @@
 import os from 'node:os'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { CPUArch, getArch } from '../src/arch.js'
+import { CPUArch, getArch } from '@/src/arch.js'
 
 vi.mock('node:os', () => ({
   default: {

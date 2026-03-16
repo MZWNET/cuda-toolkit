@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
-import { getLinks } from '../../src/links/get-links.js'
-import { LinuxLinks } from '../../src/links/linux-links.js'
-import { WindowsLinks } from '../../src/links/windows-links.js'
+import { getLinks } from '@/src/links/get-links.js'
+import { LinuxLinks } from '@/src/links/linux-links.js'
+import { WindowsLinks } from '@/src/links/windows-links.js'
 
 vi.mock('node:os', async (importOriginal) => {
   const mod = await importOriginal<typeof import('node:os')>()

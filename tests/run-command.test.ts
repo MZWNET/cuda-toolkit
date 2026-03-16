@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { execReturnOutput } from '../src/run-command.js'
+import { execReturnOutput } from '@/src/run-command.js'
 
 vi.mock('@actions/exec', () => ({
   exec: vi.fn(),

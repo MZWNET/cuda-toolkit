@@ -1,9 +1,11 @@
-import type { ArchiveEntry } from './types.js'
+import type { ArchiveEntry } from '@/scripts/update-links/types.js'
 import { writeFile } from 'node:fs/promises'
 import process from 'node:process'
-import { fetchArchiveVersions } from './archive.js'
-import { LINUX_LINKS_PATH, WINDOWS_LINKS_PATH } from './constants.js'
-import { fetchDownloadLinks } from './releases.js'
+import { fetchArchiveVersions } from '@/scripts/update-links/archive.js'
+import { LINUX_LINKS_PATH, WINDOWS_LINKS_PATH } from '@/scripts/update-links/constants.js'
+import { fetchDownloadLinks } from '@/scripts/update-links/releases.js'
+
+const CUDA_TOOLKIT_PREFIX_REGEX = /^CUDA Toolkit\s*/i
 
 async function mapWithConcurrency<T, R>(
   items: T[],
@@ -49,25 +51,32 @@ function parseConcurrencyArg(argv: string[]): number | null {
 
 async function main() {
   const archiveEntries = await fetchArchiveVersions()
-  const versions = archiveEntries.map((entry: ArchiveEntry) => entry.label)
-  console.log(`Resolved CUDA Toolkit versions: ${versions.join(', ')}`)
+  const versions = archiveEntries.map((entry: ArchiveEntry) => entry.label.replace(CUDA_TOOLKIT_PREFIX_REGEX, ''))
+  console.log(`Resolved versions: ${versions.join(', ')}`)
 
-  const linuxLinks: { local: Record<string, string> } = { local: {} }
-  const windowsLinks: { local: Record<string, string>, network: Record<string, string> } = { local: {}, network: {} }
+  const linuxLinks: { local: { x86_64: Record<string, string>, arm64: Record<string, string> } } = {
+    local: { x86_64: {}, arm64: {} },
+  }
+  const windowsLinks: { local: { x86_64: Record<string, string> }, network: { x86_64: Record<string, string> } } = {
+    local: { x86_64: {} },
+    network: { x86_64: {} },
+  }
 
   const argConcurrency = parseConcurrencyArg(process.argv.slice(2))
   const concurrency = Math.max(1, argConcurrency ?? 4)
 
   const results = await mapWithConcurrency(archiveEntries, concurrency, async (entry) => {
-    const { version: resolvedVersion, linuxUrl, windowsLocalUrl, windowsNetworkUrl } = await fetchDownloadLinks(entry.url)
-    console.log(`Parsed CUDA Toolkit ${resolvedVersion} complete`)
-    return { version: resolvedVersion, linuxUrl, windowsLocalUrl, windowsNetworkUrl }
+    const { version: resolvedVersion, linuxUrl, linuxArm64Url, windowsLocalUrl, windowsNetworkUrl } = await fetchDownloadLinks(entry.url)
+    return { version: resolvedVersion, linuxUrl, linuxArm64Url, windowsLocalUrl, windowsNetworkUrl }
   })
 
   for (const result of results) {
-    linuxLinks.local[result.version] = result.linuxUrl
-    windowsLinks.local[result.version] = result.windowsLocalUrl
-    windowsLinks.network[result.version] = result.windowsNetworkUrl
+    linuxLinks.local.x86_64[result.version] = result.linuxUrl
+    if (result.linuxArm64Url !== null) {
+      linuxLinks.local.arm64[result.version] = result.linuxArm64Url
+    }
+    windowsLinks.local.x86_64[result.version] = result.windowsLocalUrl
+    windowsLinks.network.x86_64[result.version] = result.windowsNetworkUrl
   }
 
   await writeFile(LINUX_LINKS_PATH, `${JSON.stringify(linuxLinks, null, 2)}\n`, 'utf8')

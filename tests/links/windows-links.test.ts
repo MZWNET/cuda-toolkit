@@ -1,6 +1,8 @@
 import type { SemVer } from 'semver'
-import type { AbstractLinks } from '../../src/links/links.js'
-import { WindowsLinks } from '../../src/links/windows-links.js'
+import type { AbstractLinks } from '@/src/links/links.js'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { WindowsLinks } from '@/src/links/windows-links.js'
 
 it.concurrent('windows Cuda versions in descending order', async () => {
   const wLinks: AbstractLinks = WindowsLinks.Instance
@@ -27,6 +29,21 @@ it.concurrent('there is at least windows 1 version url pair', async () => {
   expect(
     WindowsLinks.Instance.getAvailableLocalCudaVersions().length,
   ).toBeGreaterThanOrEqual(1)
+})
+
+it.concurrent('windows links are scoped to x86_64 only', async () => {
+  const windowsLinksJsonPath = resolve('src/links/windows-links.json')
+  const windowsLinksData = JSON.parse(readFileSync(windowsLinksJsonPath, 'utf8')) as {
+    local: Record<string, Record<string, string>>
+    network?: Record<string, Record<string, string>>
+  }
+  const localArchs = Object.keys(windowsLinksData.local)
+  const networkArchs = Object.keys(windowsLinksData.network ?? {})
+
+  expect(localArchs).toEqual(['x86_64'])
+  if (networkArchs.length > 0) {
+    expect(networkArchs).toEqual(['x86_64'])
+  }
 })
 
 it.concurrent(

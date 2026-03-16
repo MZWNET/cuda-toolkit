@@ -4,8 +4,8 @@ import * as os from 'node:os'
 import { DefaultArtifactClient } from '@actions/artifact'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
-import { filterReadable } from './fs-utils.js'
-import { getOs, getRelease, OSType } from './platform.js'
+import { filterReadable } from '@/src/fs-utils.js'
+import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 export async function install(
   executablePath: string,

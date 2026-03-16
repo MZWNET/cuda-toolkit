@@ -1,6 +1,6 @@
-import type { ArchiveEntry } from './types.js'
-import { CUDA_ARCHIVE_URL } from './constants.js'
-import { ARCHIVE_LEADING_VERSION_REGEX, ARCHIVE_LINK_REGEX } from './regex.js'
+import type { ArchiveEntry } from '@/scripts/update-links/types.js'
+import { CUDA_ARCHIVE_URL } from '@/scripts/update-links/constants.js'
+import { ARCHIVE_LEADING_VERSION_REGEX, ARCHIVE_LINK_REGEX } from '@/scripts/update-links/regex.js'
 
 export async function fetchArchiveVersions(): Promise<ArchiveEntry[]> {
   const response = await fetch(CUDA_ARCHIVE_URL)

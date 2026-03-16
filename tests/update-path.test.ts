@@ -2,8 +2,8 @@ import path from 'node:path'
 import * as core from '@actions/core'
 import { SemVer } from 'semver'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getOs, OSType } from '../src/platform.js'
-import { updatePath } from '../src/update-path.js'
+import { getOs, OSType } from '@/src/platform.js'
+import { updatePath } from '@/src/update-path.js'
 
 vi.mock('@actions/core', () => ({
   debug: vi.fn(),
@@ -11,7 +11,7 @@ vi.mock('@actions/core', () => ({
   addPath: vi.fn(),
 }))
 
-vi.mock('../src/platform.js', () => ({
+vi.mock('@/src/platform.js', () => ({
   getOs: vi.fn(),
   OSType: {
     windows: 'windows',

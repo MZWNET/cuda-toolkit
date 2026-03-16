@@ -1,7 +1,7 @@
-import type { AbstractLinks } from './links.js'
-import { getOs, OSType } from '../platform.js'
-import { LinuxLinks } from './linux-links.js'
-import { WindowsLinks } from './windows-links.js'
+import type { AbstractLinks } from '@/src/links/links.js'
+import { LinuxLinks } from '@/src/links/linux-links.js'
+import { WindowsLinks } from '@/src/links/windows-links.js'
+import { getOs, OSType } from '@/src/platform.js'
 
 // Platform independent getter for ILinks interface
 export async function getLinks(): Promise<AbstractLinks> {

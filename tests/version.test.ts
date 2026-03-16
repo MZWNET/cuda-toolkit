@@ -1,7 +1,7 @@
-import type { Method } from '../src/method.js'
+import type { Method } from '@/src/method.js'
 import { SemVer } from 'semver'
 import { vi } from 'vitest'
-import { getVersion } from '../src/version.js'
+import { getVersion } from '@/src/version.js'
 
 vi.mock('node:os', async (importOriginal) => {
   const mod = await importOriginal<typeof import('node:os')>()

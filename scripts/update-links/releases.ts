@@ -1,8 +1,8 @@
-import type { DownloadLinks, ReleaseEntry } from './types.js'
-import { extractReactProps, extractVersion, extractVersionFromUrl } from './html.js'
-import { extractLegacyDownloadLinks } from './legacy.js'
-import { pickFirstMatch } from './matching.js'
-import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PATCHES_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
+import type { DownloadLinks, ReleaseEntry } from '@/scripts/update-links/types.js'
+import { extractReactProps, extractVersion, extractVersionFromUrl } from '@/scripts/update-links/html.js'
+import { extractLegacyDownloadLinks } from '@/scripts/update-links/legacy.js'
+import { pickFirstMatch } from '@/scripts/update-links/matching.js'
+import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PATCHES_REGEX, PRIMARY_DOWNLOAD_REGEX } from '@/scripts/update-links/regex.js'
 
 function extractDownloadUrl(details?: string): string {
   if (details === undefined || details === '') {
@@ -38,6 +38,24 @@ function pickRelease(
   return releases[fallbackKey]
 }
 
+function pickReleaseOptional(
+  releases: Record<string, ReleaseEntry>,
+  preferredKeys: string[],
+  fallbackMatcher: (key: string) => boolean,
+): ReleaseEntry | null {
+  for (const key of preferredKeys) {
+    const entry = releases[key]
+    if (entry !== undefined)
+      return entry
+  }
+
+  const fallbackKey = Object.keys(releases).find(fallbackMatcher)
+  if (fallbackKey === undefined) {
+    return null
+  }
+  return releases[fallbackKey]
+}
+
 export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks> {
   const response = await fetch(pageUrl)
   if (!response.ok) {
@@ -62,6 +80,25 @@ export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks
       key => key.startsWith('Linux/x86_64/') && key.endsWith('/runfile_local'),
     )
 
+    const linuxArm64Entry = pickReleaseOptional(
+      releases,
+      [
+        'Linux/arm64-sbsa/Ubuntu/24.04/runfile_local',
+        'Linux/arm64-sbsa/Ubuntu/22.04/runfile_local',
+        'Linux/sbsa/Ubuntu/24.04/runfile_local',
+        'Linux/sbsa/Ubuntu/22.04/runfile_local',
+        'Linux/arm64/Ubuntu/24.04/runfile_local',
+        'Linux/arm64/Ubuntu/22.04/runfile_local',
+        'Linux/aarch64/Ubuntu/24.04/runfile_local',
+        'Linux/aarch64/Ubuntu/22.04/runfile_local',
+      ],
+      key => (
+        key.startsWith('Linux/arm64-sbsa/')
+        || key.startsWith('Linux/sbsa/')
+        || key.startsWith('Linux/arm64/')
+        || key.startsWith('Linux/aarch64/')
+      ) && key.endsWith('/runfile_local'),
+    )
     const windowsLocalEntry = pickRelease(
       releases,
       [
@@ -81,6 +118,7 @@ export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks
     )
 
     const linuxUrl = extractDownloadUrl(linuxEntry.details)
+    const linuxArm64Url = linuxArm64Entry === null ? null : extractDownloadUrl(linuxArm64Entry.details)
     const windowsLocalUrl = extractDownloadUrl(windowsLocalEntry.details)
     const windowsNetworkUrl = extractDownloadUrl(windowsNetworkEntry.details)
 
@@ -90,7 +128,15 @@ export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks
       throw new Error('Failed to determine CUDA Toolkit version from download URL or page header.')
     }
 
-    return { version, linuxUrl, windowsLocalUrl, windowsNetworkUrl }
+    console.log(
+      [
+        `Parsed ${version}, support:`,
+        'Windows: x86_64,',
+        linuxArm64Url === null ? 'Linux: x86_64' : 'Linux: x86_64, ARM64',
+      ].join(' '),
+    )
+
+    return { version, linuxUrl, linuxArm64Url, windowsLocalUrl, windowsNetworkUrl }
   }
 
   const legacy = extractLegacyDownloadLinks(html)
@@ -99,6 +145,13 @@ export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks
     if (version === null) {
       throw new Error('Failed to determine CUDA Toolkit version from legacy download URLs.')
     }
+    console.log(
+      [
+        `Parsed ${version}, support:`,
+        'Windows: x86_64,',
+        legacy.linuxArm64Url === null ? 'Linux: x86_64' : 'Linux: x86_64, ARM64',
+      ].join(' '),
+    )
     return { version, ...legacy }
   }
 

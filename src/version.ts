@@ -1,10 +1,10 @@
-import type { AbstractLinks } from './links/links.js'
-import type { WindowsLinks } from './links/windows-links.js'
-import type { Method } from './method.js'
+import type { AbstractLinks } from '@/src/links/links.js'
+import type { WindowsLinks } from '@/src/links/windows-links.js'
+import type { Method } from '@/src/method.js'
 import * as core from '@actions/core'
 import { SemVer } from 'semver'
-import { getLinks } from './links/get-links.js'
-import { getOs, OSType } from './platform.js'
+import { getLinks } from '@/src/links/get-links.js'
+import { getOs, OSType } from '@/src/platform.js'
 
 // Helper for converting string to SemVer and verifying it exists in the links
 export async function getVersion(

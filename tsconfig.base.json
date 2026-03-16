@@ -8,6 +8,9 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "pretty": true,
+    "paths": {
+      "@/*": ["./*"]
+    },
     "resolveJsonModule": true,
     "strict": true,
     "strictNullChecks": true,

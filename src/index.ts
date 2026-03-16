@@ -1,13 +1,13 @@
-import type { Method } from './method.js'
+import type { Method } from '@/src/method.js'
 import * as core from '@actions/core'
-import { aptInstall, aptSetup, useApt } from './apt-installer.js'
-import { download } from './downloader.js'
-import { install } from './installer.js'
-import { parseMethod } from './method.js'
-import { parsePackages } from './parser.js'
-import { getOs, OSType } from './platform.js'
-import { updatePath } from './update-path.js'
-import { getVersion } from './version.js'
+import { aptInstall, aptSetup, useApt } from '@/src/apt-installer.js'
+import { download } from '@/src/downloader.js'
+import { install } from '@/src/installer.js'
+import { parseMethod } from '@/src/method.js'
+import { parsePackages } from '@/src/parser.js'
+import { getOs, OSType } from '@/src/platform.js'
+import { updatePath } from '@/src/update-path.js'
+import { getVersion } from '@/src/version.js'
 
 async function run(): Promise<void> {
   try {
