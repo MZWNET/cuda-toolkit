@@ -1,8 +1,9 @@
 {
   "local": {
     "x86_64": {
-      "13.1.2": "https://developer.download.nvidia.com/compute/cuda/13.1.2/local_installers/cuda_13.1.2_windows.exe",
+      "13.2.1": "https://developer.download.nvidia.com/compute/cuda/13.2.1/local_installers/cuda_13.2.1_windows.exe",
       "13.2.0": "https://developer.download.nvidia.com/compute/cuda/13.2.0/local_installers/cuda_13.2.0_windows.exe",
+      "13.1.2": "https://developer.download.nvidia.com/compute/cuda/13.1.2/local_installers/cuda_13.1.2_windows.exe",
       "13.1.1": "https://developer.download.nvidia.com/compute/cuda/13.1.1/local_installers/cuda_13.1.1_windows.exe",
       "13.1.0": "https://developer.download.nvidia.com/compute/cuda/13.1.0/local_installers/cuda_13.1.0_windows.exe",
       "13.0.3": "https://developer.download.nvidia.com/compute/cuda/13.0.3/local_installers/cuda_13.0.3_windows.exe",
@@ -71,8 +72,9 @@
   },
   "network": {
     "x86_64": {
-      "13.1.2": "https://developer.download.nvidia.com/compute/cuda/13.1.2/network_installers/cuda_13.1.2_windows_network.exe",
+      "13.2.1": "https://developer.download.nvidia.com/compute/cuda/13.2.1/network_installers/cuda_13.2.1_windows_network.exe",
       "13.2.0": "https://developer.download.nvidia.com/compute/cuda/13.2.0/network_installers/cuda_13.2.0_windows_network.exe",
+      "13.1.2": "https://developer.download.nvidia.com/compute/cuda/13.1.2/network_installers/cuda_13.1.2_windows_network.exe",
       "13.1.1": "https://developer.download.nvidia.com/compute/cuda/13.1.1/network_installers/cuda_13.1.1_windows_network.exe",
       "13.1.0": "https://developer.download.nvidia.com/compute/cuda/13.1.0/network_installers/cuda_13.1.0_windows_network.exe",
       "13.0.3": "https://developer.download.nvidia.com/compute/cuda/13.0.3/network_installers/cuda_13.0.3_windows_network.exe",
