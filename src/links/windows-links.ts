@@ -1,7 +1,7 @@
 import type { CudaLinksModel } from '@/src/links/links.js'
 import { SemVer } from 'semver'
+import windowsLinks from '@/scripts/update-links/windows-links.json' with { type: 'json' }
 import { AbstractLinks } from '@/src/links/links.js'
-import windowsLinks from '@/src/links/windows-links.json' with { type: 'json' }
 
 const windowsLinksModel = windowsLinks as unknown as CudaLinksModel
 const cudaVersionToLocalData = windowsLinksModel.local.x86_64

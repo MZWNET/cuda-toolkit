@@ -32,7 +32,7 @@ it.concurrent('there is at least windows 1 version url pair', async () => {
 })
 
 it.concurrent('windows links are scoped to x86_64 only', async () => {
-  const windowsLinksJsonPath = resolve('src/links/windows-links.json')
+  const windowsLinksJsonPath = resolve('scripts/update-links/windows-links.json')
   const windowsLinksData = JSON.parse(readFileSync(windowsLinksJsonPath, 'utf8')) as {
     local: Record<string, Record<string, string>>
     network?: Record<string, Record<string, string>>

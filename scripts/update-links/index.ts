@@ -1,9 +1,9 @@
-import type { ArchiveEntry } from '@/scripts/update-links/types.js'
+import type { ArchiveEntry } from './types.js'
 import { writeFile } from 'node:fs/promises'
 import process from 'node:process'
-import { fetchArchiveVersions } from '@/scripts/update-links/archive.js'
-import { LINUX_LINKS_PATH, WINDOWS_LINKS_PATH } from '@/scripts/update-links/constants.js'
-import { fetchDownloadLinks } from '@/scripts/update-links/releases.js'
+import { fetchArchiveVersions } from './archive.js'
+import { LINUX_LINKS_PATH, WINDOWS_LINKS_PATH } from './constants.js'
+import { fetchDownloadLinks } from './releases.js'
 
 const CUDA_TOOLKIT_PREFIX_REGEX = /^CUDA Toolkit\s*/i
 

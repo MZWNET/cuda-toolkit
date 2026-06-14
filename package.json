@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.2.30",
   "private": true,
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@11.6.0",
   "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
   "author": "Jim Verheijde",
   "license": "MIT",
@@ -36,35 +36,32 @@
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
     "knip": "knip",
     "lint": "eslint .",
-    "local-action": "@github/local-action . src/main.ts .env",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
-    "update-links": "tsx scripts/update-links/index.ts"
+    "update-links": "pnpm --filter @cuda-toolkit/update-links start"
   },
   "dependencies": {
     "@actions/artifact": "^6.2.1",
-    "@actions/cache": "^6.0.0",
-    "@actions/core": "^3.0.0",
+    "@actions/cache": "^6.0.1",
+    "@actions/core": "^3.0.1",
     "@actions/exec": "^3.0.0",
     "@actions/io": "^3.0.2",
     "@actions/tool-cache": "^4.0.0",
     "@types/semver": "^7.7.1",
-    "semver": "^7.7.4"
+    "semver": "^7.8.4"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^7.7.3",
-    "@github/local-action": "^7.0.1",
-    "@types/node": "^25.5.0",
-    "@typescript/native-preview": "7.0.0-dev.20260323.1",
-    "@vitest/coverage-v8": "^4.1.1",
-    "esbuild": "^0.27.4",
-    "eslint": "^10.1.0",
+    "@antfu/eslint-config": "^9.0.0",
+    "@types/node": "^25.9.3",
+    "@typescript/native-preview": "7.0.0-dev.20260613.1",
+    "@vitest/coverage-v8": "^4.1.8",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.5.0",
     "eslint-plugin-format": "^2.0.1",
-    "jiti": "^2.6.1",
-    "knip": "^6.0.3",
+    "jiti": "^2.7.0",
+    "knip": "^6.16.1",
     "make-coverage-badge": "^1.2.0",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.2",
-    "vitest": "^4.1.1"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   }
 }

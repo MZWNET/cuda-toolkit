@@ -1,7 +1,7 @@
 import type { SemVer } from 'semver'
+import linuxLinks from '@/scripts/update-links/linux-links.json' with { type: 'json' }
 import { CPUArch, getArch } from '@/src/arch.js'
 import { AbstractLinks } from '@/src/links/links.js'
-import linuxLinks from '@/src/links/linux-links.json' with { type: 'json' }
 
 interface LinuxLinksModel {
   local: {

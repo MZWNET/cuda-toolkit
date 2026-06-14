@@ -1,4 +1,4 @@
-import { PATCHES_REGEX, WIN10_REGEX } from '@/scripts/update-links/regex.js'
+import { PATCHES_REGEX, WIN10_REGEX } from './regex.js'
 
 export function pickFirstMatch(regex: RegExp, input: string): string | null {
   regex.lastIndex = 0

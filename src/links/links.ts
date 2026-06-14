@@ -3,7 +3,7 @@ import { SemVer } from 'semver'
 /**
  * Shared type for CUDA version-to-URL mapping used by both Linux and Windows links.
  */
-export type CudaVersionUrlMap = Record<string, string>
+type CudaVersionUrlMap = Record<string, string>
 
 /**
  * Unified structure for links JSON files.

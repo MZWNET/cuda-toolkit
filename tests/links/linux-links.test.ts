@@ -7,7 +7,7 @@ import { LinuxLinks } from '@/src/links/linux-links.js'
 
 vi.mock('@/src/arch.js', async () => import('@/fixtures/arch.js'))
 
-const linuxLinksJsonPath = resolve('src/links/linux-links.json')
+const linuxLinksJsonPath = resolve('scripts/update-links/linux-links.json')
 const linuxLinksData = JSON.parse(readFileSync(linuxLinksJsonPath, 'utf8')) as {
   local: {
     x86_64: Record<string, string>

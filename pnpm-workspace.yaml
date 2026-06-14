@@ -1,0 +1,9 @@
+shellEmulator: true
+trustPolicy: no-downgrade
+
+packages:
+  - .
+  - scripts/update-links
+
+allowBuilds:
+  esbuild: true

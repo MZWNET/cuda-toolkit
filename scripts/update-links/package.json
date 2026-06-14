@@ -1,0 +1,12 @@
+{
+  "name": "@cuda-toolkit/update-links",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "tsx": "^4.22.4"
+  }
+}

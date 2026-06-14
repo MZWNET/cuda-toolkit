@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'dist/**'
+      - '*.md'
   workflow_dispatch:
 
 permissions:

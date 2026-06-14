@@ -1,12 +1,12 @@
-import type { LegacyDownloadLinks } from '@/scripts/update-links/types.js'
-import { normalizeLegacyUrl, pickAllMatches, pickFirstMatch, pickWin10Preferred } from '@/scripts/update-links/matching.js'
+import type { LegacyDownloadLinks } from './types.js'
+import { normalizeLegacyUrl, pickAllMatches, pickFirstMatch, pickWin10Preferred } from './matching.js'
 import {
   LEGACY_LINUX_ARM64_RUNFILE_REGEX,
   LEGACY_LINUX_RUNFILE_FALLBACK_REGEX,
   LEGACY_LINUX_RUNFILE_REGEX,
   LEGACY_WINDOWS_LOCAL_REGEX,
   LEGACY_WINDOWS_NETWORK_REGEX,
-} from '@/scripts/update-links/regex.js'
+} from './regex.js'
 
 export function extractLegacyDownloadLinks(html: string): LegacyDownloadLinks | null {
   const linuxMatch = pickFirstMatch(LEGACY_LINUX_RUNFILE_REGEX, html)

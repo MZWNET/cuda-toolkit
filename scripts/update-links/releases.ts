@@ -1,8 +1,8 @@
-import type { DownloadLinks, ReleaseEntry } from '@/scripts/update-links/types.js'
-import { extractReactProps, extractVersion, extractVersionFromUrl } from '@/scripts/update-links/html.js'
-import { extractLegacyDownloadLinks } from '@/scripts/update-links/legacy.js'
-import { pickFirstMatch } from '@/scripts/update-links/matching.js'
-import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PATCHES_REGEX, PRIMARY_DOWNLOAD_REGEX } from '@/scripts/update-links/regex.js'
+import type { DownloadLinks, ReleaseEntry } from './types.js'
+import { extractReactProps, extractVersion, extractVersionFromUrl } from './html.js'
+import { extractLegacyDownloadLinks } from './legacy.js'
+import { pickFirstMatch } from './matching.js'
+import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PATCHES_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
 
 function extractDownloadUrl(details?: string): string {
   if (details === undefined || details === '') {
