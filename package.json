@@ -24,18 +24,19 @@
     "toolkit"
   ],
   "exports": {
-    ".": "./dist/index.cjs"
+    ".": "./dist/index.js"
   },
   "engines": {
     "node": ">=24"
   },
   "scripts": {
     "all": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run coverage && pnpm run build",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --tree-shaking=true --minify --sourcemap --tsconfig=tsconfig.build.json",
+    "build": "tsgo -b && rolldown src/index.ts --format esm --platform node --file dist/index.js --sourcemap --minify",
     "build:watch": "pnpm run build --watch",
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
     "knip": "knip",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "typecheck": "tsgo --noEmit",
     "update-links": "pnpm --filter @cuda-toolkit/update-links start"
@@ -55,12 +56,12 @@
     "@types/node": "^25.9.3",
     "@typescript/native-preview": "7.0.0-dev.20260613.1",
     "@vitest/coverage-v8": "^4.1.8",
-    "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
     "eslint-plugin-format": "^2.0.1",
     "jiti": "^2.7.0",
     "knip": "^6.16.1",
     "make-coverage-badge": "^1.2.0",
+    "rolldown": "^1.1.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   }
