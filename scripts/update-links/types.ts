@@ -9,12 +9,6 @@ export interface PageData {
   }
 }
 
-export interface ArchiveEntry {
-  url: string
-  label: string
-  baseVersion: string | null
-}
-
 export interface DownloadLinks {
   version: string
   linuxUrl: string
