@@ -13,7 +13,7 @@ it('pickFirstMatch resets lastIndex so a global regex stays reusable', () => {
 
 it('pickAllMatches returns all matches and filters out patches links', () => {
   const input = 'cuda_linux.run cuda_patches_linux.run cuda2_linux.run'
-  expect(pickAllMatches(/[a-z0-9_]+_linux\.run/gi, input)).toEqual([
+  expect(pickAllMatches(/\w+_linux\.run/gi, input)).toEqual([
     'cuda_linux.run',
     'cuda2_linux.run',
   ])
