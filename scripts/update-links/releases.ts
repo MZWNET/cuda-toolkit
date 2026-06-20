@@ -1,9 +1,9 @@
 import type { DownloadLinks, ReleaseEntry } from './types.js'
 import { extractReactProps } from './html.js'
 import { extractVersion, extractVersionFromUrl } from './utils/version.js'
-import { extractLegacyDownloadLinks } from './legacy.js'
+import { describeLegacyFailure, extractLegacyDownloadLinks } from './legacy.js'
 import { pickFirstMatch, PATCHES_REGEX } from './utils/regex-match.js'
-import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
+import { FALLBACK_DOWNLOAD_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
 import { fetchText } from './utils/http.js'
 
 function extractDownloadUrl(details?: string): string {
@@ -156,10 +156,7 @@ export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks
     [
       `Failed to locate download data on page: ${pageUrl}`,
       `Debug flags: hasReactProps=${props !== null}`,
-      `hasLegacyLinux=${pickFirstMatch(LEGACY_LINUX_RUNFILE_REGEX, html) !== null}`,
-      `hasLegacyWindowsLocal=${pickFirstMatch(LEGACY_WINDOWS_LOCAL_REGEX, html) !== null}`,
-      `hasLegacyWindowsNetwork=${pickFirstMatch(LEGACY_WINDOWS_NETWORK_REGEX, html) !== null}`,
-      `hasPatchesLinks=${PATCHES_REGEX.test(html)}`,
+      describeLegacyFailure(html),
       `htmlLength=${html.length}`,
     ].join(' | '),
   )

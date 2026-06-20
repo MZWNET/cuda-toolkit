@@ -16,10 +16,3 @@ export interface DownloadLinks {
   windowsLocalUrl: string
   windowsNetworkUrl: string
 }
-
-export interface LegacyDownloadLinks {
-  linuxUrl: string
-  linuxArm64Url: string | null
-  windowsLocalUrl: string
-  windowsNetworkUrl: string
-}
