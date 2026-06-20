@@ -6,7 +6,6 @@ export const URL_VERSION_REGEX = /https:\/\/developer\.download\.nvidia\.com\/co
 export const URL_FILENAME_VERSION_REGEX = /cuda_([0-9.]+)[_.]/i
 export const PRIMARY_DOWNLOAD_REGEX = /targetDownloadButtonHref[^>]+href="([^"]+)"/
 export const FALLBACK_DOWNLOAD_REGEX = /href="(https:\/\/developer\.download\.nvidia\.com\/compute\/cuda\/[^"]+)"/
-export const PATCHES_REGEX = /patches/i
 export const LEGACY_LINUX_RUNFILE_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_linux[^"'\s><]*/gi
 export const LEGACY_LINUX_RUNFILE_FALLBACK_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_linux[^"'\s><]*/gi
 export const LEGACY_LINUX_ARM64_RUNFILE_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_(?:linux_sbsa|linux_aarch64|linux_arm64)[^"'\s><]*/gi

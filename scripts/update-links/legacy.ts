@@ -1,5 +1,6 @@
 import type { LegacyDownloadLinks } from './types.js'
-import { normalizeLegacyUrl, pickAllMatches, pickFirstMatch, pickWin10Preferred } from './matching.js'
+import { normalizeLegacyUrl, pickWin10Preferred } from './matching.js'
+import { pickAllMatches, pickFirstMatch } from './utils/regex-match.js'
 import {
   LEGACY_LINUX_ARM64_RUNFILE_REGEX,
   LEGACY_LINUX_RUNFILE_FALLBACK_REGEX,
