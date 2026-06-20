@@ -1,7 +1,6 @@
 import { pickAllMatches, pickFirstMatch, PATCHES_REGEX } from './utils/regex-match.js'
 
 const LEGACY_LINUX_RUNFILE_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_linux[^"'\s><]*/gi
-const LEGACY_LINUX_RUNFILE_FALLBACK_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_linux[^"'\s><]*/gi
 const LEGACY_LINUX_ARM64_RUNFILE_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_(?:linux_sbsa|linux_aarch64|linux_arm64)[^"'\s><]*/gi
 const LEGACY_WINDOWS_LOCAL_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*(?:win|windows)[^"'\s><]*/gi
 const LEGACY_WINDOWS_NETWORK_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/network_installers2?\/[^"'\s><]*(?:win|windows)[^"'\s><]*_network(?:\.exe)?/gi
@@ -35,7 +34,6 @@ export function pickWin10Preferred(urls: string[]): string | null {
 
 export function extractLegacyDownloadLinks(html: string): LegacyDownloadLinks | null {
   const linuxMatch = pickFirstMatch(LEGACY_LINUX_RUNFILE_REGEX, html)
-    ?? pickFirstMatch(LEGACY_LINUX_RUNFILE_FALLBACK_REGEX, html)
   const linuxArm64Match = pickFirstMatch(LEGACY_LINUX_ARM64_RUNFILE_REGEX, html)
   const windowsLocalCandidates = pickAllMatches(LEGACY_WINDOWS_LOCAL_REGEX, html).map(normalizeLegacyUrl)
   const windowsNetworkCandidates = pickAllMatches(LEGACY_WINDOWS_NETWORK_REGEX, html).map(normalizeLegacyUrl)
