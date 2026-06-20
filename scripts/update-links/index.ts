@@ -4,31 +4,9 @@ import process from 'node:process'
 import { fetchArchiveVersions } from './archive.js'
 import { LINUX_LINKS_PATH, WINDOWS_LINKS_PATH } from './constants.js'
 import { fetchDownloadLinks } from './releases.js'
+import { mapWithConcurrency } from './utils/concurrency.js'
 
 const CUDA_TOOLKIT_PREFIX_REGEX = /^CUDA Toolkit\s*/i
-
-async function mapWithConcurrency<T, R>(
-  items: T[],
-  limit: number,
-  worker: (item: T, index: number) => Promise<R>,
-): Promise<R[]> {
-  const results: R[] = Array.from({ length: items.length })
-  let nextIndex = 0
-
-  const runWorker = async () => {
-    while (true) {
-      const current = nextIndex
-      nextIndex += 1
-      if (current >= items.length)
-        break
-      results[current] = await worker(items[current], current)
-    }
-  }
-
-  const workers = Array.from({ length: Math.min(limit, items.length) }).fill(runWorker())
-  await Promise.all(workers)
-  return results
-}
 
 function parseConcurrencyArg(argv: string[]): number | null {
   for (let i = 0; i < argv.length; i += 1) {
