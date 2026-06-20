@@ -1,14 +1,10 @@
 import type { ArchiveEntry } from './types.js'
 import { CUDA_ARCHIVE_URL } from './constants.js'
 import { ARCHIVE_LEADING_VERSION_REGEX, ARCHIVE_LINK_REGEX } from './regex.js'
+import { fetchText } from './utils/http.js'
 
 export async function fetchArchiveVersions(): Promise<ArchiveEntry[]> {
-  const response = await fetch(CUDA_ARCHIVE_URL)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch CUDA toolkit archive: ${response.status} ${response.statusText}`)
-  }
-
-  const html = await response.text()
+  const html = await fetchText(CUDA_ARCHIVE_URL, 'Failed to fetch CUDA toolkit archive')
   const entries: ArchiveEntry[] = []
   const seen = new Set<string>()
   for (const match of html.matchAll(ARCHIVE_LINK_REGEX)) {

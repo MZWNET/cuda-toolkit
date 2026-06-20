@@ -4,6 +4,7 @@ import { extractVersion, extractVersionFromUrl } from './utils/version.js'
 import { extractLegacyDownloadLinks } from './legacy.js'
 import { pickFirstMatch, PATCHES_REGEX } from './utils/regex-match.js'
 import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
+import { fetchText } from './utils/http.js'
 
 function extractDownloadUrl(details?: string): string {
   if (details === undefined || details === '') {
@@ -58,12 +59,7 @@ function pickReleaseOptional(
 }
 
 export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks> {
-  const response = await fetch(pageUrl)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch CUDA downloads page: ${response.status} ${response.statusText} (${pageUrl})`)
-  }
-
-  const html = await response.text()
+  const html = await fetchText(pageUrl, `Failed to fetch CUDA downloads page (${pageUrl})`)
   const props = extractReactProps(html)
   if (props !== null) {
     const pageData = props.pageData
