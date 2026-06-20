@@ -1,10 +1,48 @@
-import type { DownloadLinks, ReleaseEntry } from './types.js'
-import { extractReactProps } from './html.js'
 import { extractVersion, extractVersionFromUrl } from './utils/version.js'
 import { describeLegacyFailure, extractLegacyDownloadLinks } from './legacy.js'
-import { pickFirstMatch, PATCHES_REGEX } from './utils/regex-match.js'
-import { FALLBACK_DOWNLOAD_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
+import { PATCHES_REGEX } from './utils/regex-match.js'
 import { fetchText } from './utils/http.js'
+
+const PRIMARY_DOWNLOAD_REGEX = /targetDownloadButtonHref[^>]+href="([^"]+)"/
+const FALLBACK_DOWNLOAD_REGEX = /href="(https:\/\/developer\.download\.nvidia\.com\/compute\/cuda\/[^"]+)"/
+const REACT_PROPS_REGEX = /data-react-props="([^"]+)"/
+
+interface ReleaseEntry {
+  details?: string
+}
+
+interface PageData {
+  pageData?: {
+    header?: { title?: string }
+    releases?: Record<string, ReleaseEntry>
+  }
+}
+
+export interface DownloadLinks {
+  version: string
+  linuxUrl: string
+  linuxArm64Url: string | null
+  windowsLocalUrl: string
+  windowsNetworkUrl: string
+}
+
+function decodeHtmlEntities(input: string): string {
+  return input
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', '\'')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&amp;', '&')
+}
+
+function extractReactProps(html: string): PageData | null {
+  const match = REACT_PROPS_REGEX.exec(html)
+  if (match === null || match[1] === undefined || match[1] === '') {
+    return null
+  }
+  const decoded = decodeHtmlEntities(match[1])
+  return JSON.parse(decoded) as PageData
+}
 
 function extractDownloadUrl(details?: string): string {
   if (details === undefined || details === '') {
