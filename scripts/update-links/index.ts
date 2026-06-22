@@ -1,34 +1,9 @@
-import type { ArchiveEntry } from './types.js'
 import { writeFile } from 'node:fs/promises'
 import process from 'node:process'
-import { fetchArchiveVersions } from './archive.js'
+import { fetchArchiveVersions, type ArchiveEntry } from './archive.js'
 import { LINUX_LINKS_PATH, WINDOWS_LINKS_PATH } from './constants.js'
 import { fetchDownloadLinks } from './releases.js'
-
-const CUDA_TOOLKIT_PREFIX_REGEX = /^CUDA Toolkit\s*/i
-
-async function mapWithConcurrency<T, R>(
-  items: T[],
-  limit: number,
-  worker: (item: T, index: number) => Promise<R>,
-): Promise<R[]> {
-  const results: R[] = Array.from({ length: items.length })
-  let nextIndex = 0
-
-  const runWorker = async () => {
-    while (true) {
-      const current = nextIndex
-      nextIndex += 1
-      if (current >= items.length)
-        break
-      results[current] = await worker(items[current], current)
-    }
-  }
-
-  const workers = Array.from({ length: Math.min(limit, items.length) }).fill(runWorker())
-  await Promise.all(workers)
-  return results
-}
+import { mapWithConcurrency } from './utils/concurrency.js'
 
 function parseConcurrencyArg(argv: string[]): number | null {
   for (let i = 0; i < argv.length; i += 1) {
@@ -51,7 +26,7 @@ function parseConcurrencyArg(argv: string[]): number | null {
 
 async function main() {
   const archiveEntries = await fetchArchiveVersions()
-  const versions = archiveEntries.map((entry: ArchiveEntry) => entry.label.replace(CUDA_TOOLKIT_PREFIX_REGEX, ''))
+  const versions = archiveEntries.map((entry: ArchiveEntry) => entry.version)
   console.log(`Resolved versions: ${versions.join(', ')}`)
 
   const linuxLinks: { local: { x86_64: Record<string, string>, arm64: Record<string, string> } } = {

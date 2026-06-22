@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest'
 import { DefaultArtifactClient } from '@actions/artifact'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
@@ -45,6 +46,17 @@ vi.mock('@/src/fs-utils.js', () => ({
   filterReadable: vi.fn(),
 }))
 
+function expectCudaInstallLogUploaded() {
+  expect(DefaultArtifactClient).toHaveBeenCalled()
+  const mockedClient = vi.mocked(DefaultArtifactClient)
+  const clientInstance = (mockedClient.mock.results[0]?.value ?? mockedClient.mock.instances[0]) as { uploadArtifact: Mock }
+  expect(clientInstance.uploadArtifact).toHaveBeenCalledWith(
+    `cuda-install-linux-22.04-local-local-linux`,
+    ['/var/log/cuda-installer.log'],
+    '/var/log',
+  )
+}
+
 describe('installer', () => {
   const executablePath = '/path/to/installer'
   const version = new SemVer('12.1.0')
@@ -52,7 +64,6 @@ describe('installer', () => {
   const logFileSuffix = 'local-linux'
 
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.mocked(getRelease).mockResolvedValue('22.04')
   })
 
@@ -71,14 +82,7 @@ describe('installer', () => {
       expect(exec).toHaveBeenCalledWith(`sudo chown testuser /var/log/cuda-installer.log`)
 
       // Log upload invocation
-      expect(DefaultArtifactClient).toHaveBeenCalled()
-      const mockedClient = vi.mocked(DefaultArtifactClient)
-      const clientInstance = (mockedClient.mock.results[0]?.value ?? mockedClient.mock.instances[0]) as { uploadArtifact: import('vitest').Mock }
-      expect(clientInstance.uploadArtifact).toHaveBeenCalledWith(
-        `cuda-install-linux-22.04-local-local-linux`,
-        ['/var/log/cuda-installer.log'],
-        '/var/log',
-      )
+      expectCudaInstallLogUploaded()
     })
 
     it('should run installer on Linux but gracefully handle no log file readable', async () => {
@@ -121,14 +125,7 @@ describe('installer', () => {
       expect(core.warning).toHaveBeenCalledWith(`Error during installation: Error: Execution Failed`)
 
       // Log upload still runs in finally block
-      expect(DefaultArtifactClient).toHaveBeenCalled()
-      const mockedClient = vi.mocked(DefaultArtifactClient)
-      const clientInstance = (mockedClient.mock.results[0]?.value ?? mockedClient.mock.instances[0]) as { uploadArtifact: import('vitest').Mock }
-      expect(clientInstance.uploadArtifact).toHaveBeenCalledWith(
-        `cuda-install-linux-22.04-local-local-linux`,
-        ['/var/log/cuda-installer.log'],
-        '/var/log',
-      )
+      expectCudaInstallLogUploaded()
     })
   })
 })

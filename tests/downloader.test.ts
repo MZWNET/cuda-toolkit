@@ -77,7 +77,6 @@ describe('downloader', () => {
   const method = 'local'
 
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.mocked(getOs).mockResolvedValue(OSType.linux)
     vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
     vi.mocked(getRelease).mockResolvedValue('22.04')

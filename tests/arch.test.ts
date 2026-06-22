@@ -1,5 +1,5 @@
 import os from 'node:os'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { CPUArch, getArch } from '@/src/arch.js'
 
 vi.mock('node:os', () => ({
@@ -9,10 +9,6 @@ vi.mock('node:os', () => ({
 }))
 
 describe('arch', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should detect x86_64 architecture', async () => {
     vi.mocked(os.arch).mockReturnValue('x64')
     const detectedArch = await getArch()
@@ -36,10 +32,8 @@ describe('arch', () => {
     's390x',
   ]
 
-  unsupportedArches.forEach((archString) => {
-    it(`should throw error for unsupported architecture: ${archString}`, async () => {
-      vi.mocked(os.arch).mockReturnValue(archString as unknown as ReturnType<typeof os.arch>)
-      await expect(getArch()).rejects.toThrow(`Unsupported architecture: ${archString}`)
-    })
+  it.each(unsupportedArches)('should throw error for unsupported architecture: %s', async (archString) => {
+    vi.mocked(os.arch).mockReturnValue(archString as unknown as ReturnType<typeof os.arch>)
+    await expect(getArch()).rejects.toThrow(`Unsupported architecture: ${archString}`)
   })
 })

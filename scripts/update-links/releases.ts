@@ -1,8 +1,48 @@
-import type { DownloadLinks, ReleaseEntry } from './types.js'
-import { extractReactProps, extractVersion, extractVersionFromUrl } from './html.js'
-import { extractLegacyDownloadLinks } from './legacy.js'
-import { pickFirstMatch } from './matching.js'
-import { FALLBACK_DOWNLOAD_REGEX, LEGACY_LINUX_RUNFILE_REGEX, LEGACY_WINDOWS_LOCAL_REGEX, LEGACY_WINDOWS_NETWORK_REGEX, PATCHES_REGEX, PRIMARY_DOWNLOAD_REGEX } from './regex.js'
+import { extractVersion, extractVersionFromUrl } from './utils/version.js'
+import { describeLegacyFailure, extractLegacyDownloadLinks } from './legacy.js'
+import { PATCHES_REGEX } from './utils/regex-match.js'
+import { fetchText } from './utils/http.js'
+
+const PRIMARY_DOWNLOAD_REGEX = /targetDownloadButtonHref[^>]+href="([^"]+)"/
+const FALLBACK_DOWNLOAD_REGEX = /href="(https:\/\/developer\.download\.nvidia\.com\/compute\/cuda\/[^"]+)"/
+const REACT_PROPS_REGEX = /data-react-props="([^"]+)"/
+
+interface ReleaseEntry {
+  details?: string
+}
+
+interface PageData {
+  pageData?: {
+    header?: { title?: string }
+    releases?: Record<string, ReleaseEntry>
+  }
+}
+
+export interface DownloadLinks {
+  version: string
+  linuxUrl: string
+  linuxArm64Url: string | null
+  windowsLocalUrl: string
+  windowsNetworkUrl: string
+}
+
+function decodeHtmlEntities(input: string): string {
+  return input
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', '\'')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&amp;', '&')
+}
+
+function extractReactProps(html: string): PageData | null {
+  const match = REACT_PROPS_REGEX.exec(html)
+  if (match === null || match[1] === undefined || match[1] === '') {
+    return null
+  }
+  const decoded = decodeHtmlEntities(match[1])
+  return JSON.parse(decoded) as PageData
+}
 
 function extractDownloadUrl(details?: string): string {
   if (details === undefined || details === '') {
@@ -57,12 +97,7 @@ function pickReleaseOptional(
 }
 
 export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks> {
-  const response = await fetch(pageUrl)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch CUDA downloads page: ${response.status} ${response.statusText} (${pageUrl})`)
-  }
-
-  const html = await response.text()
+  const html = await fetchText(pageUrl, `Failed to fetch CUDA downloads page (${pageUrl})`)
   const props = extractReactProps(html)
   if (props !== null) {
     const pageData = props.pageData
@@ -159,10 +194,7 @@ export async function fetchDownloadLinks(pageUrl: string): Promise<DownloadLinks
     [
       `Failed to locate download data on page: ${pageUrl}`,
       `Debug flags: hasReactProps=${props !== null}`,
-      `hasLegacyLinux=${pickFirstMatch(LEGACY_LINUX_RUNFILE_REGEX, html) !== null}`,
-      `hasLegacyWindowsLocal=${pickFirstMatch(LEGACY_WINDOWS_LOCAL_REGEX, html) !== null}`,
-      `hasLegacyWindowsNetwork=${pickFirstMatch(LEGACY_WINDOWS_NETWORK_REGEX, html) !== null}`,
-      `hasPatchesLinks=${PATCHES_REGEX.test(html)}`,
+      describeLegacyFailure(html),
       `htmlLength=${html.length}`,
     ].join(' | '),
   )

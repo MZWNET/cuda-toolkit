@@ -1,5 +1,5 @@
 import os from 'node:os'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 vi.mock('node:os', () => ({
@@ -10,10 +10,6 @@ vi.mock('node:os', () => ({
 }))
 
 describe('platform', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should detect linux platform', async () => {
     vi.mocked(os.platform).mockReturnValue('linux')
     const osPlatform = await getOs()
@@ -38,11 +34,9 @@ describe('platform', () => {
     'netbsd',
   ]
 
-  unsupportedPlatforms.forEach((platform) => {
-    it(`should throw error for unsupported OS: ${platform}`, async () => {
-      vi.mocked(os.platform).mockReturnValue(platform as unknown as ReturnType<typeof os.platform>)
-      await expect(getOs()).rejects.toThrow(`Unsupported OS: ${platform}`)
-    })
+  it.each(unsupportedPlatforms)('should throw error for unsupported OS: %s', async (platform) => {
+    vi.mocked(os.platform).mockReturnValue(platform as unknown as ReturnType<typeof os.platform>)
+    await expect(getOs()).rejects.toThrow(`Unsupported OS: ${platform}`)
   })
 
   it('should return OS release version', async () => {
