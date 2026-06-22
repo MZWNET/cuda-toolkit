@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.2.30",
   "private": true,
-  "packageManager": "pnpm@11.6.0",
+  "packageManager": "pnpm@11.8.0",
   "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
   "author": "Jim Verheijde",
   "license": "MIT",
@@ -43,26 +43,26 @@
   },
   "dependencies": {
     "@actions/artifact": "^6.2.1",
-    "@actions/cache": "^6.0.1",
+    "@actions/cache": "^6.1.0",
     "@actions/core": "^3.0.1",
     "@actions/exec": "^3.0.0",
     "@actions/io": "^3.0.2",
     "@actions/tool-cache": "^4.0.0",
     "@types/semver": "^7.7.1",
-    "semver": "^7.8.4"
+    "semver": "^7.8.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",
-    "@types/node": "^25.9.3",
-    "@typescript/native-preview": "7.0.0-dev.20260613.1",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@types/node": "^26.0.0",
+    "@typescript/native-preview": "7.0.0-dev.20260620.1",
+    "@vitest/coverage-v8": "^4.1.9",
     "eslint": "^10.5.0",
     "eslint-plugin-format": "^2.0.1",
     "jiti": "^2.7.0",
-    "knip": "^6.16.1",
+    "knip": "^6.17.1",
     "make-coverage-badge": "^1.2.0",
-    "rolldown": "^1.1.1",
+    "rolldown": "^1.1.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }

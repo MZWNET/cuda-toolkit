@@ -1,6 +1,9 @@
 shellEmulator: true
 trustPolicy: no-downgrade
 
+trustPolicyExclude:
+  - nanoid@3.3.14
+
 packages:
   - .
   - scripts/update-links
