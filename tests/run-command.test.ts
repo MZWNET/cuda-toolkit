@@ -1,7 +1,7 @@
 import { Buffer } from 'node:buffer'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { execReturnOutput } from '@/src/run-command.js'
 
 vi.mock('@actions/exec', () => ({
@@ -13,10 +13,6 @@ vi.mock('@actions/core', () => ({
 }))
 
 describe('run-command', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('execReturnOutput', () => {
     it('should return trimmed stdout of a successful command', async () => {
       const command = 'lsb_release'

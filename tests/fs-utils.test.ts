@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { filterReadable, getFilesRecursive } from '@/src/fs-utils.js'
 
 vi.mock('node:fs', () => ({
@@ -20,10 +20,6 @@ vi.mock('@actions/core', () => ({
 }))
 
 describe('fs-utils', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('getFilesRecursive', () => {
     it('should return all files under directory recursively', async () => {
       const mockDir = '/mock/root'

@@ -23,7 +23,6 @@ describe('update-path', () => {
   const originalEnv = process.env
 
   beforeEach(() => {
-    vi.clearAllMocks()
     process.env = { ...originalEnv }
   })
 

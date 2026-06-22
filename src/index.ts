@@ -1,4 +1,6 @@
 import type { Method } from '@/src/method.js'
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import * as core from '@actions/core'
 import { aptInstall, aptSetup, useApt } from '@/src/apt-installer.js'
 import { download } from '@/src/downloader.js'
@@ -9,7 +11,7 @@ import { getOs, OSType } from '@/src/platform.js'
 import { updatePath } from '@/src/update-path.js'
 import { getVersion } from '@/src/version.js'
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
     const cuda: string = core.getInput('cuda')
     core.debug(`Desired cuda version: ${cuda}`)
@@ -123,4 +125,6 @@ async function run(): Promise<void> {
   }
 }
 
-void run()
+if (process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1]) {
+  void run()
+}

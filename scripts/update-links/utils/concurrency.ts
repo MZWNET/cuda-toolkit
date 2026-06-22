@@ -3,6 +3,9 @@ export async function mapWithConcurrency<T, R>(
   limit: number,
   worker: (item: T, index: number) => Promise<R>,
 ): Promise<R[]> {
+  if (!Number.isInteger(limit) || limit < 1)
+    throw new RangeError('mapWithConcurrency limit must be a positive integer')
+
   const results: R[] = Array.from({ length: items.length })
   let nextIndex = 0
 

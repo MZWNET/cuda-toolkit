@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { OSType } from '@/fixtures/platform.js'
 import { aptInstall, aptSetup, useApt } from '@/src/apt-installer.js'
 import { download } from '@/src/downloader.js'
+import { run } from '@/src/index.js'
 import { install } from '@/src/installer.js'
 import { parseMethod } from '@/src/method.js'
 import { parsePackages } from '@/src/parser.js'
@@ -28,8 +29,6 @@ describe('index', () => {
   const mockExecutablePath = '/mock/downloads/installer.run'
 
   beforeEach(() => {
-    vi.clearAllMocks()
-
     // Default mock returns
     vi.mocked(core.getInput).mockImplementation((name) => {
       if (name === 'cuda')
@@ -57,24 +56,8 @@ describe('index', () => {
     vi.mocked(updatePath).mockResolvedValue(mockCudaPath)
   })
 
-  const runAction = async () => {
-    vi.resetModules()
-    const viUnknown = vi as unknown as Record<string, unknown>
-    if ('isolateModulesAsync' in viUnknown && typeof viUnknown.isolateModulesAsync === 'function') {
-      const isolateModulesAsync = viUnknown.isolateModulesAsync as (cb: () => Promise<void>) => Promise<void>
-      await isolateModulesAsync(async () => {
-        await import('@/src/index.js')
-        await new Promise(resolve => setTimeout(resolve, 0))
-      })
-    }
-    else {
-      await import('@/src/index.js')
-      await new Promise(resolve => setTimeout(resolve, 0))
-    }
-  }
-
   it('should run successful local installation on Linux', async () => {
-    await runAction()
+    await run()
 
     expect(parsePackages).toHaveBeenCalledWith('[]', 'sub-packages')
     expect(parseMethod).toHaveBeenCalledWith('local')
@@ -107,7 +90,7 @@ describe('index', () => {
     vi.mocked(parseMethod).mockReturnValue('network')
     vi.mocked(useApt).mockResolvedValue(true)
 
-    await runAction()
+    await run()
 
     expect(aptSetup).toHaveBeenCalledWith(mockVersion)
     expect(aptInstall).toHaveBeenCalledWith(mockVersion, ['nvcc'], ['libcublas'])
@@ -124,7 +107,7 @@ describe('index', () => {
       return ''
     })
 
-    await runAction()
+    await run()
 
     const args = vi.mocked(core.setFailed).mock.calls[0] as unknown as [Error]
     expect(args[0].message).toContain('JSON string array')
@@ -133,7 +116,7 @@ describe('index', () => {
   it('should fail if method is local and subPackages exist on Linux', async () => {
     vi.mocked(parsePackages).mockImplementation(async (val, key) => key === 'sub-packages' ? ['nvcc'] : [])
 
-    await runAction()
+    await run()
 
     const args = vi.mocked(core.setFailed).mock.calls[0] as unknown as [Error]
     expect(args[0].message).toContain(`Subpackages on 'local' method is not supported on Linux`)
@@ -142,7 +125,7 @@ describe('index', () => {
   it('should gracefully setFailed on general thrown non-error', async () => {
     vi.mocked(getVersion).mockRejectedValue('String Error')
 
-    await runAction()
+    await run()
 
     expect(core.setFailed).toHaveBeenCalledWith('Unknown error')
   })

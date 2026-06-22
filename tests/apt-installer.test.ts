@@ -1,5 +1,5 @@
 import { SemVer } from 'semver'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { CPUArch } from '@/fixtures/arch.js'
 import { exec } from '@/fixtures/exec.js'
 import { OSType } from '@/fixtures/platform.js'
@@ -17,10 +17,6 @@ vi.mock('@/src/run-command.js', () => ({
 }))
 
 describe('apt-installer', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('useApt', () => {
     it('should return true for network method on linux', async () => {
       vi.mocked(getOs).mockResolvedValue(OSType.linux)
