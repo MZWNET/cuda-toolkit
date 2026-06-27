@@ -31,7 +31,7 @@
   },
   "scripts": {
     "all": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run coverage && pnpm run build",
-    "build": "tsgo -b && rolldown src/index.ts --format esm --platform node --file dist/index.js --sourcemap --minify",
+    "build": "tsgo -b && rolldown src/index.ts --format esm --platform node --file dist/index.js --sourcemap",
     "build:watch": "pnpm run build --watch",
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
     "knip": "knip",
