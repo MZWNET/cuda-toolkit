@@ -8,8 +8,8 @@ import * as fs$7 from "fs";
 import { constants, existsSync, promises, readFileSync, writeFileSync } from "fs";
 import * as path$8 from "path";
 import { normalize, resolve } from "path";
-import * as http$6 from "http";
-import * as https$4 from "https";
+import * as http$4 from "http";
+import * as https$3 from "https";
 import * as events from "events";
 import { EventEmitter } from "events";
 import assert, { ok } from "assert";
@@ -233,8 +233,8 @@ var DecodedURL = class extends URL {
 var require_tunnel$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	__require("net");
 	var tls$2 = __require("tls");
-	var http$8 = __require("http");
-	var https$5 = __require("https");
+	var http$6 = __require("http");
+	var https$4 = __require("https");
 	var events$1 = __require("events");
 	__require("assert");
 	var util$14 = __require("util");
@@ -244,24 +244,24 @@ var require_tunnel$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.httpsOverHttps = httpsOverHttps;
 	function httpOverHttp(options) {
 		var agent = new TunnelingAgent(options);
-		agent.request = http$8.request;
+		agent.request = http$6.request;
 		return agent;
 	}
 	function httpsOverHttp(options) {
 		var agent = new TunnelingAgent(options);
-		agent.request = http$8.request;
+		agent.request = http$6.request;
 		agent.createSocket = createSecureSocket;
 		agent.defaultPort = 443;
 		return agent;
 	}
 	function httpOverHttps(options) {
 		var agent = new TunnelingAgent(options);
-		agent.request = https$5.request;
+		agent.request = https$4.request;
 		return agent;
 	}
 	function httpsOverHttps(options) {
 		var agent = new TunnelingAgent(options);
-		agent.request = https$5.request;
+		agent.request = https$4.request;
 		agent.createSocket = createSecureSocket;
 		agent.defaultPort = 443;
 		return agent;
@@ -270,7 +270,7 @@ var require_tunnel$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		var self = this;
 		self.options = options || {};
 		self.proxyOptions = self.options.proxy || {};
-		self.maxSockets = self.options.maxSockets || http$8.Agent.defaultMaxSockets;
+		self.maxSockets = self.options.maxSockets || http$6.Agent.defaultMaxSockets;
 		self.requests = [];
 		self.sockets = [];
 		self.on("free", function onFree(socket, host, port, localAddress) {
@@ -1093,7 +1093,7 @@ var require_util$11 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const { kDestroyed, kBodyUsed, kListeners, kBody } = require_symbols$4();
 	const { IncomingMessage } = __require("node:http");
 	const stream$3 = __require("node:stream");
-	const net$4 = __require("node:net");
+	const net$5 = __require("node:net");
 	const { Blob: Blob$3 } = __require("node:buffer");
 	const nodeUtil$3 = __require("node:util");
 	const { stringify } = __require("node:querystring");
@@ -1198,7 +1198,7 @@ var require_util$11 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		if (!host) return null;
 		assert$27(typeof host === "string");
 		const servername = getHostname(host);
-		if (net$4.isIP(servername)) return "";
+		if (net$5.isIP(servername)) return "";
 		return servername;
 	}
 	function deepClone(obj) {
@@ -2365,7 +2365,7 @@ var require_timers = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 //#endregion
 //#region node_modules/.pnpm/undici@6.27.0/node_modules/undici/lib/core/connect.js
 var require_connect = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	const net$3 = __require("node:net");
+	const net$4 = __require("node:net");
 	const assert$25 = __require("node:assert");
 	const util = require_util$11();
 	const { InvalidArgumentError, ConnectTimeoutError } = require_errors$2();
@@ -2445,7 +2445,7 @@ var require_connect = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			} else {
 				assert$25(!httpSocket, "httpSocket can only be sent on TLS update");
 				port = port || 80;
-				socket = net$3.connect({
+				socket = net$4.connect({
 					highWaterMark: 64 * 1024,
 					...options,
 					localAddress,
@@ -5348,9 +5348,9 @@ var require_client_h1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const TIMEOUT_BODY = 5;
 	const TIMEOUT_KEEP_ALIVE = 8;
 	var Parser = class {
-		constructor(client, socket, { exports: exports$4 }) {
+		constructor(client, socket, { exports: exports$3 }) {
 			assert$20(Number.isFinite(client[kMaxHeadersSize]) && client[kMaxHeadersSize] > 0);
-			this.llhttp = exports$4;
+			this.llhttp = exports$3;
 			this.ptr = this.llhttp.llhttp_alloc(constants.TYPE.RESPONSE);
 			this.client = client;
 			this.socket = socket;
@@ -6662,8 +6662,8 @@ var require_redirect_interceptor = /* @__PURE__ */ __commonJSMin(((exports, modu
 //#region node_modules/.pnpm/undici@6.27.0/node_modules/undici/lib/dispatcher/client.js
 var require_client = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const assert$17 = __require("node:assert");
-	const net$2 = __require("node:net");
-	const http$7 = __require("node:http");
+	const net$3 = __require("node:net");
+	const http$5 = __require("node:http");
 	const util = require_util$11();
 	const { channels } = require_diagnostics();
 	const Request = require_request$1();
@@ -6706,7 +6706,7 @@ var require_client = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (connect != null && typeof connect !== "function" && typeof connect !== "object") throw new InvalidArgumentError("connect must be a function or an object");
 			if (maxRedirections != null && (!Number.isInteger(maxRedirections) || maxRedirections < 0)) throw new InvalidArgumentError("maxRedirections must be a positive number");
 			if (maxRequestsPerClient != null && (!Number.isInteger(maxRequestsPerClient) || maxRequestsPerClient < 0)) throw new InvalidArgumentError("maxRequestsPerClient must be a positive number");
-			if (localAddress != null && (typeof localAddress !== "string" || net$2.isIP(localAddress) === 0)) throw new InvalidArgumentError("localAddress must be valid string IP address");
+			if (localAddress != null && (typeof localAddress !== "string" || net$3.isIP(localAddress) === 0)) throw new InvalidArgumentError("localAddress must be valid string IP address");
 			if (maxResponseSize != null && (!Number.isInteger(maxResponseSize) || maxResponseSize < -1)) throw new InvalidArgumentError("maxResponseSize must be a positive number");
 			if (autoSelectFamilyAttemptTimeout != null && (!Number.isInteger(autoSelectFamilyAttemptTimeout) || autoSelectFamilyAttemptTimeout < -1)) throw new InvalidArgumentError("autoSelectFamilyAttemptTimeout must be a positive number");
 			if (allowH2 != null && typeof allowH2 !== "boolean") throw new InvalidArgumentError("allowH2 must be a valid boolean value");
@@ -6733,7 +6733,7 @@ var require_client = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			this[kUrl] = util.parseOrigin(url);
 			this[kConnector] = connect;
 			this[kPipelining] = pipelining != null ? pipelining : 1;
-			this[kMaxHeadersSize] = maxHeaderSize || http$7.maxHeaderSize;
+			this[kMaxHeadersSize] = maxHeaderSize || http$5.maxHeaderSize;
 			this[kKeepAliveDefaultTimeout] = keepAliveTimeout == null ? 4e3 : keepAliveTimeout;
 			this[kKeepAliveMaxTimeout] = keepAliveMaxTimeout == null ? 6e5 : keepAliveMaxTimeout;
 			this[kKeepAliveTimeoutThreshold] = keepAliveTimeoutThreshold == null ? 2e3 : keepAliveTimeoutThreshold;
@@ -6847,7 +6847,7 @@ var require_client = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			const idx = hostname.indexOf("]");
 			assert$17(idx !== -1);
 			const ip = hostname.substring(1, idx);
-			assert$17(net$2.isIP(ip));
+			assert$17(net$3.isIP(ip));
 			hostname = ip;
 		}
 		client[kConnecting] = true;
@@ -16249,7 +16249,7 @@ var HttpClient = class {
 		const info = {};
 		info.parsedUrl = requestUrl;
 		const usingSsl = info.parsedUrl.protocol === "https:";
-		info.httpModule = usingSsl ? https$4 : http$6;
+		info.httpModule = usingSsl ? https$3 : http$4;
 		const defaultPort = usingSsl ? 443 : 80;
 		info.options = {};
 		info.options.host = info.parsedUrl.hostname;
@@ -16315,7 +16315,7 @@ var HttpClient = class {
 		if (agent) return agent;
 		const usingSsl = parsedUrl.protocol === "https:";
 		let maxSockets = 100;
-		if (this.requestOptions) maxSockets = this.requestOptions.maxSockets || http$6.globalAgent.maxSockets;
+		if (this.requestOptions) maxSockets = this.requestOptions.maxSockets || http$4.globalAgent.maxSockets;
 		if (proxyUrl && proxyUrl.hostname) {
 			const agentOptions = {
 				maxSockets,
@@ -16337,7 +16337,7 @@ var HttpClient = class {
 				keepAlive: this._keepAlive,
 				maxSockets
 			};
-			agent = usingSsl ? new https$4.Agent(options) : new http$6.Agent(options);
+			agent = usingSsl ? new https$3.Agent(options) : new http$4.Agent(options);
 			this._agent = agent;
 		}
 		if (usingSsl && this._ignoreSslError) agent.options = Object.assign(agent.options || {}, { rejectUnauthorized: false });
@@ -17968,7 +17968,7 @@ var require_concat_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/balanced-match@1.0.0/node_modules/balanced-match/index.js
+//#region node_modules/.pnpm/balanced-match@1.0.2/node_modules/balanced-match/index.js
 var require_balanced_match = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = balanced;
 	function balanced(a, b, str) {
@@ -17994,6 +17994,7 @@ var require_balanced_match = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 		var bi = str.indexOf(b, ai + 1);
 		var i = ai;
 		if (ai >= 0 && bi > 0) {
+			if (a === b) return [ai, bi];
 			begs = [];
 			left = str.length;
 			while (i >= 0 && !result) {
@@ -21101,7 +21102,7 @@ var AbortError$1 = class extends Error {
 };
 //#endregion
 //#region node_modules/.pnpm/@typespec+ts-http-runtime@0.3.6/node_modules/@typespec/ts-http-runtime/dist/esm/util/helpers.js
-const StandardAbortMessage$2 = "The operation was aborted.";
+const StandardAbortMessage$1 = "The operation was aborted.";
 /**
 * A wrapper for setTimeout that resolves a promise after delayInMs milliseconds.
 * @param delayInMs - The number of milliseconds to be delayed.
@@ -21111,12 +21112,12 @@ const StandardAbortMessage$2 = "The operation was aborted.";
 *                  - abortErrorMsg - The abort error message associated with containing operation.
 * @returns Resolved promise
 */
-function delay$3(delayInMs, value, options) {
+function delay$2(delayInMs, value, options) {
 	return new Promise((resolve, reject) => {
 		let timer = void 0;
 		let onAborted = void 0;
 		const rejectOnAbort = () => {
-			return reject(new AbortError$1(options?.abortErrorMsg ? options?.abortErrorMsg : StandardAbortMessage$2));
+			return reject(new AbortError$1(options?.abortErrorMsg ? options?.abortErrorMsg : StandardAbortMessage$1));
 		};
 		const removeListeners = () => {
 			if (options?.abortSignal && onAborted) options.abortSignal.removeEventListener("abort", onAborted);
@@ -21526,7 +21527,7 @@ function retryPolicy(strategies, options = { maxRetries: 3 }) {
 					}
 					if (retryAfterInMs || retryAfterInMs === 0) {
 						strategyLogger.info(`Retry ${retryCount}: Retry strategy ${strategy.name} retries after ${retryAfterInMs}`);
-						await delay$3(retryAfterInMs, void 0, { abortSignal: request.abortSignal });
+						await delay$2(retryAfterInMs, void 0, { abortSignal: request.abortSignal });
 						continue retryRequest;
 					}
 					if (redirectTo) {
@@ -22725,388 +22726,7 @@ var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	else module.exports = require_node$1();
 }));
 //#endregion
-//#region node_modules/.pnpm/agent-base@7.0.2/node_modules/agent-base/dist/helpers.js
-var require_helpers$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
-		if (k2 === void 0) k2 = k;
-		var desc = Object.getOwnPropertyDescriptor(m, k);
-		if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
-			enumerable: true,
-			get: function() {
-				return m[k];
-			}
-		};
-		Object.defineProperty(o, k2, desc);
-	}) : (function(o, m, k, k2) {
-		if (k2 === void 0) k2 = k;
-		o[k2] = m[k];
-	}));
-	var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? (function(o, v) {
-		Object.defineProperty(o, "default", {
-			enumerable: true,
-			value: v
-		});
-	}) : function(o, v) {
-		o["default"] = v;
-	});
-	var __importStar = exports && exports.__importStar || function(mod) {
-		if (mod && mod.__esModule) return mod;
-		var result = {};
-		if (mod != null) {
-			for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-		}
-		__setModuleDefault(result, mod);
-		return result;
-	};
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.req = exports.json = exports.toBuffer = void 0;
-	const http$5 = __importStar(__require("http"));
-	const https$3 = __importStar(__require("https"));
-	async function toBuffer(stream) {
-		let length = 0;
-		const chunks = [];
-		for await (const chunk of stream) {
-			length += chunk.length;
-			chunks.push(chunk);
-		}
-		return Buffer.concat(chunks, length);
-	}
-	exports.toBuffer = toBuffer;
-	async function json(stream) {
-		const str = (await toBuffer(stream)).toString("utf8");
-		try {
-			return JSON.parse(str);
-		} catch (_err) {
-			const err = _err;
-			err.message += ` (input: ${str})`;
-			throw err;
-		}
-	}
-	exports.json = json;
-	function req(url, opts = {}) {
-		const req = ((typeof url === "string" ? url : url.href).startsWith("https:") ? https$3 : http$5).request(url, opts);
-		const promise = new Promise((resolve, reject) => {
-			req.once("response", resolve).once("error", reject).end();
-		});
-		req.then = promise.then.bind(promise);
-		return req;
-	}
-	exports.req = req;
-}));
-//#endregion
-//#region node_modules/.pnpm/agent-base@7.0.2/node_modules/agent-base/dist/index.js
-var require_dist$5 = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
-		if (k2 === void 0) k2 = k;
-		var desc = Object.getOwnPropertyDescriptor(m, k);
-		if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
-			enumerable: true,
-			get: function() {
-				return m[k];
-			}
-		};
-		Object.defineProperty(o, k2, desc);
-	}) : (function(o, m, k, k2) {
-		if (k2 === void 0) k2 = k;
-		o[k2] = m[k];
-	}));
-	var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? (function(o, v) {
-		Object.defineProperty(o, "default", {
-			enumerable: true,
-			value: v
-		});
-	}) : function(o, v) {
-		o["default"] = v;
-	});
-	var __importStar = exports && exports.__importStar || function(mod) {
-		if (mod && mod.__esModule) return mod;
-		var result = {};
-		if (mod != null) {
-			for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-		}
-		__setModuleDefault(result, mod);
-		return result;
-	};
-	var __exportStar = exports && exports.__exportStar || function(m, exports$3) {
-		for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports$3, p)) __createBinding(exports$3, m, p);
-	};
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.Agent = void 0;
-	const http$4 = __importStar(__require("http"));
-	__exportStar(require_helpers$1(), exports);
-	function isSecureEndpoint() {
-		const { stack } = /* @__PURE__ */ new Error();
-		if (typeof stack !== "string") return false;
-		return stack.split("\n").some((l) => l.indexOf("(https.js:") !== -1 || l.indexOf("node:https:") !== -1);
-	}
-	const INTERNAL = Symbol("AgentBaseInternalState");
-	var Agent = class extends http$4.Agent {
-		constructor(opts) {
-			super(opts);
-			this[INTERNAL] = {};
-		}
-		createSocket(req, options, cb) {
-			let secureEndpoint = typeof options.secureEndpoint === "boolean" ? options.secureEndpoint : void 0;
-			if (typeof secureEndpoint === "undefined" && typeof options.protocol === "string") secureEndpoint = options.protocol === "https:";
-			if (typeof secureEndpoint === "undefined") secureEndpoint = isSecureEndpoint();
-			const connectOpts = {
-				...options,
-				secureEndpoint
-			};
-			Promise.resolve().then(() => this.connect(req, connectOpts)).then((socket) => {
-				if (socket instanceof http$4.Agent) return socket.addRequest(req, connectOpts);
-				this[INTERNAL].currentSocket = socket;
-				super.createSocket(req, options, cb);
-			}, cb);
-		}
-		createConnection() {
-			const socket = this[INTERNAL].currentSocket;
-			this[INTERNAL].currentSocket = void 0;
-			if (!socket) throw new Error("No socket was returned in the `connect()` function");
-			return socket;
-		}
-		get defaultPort() {
-			return this[INTERNAL].defaultPort ?? (this.protocol === "https:" ? 443 : 80);
-		}
-		set defaultPort(v) {
-			if (this[INTERNAL]) this[INTERNAL].defaultPort = v;
-		}
-		get protocol() {
-			return this[INTERNAL].protocol ?? (isSecureEndpoint() ? "https:" : "http:");
-		}
-		set protocol(v) {
-			if (this[INTERNAL]) this[INTERNAL].protocol = v;
-		}
-	};
-	exports.Agent = Agent;
-}));
-//#endregion
-//#region node_modules/.pnpm/https-proxy-agent@7.0.0/node_modules/https-proxy-agent/dist/parse-proxy-response.js
-var require_parse_proxy_response = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var __importDefault = exports && exports.__importDefault || function(mod) {
-		return mod && mod.__esModule ? mod : { "default": mod };
-	};
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.parseProxyResponse = void 0;
-	const debug = (0, __importDefault(require_src()).default)("https-proxy-agent:parse-proxy-response");
-	function parseProxyResponse(socket) {
-		return new Promise((resolve, reject) => {
-			let buffersLength = 0;
-			const buffers = [];
-			function read() {
-				const b = socket.read();
-				if (b) ondata(b);
-				else socket.once("readable", read);
-			}
-			function cleanup() {
-				socket.removeListener("end", onend);
-				socket.removeListener("error", onerror);
-				socket.removeListener("readable", read);
-			}
-			function onend() {
-				cleanup();
-				debug("onend");
-				reject(/* @__PURE__ */ new Error("Proxy connection ended before receiving CONNECT response"));
-			}
-			function onerror(err) {
-				cleanup();
-				debug("onerror %o", err);
-				reject(err);
-			}
-			function ondata(b) {
-				buffers.push(b);
-				buffersLength += b.length;
-				const buffered = Buffer.concat(buffers, buffersLength);
-				if (buffered.indexOf("\r\n\r\n") === -1) {
-					debug("have not received end of HTTP headers yet...");
-					read();
-					return;
-				}
-				const headerParts = buffered.toString("ascii").split("\r\n");
-				const firstLine = headerParts.shift();
-				if (!firstLine) {
-					socket.destroy();
-					return reject(/* @__PURE__ */ new Error("No header received from proxy CONNECT response"));
-				}
-				const firstLineParts = firstLine.split(" ");
-				const statusCode = +firstLineParts[1];
-				const statusText = firstLineParts.slice(2).join(" ");
-				const headers = {};
-				for (const header of headerParts) {
-					if (!header) continue;
-					const firstColon = header.indexOf(":");
-					if (firstColon === -1) {
-						socket.destroy();
-						return reject(/* @__PURE__ */ new Error(`Invalid header from proxy CONNECT response: "${header}"`));
-					}
-					const key = header.slice(0, firstColon).toLowerCase();
-					const value = header.slice(firstColon + 1).trimStart();
-					const current = headers[key];
-					if (typeof current === "string") headers[key] = [current, value];
-					else if (Array.isArray(current)) current.push(value);
-					else headers[key] = value;
-				}
-				debug("got proxy server response: %o %o", firstLine, headers);
-				cleanup();
-				resolve({
-					connect: {
-						statusCode,
-						statusText,
-						headers
-					},
-					buffered
-				});
-			}
-			socket.on("error", onerror);
-			socket.on("end", onend);
-			read();
-		});
-	}
-	exports.parseProxyResponse = parseProxyResponse;
-}));
-//#endregion
-//#region node_modules/.pnpm/https-proxy-agent@7.0.0/node_modules/https-proxy-agent/dist/index.js
-var require_dist$4 = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
-		if (k2 === void 0) k2 = k;
-		var desc = Object.getOwnPropertyDescriptor(m, k);
-		if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
-			enumerable: true,
-			get: function() {
-				return m[k];
-			}
-		};
-		Object.defineProperty(o, k2, desc);
-	}) : (function(o, m, k, k2) {
-		if (k2 === void 0) k2 = k;
-		o[k2] = m[k];
-	}));
-	var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? (function(o, v) {
-		Object.defineProperty(o, "default", {
-			enumerable: true,
-			value: v
-		});
-	}) : function(o, v) {
-		o["default"] = v;
-	});
-	var __importStar = exports && exports.__importStar || function(mod) {
-		if (mod && mod.__esModule) return mod;
-		var result = {};
-		if (mod != null) {
-			for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-		}
-		__setModuleDefault(result, mod);
-		return result;
-	};
-	var __importDefault = exports && exports.__importDefault || function(mod) {
-		return mod && mod.__esModule ? mod : { "default": mod };
-	};
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.HttpsProxyAgent = void 0;
-	const net$1 = __importStar(__require("net"));
-	const tls$1 = __importStar(__require("tls"));
-	const assert_1 = __importDefault(__require("assert"));
-	const debug_1 = __importDefault(require_src());
-	const agent_base_1 = require_dist$5();
-	const parse_proxy_response_1 = require_parse_proxy_response();
-	const debug = (0, debug_1.default)("https-proxy-agent");
-	/**
-	* The `HttpsProxyAgent` implements an HTTP Agent subclass that connects to
-	* the specified "HTTP(s) proxy server" in order to proxy HTTPS requests.
-	*
-	* Outgoing HTTP requests are first tunneled through the proxy server using the
-	* `CONNECT` HTTP request method to establish a connection to the proxy server,
-	* and then the proxy server connects to the destination target and issues the
-	* HTTP request from the proxy server.
-	*
-	* `https:` requests have their socket connection upgraded to TLS once
-	* the connection to the proxy server has been established.
-	*/
-	var HttpsProxyAgent = class extends agent_base_1.Agent {
-		constructor(proxy, opts) {
-			super(opts);
-			this.options = { path: void 0 };
-			this.proxy = typeof proxy === "string" ? new URL(proxy) : proxy;
-			this.proxyHeaders = opts?.headers ?? {};
-			debug("Creating new HttpsProxyAgent instance: %o", this.proxy.href);
-			const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
-			const port = this.proxy.port ? parseInt(this.proxy.port, 10) : this.proxy.protocol === "https:" ? 443 : 80;
-			this.connectOpts = {
-				ALPNProtocols: ["http/1.1"],
-				...opts ? omit(opts, "headers") : null,
-				host,
-				port
-			};
-		}
-		/**
-		* Called when the node-core HTTP client library is creating a
-		* new HTTP request.
-		*/
-		async connect(req, opts) {
-			const { proxy } = this;
-			if (!opts.host) throw new TypeError("No \"host\" provided");
-			let socket;
-			if (proxy.protocol === "https:") {
-				debug("Creating `tls.Socket`: %o", this.connectOpts);
-				socket = tls$1.connect(this.connectOpts);
-			} else {
-				debug("Creating `net.Socket`: %o", this.connectOpts);
-				socket = net$1.connect(this.connectOpts);
-			}
-			const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
-			const host = net$1.isIPv6(opts.host) ? `[${opts.host}]` : opts.host;
-			let payload = `CONNECT ${host}:${opts.port} HTTP/1.1\r\n`;
-			if (proxy.username || proxy.password) {
-				const auth = `${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`;
-				headers["Proxy-Authorization"] = `Basic ${Buffer.from(auth).toString("base64")}`;
-			}
-			headers.Host = `${host}:${opts.port}`;
-			if (!headers["Proxy-Connection"]) headers["Proxy-Connection"] = this.keepAlive ? "Keep-Alive" : "close";
-			for (const name of Object.keys(headers)) payload += `${name}: ${headers[name]}\r\n`;
-			const proxyResponsePromise = (0, parse_proxy_response_1.parseProxyResponse)(socket);
-			socket.write(`${payload}\r\n`);
-			const { connect, buffered } = await proxyResponsePromise;
-			req.emit("proxyConnect", connect);
-			this.emit("proxyConnect", connect, req);
-			if (connect.statusCode === 200) {
-				req.once("socket", resume);
-				if (opts.secureEndpoint) {
-					debug("Upgrading socket connection to TLS");
-					const servername = opts.servername || opts.host;
-					return tls$1.connect({
-						...omit(opts, "host", "path", "port"),
-						socket,
-						servername: net$1.isIP(servername) ? void 0 : servername
-					});
-				}
-				return socket;
-			}
-			socket.destroy();
-			const fakeSocket = new net$1.Socket({ writable: false });
-			fakeSocket.readable = true;
-			req.once("socket", (s) => {
-				debug("Replaying proxy buffer for failed request");
-				(0, assert_1.default)(s.listenerCount("data") > 0);
-				s.push(buffered);
-				s.push(null);
-			});
-			return fakeSocket;
-		}
-	};
-	HttpsProxyAgent.protocols = ["http", "https"];
-	exports.HttpsProxyAgent = HttpsProxyAgent;
-	function resume(socket) {
-		socket.resume();
-	}
-	function omit(obj, ...keys) {
-		const ret = {};
-		let key;
-		for (key in obj) if (!keys.includes(key)) ret[key] = obj[key];
-		return ret;
-	}
-}));
-//#endregion
-//#region node_modules/.pnpm/agent-base@7.1.0/node_modules/agent-base/dist/helpers.js
+//#region node_modules/.pnpm/agent-base@7.1.4/node_modules/agent-base/dist/helpers.js
 var require_helpers = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -23175,8 +22795,8 @@ var require_helpers = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.req = req;
 }));
 //#endregion
-//#region node_modules/.pnpm/agent-base@7.1.0/node_modules/agent-base/dist/index.js
-var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
+//#region node_modules/.pnpm/agent-base@7.1.4/node_modules/agent-base/dist/index.js
+var require_dist$4 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
 		var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -23213,7 +22833,9 @@ var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.Agent = void 0;
+	const net$2 = __importStar(__require("net"));
 	const http$2 = __importStar(__require("http"));
+	const https_1 = __require("https");
 	__exportStar(require_helpers(), exports);
 	const INTERNAL = Symbol("AgentBaseInternalState");
 	var Agent = class extends http$2.Agent {
@@ -23233,16 +22855,48 @@ var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			if (typeof stack !== "string") return false;
 			return stack.split("\n").some((l) => l.indexOf("(https.js:") !== -1 || l.indexOf("node:https:") !== -1);
 		}
+		incrementSockets(name) {
+			if (this.maxSockets === Infinity && this.maxTotalSockets === Infinity) return null;
+			if (!this.sockets[name]) this.sockets[name] = [];
+			const fakeSocket = new net$2.Socket({ writable: false });
+			this.sockets[name].push(fakeSocket);
+			this.totalSocketCount++;
+			return fakeSocket;
+		}
+		decrementSockets(name, socket) {
+			if (!this.sockets[name] || socket === null) return;
+			const sockets = this.sockets[name];
+			const index = sockets.indexOf(socket);
+			if (index !== -1) {
+				sockets.splice(index, 1);
+				this.totalSocketCount--;
+				if (sockets.length === 0) delete this.sockets[name];
+			}
+		}
+		getName(options) {
+			if (this.isSecureEndpoint(options)) return https_1.Agent.prototype.getName.call(this, options);
+			return super.getName(options);
+		}
 		createSocket(req, options, cb) {
 			const connectOpts = {
 				...options,
 				secureEndpoint: this.isSecureEndpoint(options)
 			};
+			const name = this.getName(connectOpts);
+			const fakeSocket = this.incrementSockets(name);
 			Promise.resolve().then(() => this.connect(req, connectOpts)).then((socket) => {
-				if (socket instanceof http$2.Agent) return socket.addRequest(req, connectOpts);
+				this.decrementSockets(name, fakeSocket);
+				if (socket instanceof http$2.Agent) try {
+					return socket.addRequest(req, connectOpts);
+				} catch (err) {
+					return cb(err);
+				}
 				this[INTERNAL].currentSocket = socket;
 				super.createSocket(req, options, cb);
-			}, cb);
+			}, (err) => {
+				this.decrementSockets(name, fakeSocket);
+				cb(err);
+			});
 		}
 		createConnection() {
 			const socket = this[INTERNAL].currentSocket;
@@ -23266,7 +22920,239 @@ var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.Agent = Agent;
 }));
 //#endregion
-//#region node_modules/.pnpm/http-proxy-agent@7.0.0/node_modules/http-proxy-agent/dist/index.js
+//#region node_modules/.pnpm/https-proxy-agent@7.0.6/node_modules/https-proxy-agent/dist/parse-proxy-response.js
+var require_parse_proxy_response = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var __importDefault = exports && exports.__importDefault || function(mod) {
+		return mod && mod.__esModule ? mod : { "default": mod };
+	};
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.parseProxyResponse = void 0;
+	const debug = (0, __importDefault(require_src()).default)("https-proxy-agent:parse-proxy-response");
+	function parseProxyResponse(socket) {
+		return new Promise((resolve, reject) => {
+			let buffersLength = 0;
+			const buffers = [];
+			function read() {
+				const b = socket.read();
+				if (b) ondata(b);
+				else socket.once("readable", read);
+			}
+			function cleanup() {
+				socket.removeListener("end", onend);
+				socket.removeListener("error", onerror);
+				socket.removeListener("readable", read);
+			}
+			function onend() {
+				cleanup();
+				debug("onend");
+				reject(/* @__PURE__ */ new Error("Proxy connection ended before receiving CONNECT response"));
+			}
+			function onerror(err) {
+				cleanup();
+				debug("onerror %o", err);
+				reject(err);
+			}
+			function ondata(b) {
+				buffers.push(b);
+				buffersLength += b.length;
+				const buffered = Buffer.concat(buffers, buffersLength);
+				const endOfHeaders = buffered.indexOf("\r\n\r\n");
+				if (endOfHeaders === -1) {
+					debug("have not received end of HTTP headers yet...");
+					read();
+					return;
+				}
+				const headerParts = buffered.slice(0, endOfHeaders).toString("ascii").split("\r\n");
+				const firstLine = headerParts.shift();
+				if (!firstLine) {
+					socket.destroy();
+					return reject(/* @__PURE__ */ new Error("No header received from proxy CONNECT response"));
+				}
+				const firstLineParts = firstLine.split(" ");
+				const statusCode = +firstLineParts[1];
+				const statusText = firstLineParts.slice(2).join(" ");
+				const headers = {};
+				for (const header of headerParts) {
+					if (!header) continue;
+					const firstColon = header.indexOf(":");
+					if (firstColon === -1) {
+						socket.destroy();
+						return reject(/* @__PURE__ */ new Error(`Invalid header from proxy CONNECT response: "${header}"`));
+					}
+					const key = header.slice(0, firstColon).toLowerCase();
+					const value = header.slice(firstColon + 1).trimStart();
+					const current = headers[key];
+					if (typeof current === "string") headers[key] = [current, value];
+					else if (Array.isArray(current)) current.push(value);
+					else headers[key] = value;
+				}
+				debug("got proxy server response: %o %o", firstLine, headers);
+				cleanup();
+				resolve({
+					connect: {
+						statusCode,
+						statusText,
+						headers
+					},
+					buffered
+				});
+			}
+			socket.on("error", onerror);
+			socket.on("end", onend);
+			read();
+		});
+	}
+	exports.parseProxyResponse = parseProxyResponse;
+}));
+//#endregion
+//#region node_modules/.pnpm/https-proxy-agent@7.0.6/node_modules/https-proxy-agent/dist/index.js
+var require_dist$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
+		if (k2 === void 0) k2 = k;
+		var desc = Object.getOwnPropertyDescriptor(m, k);
+		if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
+			enumerable: true,
+			get: function() {
+				return m[k];
+			}
+		};
+		Object.defineProperty(o, k2, desc);
+	}) : (function(o, m, k, k2) {
+		if (k2 === void 0) k2 = k;
+		o[k2] = m[k];
+	}));
+	var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? (function(o, v) {
+		Object.defineProperty(o, "default", {
+			enumerable: true,
+			value: v
+		});
+	}) : function(o, v) {
+		o["default"] = v;
+	});
+	var __importStar = exports && exports.__importStar || function(mod) {
+		if (mod && mod.__esModule) return mod;
+		var result = {};
+		if (mod != null) {
+			for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+		}
+		__setModuleDefault(result, mod);
+		return result;
+	};
+	var __importDefault = exports && exports.__importDefault || function(mod) {
+		return mod && mod.__esModule ? mod : { "default": mod };
+	};
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.HttpsProxyAgent = void 0;
+	const net$1 = __importStar(__require("net"));
+	const tls$1 = __importStar(__require("tls"));
+	const assert_1 = __importDefault(__require("assert"));
+	const debug_1 = __importDefault(require_src());
+	const agent_base_1 = require_dist$4();
+	const url_1$1 = __require("url");
+	const parse_proxy_response_1 = require_parse_proxy_response();
+	const debug = (0, debug_1.default)("https-proxy-agent");
+	const setServernameFromNonIpHost = (options) => {
+		if (options.servername === void 0 && options.host && !net$1.isIP(options.host)) return {
+			...options,
+			servername: options.host
+		};
+		return options;
+	};
+	/**
+	* The `HttpsProxyAgent` implements an HTTP Agent subclass that connects to
+	* the specified "HTTP(s) proxy server" in order to proxy HTTPS requests.
+	*
+	* Outgoing HTTP requests are first tunneled through the proxy server using the
+	* `CONNECT` HTTP request method to establish a connection to the proxy server,
+	* and then the proxy server connects to the destination target and issues the
+	* HTTP request from the proxy server.
+	*
+	* `https:` requests have their socket connection upgraded to TLS once
+	* the connection to the proxy server has been established.
+	*/
+	var HttpsProxyAgent = class extends agent_base_1.Agent {
+		constructor(proxy, opts) {
+			super(opts);
+			this.options = { path: void 0 };
+			this.proxy = typeof proxy === "string" ? new url_1$1.URL(proxy) : proxy;
+			this.proxyHeaders = opts?.headers ?? {};
+			debug("Creating new HttpsProxyAgent instance: %o", this.proxy.href);
+			const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
+			const port = this.proxy.port ? parseInt(this.proxy.port, 10) : this.proxy.protocol === "https:" ? 443 : 80;
+			this.connectOpts = {
+				ALPNProtocols: ["http/1.1"],
+				...opts ? omit(opts, "headers") : null,
+				host,
+				port
+			};
+		}
+		/**
+		* Called when the node-core HTTP client library is creating a
+		* new HTTP request.
+		*/
+		async connect(req, opts) {
+			const { proxy } = this;
+			if (!opts.host) throw new TypeError("No \"host\" provided");
+			let socket;
+			if (proxy.protocol === "https:") {
+				debug("Creating `tls.Socket`: %o", this.connectOpts);
+				socket = tls$1.connect(setServernameFromNonIpHost(this.connectOpts));
+			} else {
+				debug("Creating `net.Socket`: %o", this.connectOpts);
+				socket = net$1.connect(this.connectOpts);
+			}
+			const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
+			const host = net$1.isIPv6(opts.host) ? `[${opts.host}]` : opts.host;
+			let payload = `CONNECT ${host}:${opts.port} HTTP/1.1\r\n`;
+			if (proxy.username || proxy.password) {
+				const auth = `${decodeURIComponent(proxy.username)}:${decodeURIComponent(proxy.password)}`;
+				headers["Proxy-Authorization"] = `Basic ${Buffer.from(auth).toString("base64")}`;
+			}
+			headers.Host = `${host}:${opts.port}`;
+			if (!headers["Proxy-Connection"]) headers["Proxy-Connection"] = this.keepAlive ? "Keep-Alive" : "close";
+			for (const name of Object.keys(headers)) payload += `${name}: ${headers[name]}\r\n`;
+			const proxyResponsePromise = (0, parse_proxy_response_1.parseProxyResponse)(socket);
+			socket.write(`${payload}\r\n`);
+			const { connect, buffered } = await proxyResponsePromise;
+			req.emit("proxyConnect", connect);
+			this.emit("proxyConnect", connect, req);
+			if (connect.statusCode === 200) {
+				req.once("socket", resume);
+				if (opts.secureEndpoint) {
+					debug("Upgrading socket connection to TLS");
+					return tls$1.connect({
+						...omit(setServernameFromNonIpHost(opts), "host", "path", "port"),
+						socket
+					});
+				}
+				return socket;
+			}
+			socket.destroy();
+			const fakeSocket = new net$1.Socket({ writable: false });
+			fakeSocket.readable = true;
+			req.once("socket", (s) => {
+				debug("Replaying proxy buffer for failed request");
+				(0, assert_1.default)(s.listenerCount("data") > 0);
+				s.push(buffered);
+				s.push(null);
+			});
+			return fakeSocket;
+		}
+	};
+	HttpsProxyAgent.protocols = ["http", "https"];
+	exports.HttpsProxyAgent = HttpsProxyAgent;
+	function resume(socket) {
+		socket.resume();
+	}
+	function omit(obj, ...keys) {
+		const ret = {};
+		let key;
+		for (key in obj) if (!keys.includes(key)) ret[key] = obj[key];
+		return ret;
+	}
+}));
+//#endregion
+//#region node_modules/.pnpm/http-proxy-agent@7.0.2/node_modules/http-proxy-agent/dist/index.js
 var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var __createBinding = exports && exports.__createBinding || (Object.create ? (function(o, m, k, k2) {
 		if (k2 === void 0) k2 = k;
@@ -23308,7 +23194,8 @@ var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	const tls = __importStar(__require("tls"));
 	const debug_1 = __importDefault(require_src());
 	const events_1 = __require("events");
-	const agent_base_1 = require_dist$3();
+	const agent_base_1 = require_dist$4();
+	const url_1 = __require("url");
 	const debug = (0, debug_1.default)("http-proxy-agent");
 	/**
 	* The `HttpProxyAgent` implements an HTTP Agent subclass that connects
@@ -23317,7 +23204,7 @@ var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	var HttpProxyAgent = class extends agent_base_1.Agent {
 		constructor(proxy, opts) {
 			super(opts);
-			this.proxy = typeof proxy === "string" ? new URL(proxy) : proxy;
+			this.proxy = typeof proxy === "string" ? new url_1.URL(proxy) : proxy;
 			this.proxyHeaders = opts?.headers ?? {};
 			debug("Creating new HttpProxyAgent instance: %o", this.proxy.href);
 			const host = (this.proxy.hostname || this.proxy.host).replace(/^\[|\]$/g, "");
@@ -23336,7 +23223,7 @@ var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		setRequestProps(req, opts) {
 			const { proxy } = this;
 			const base = `${opts.secureEndpoint ? "https:" : "http:"}//${req.getHeader("host") || "localhost"}`;
-			const url = new URL(req.path, base);
+			const url = new url_1.URL(req.path, base);
 			if (opts.port !== 80) url.port = String(opts.port);
 			req.path = String(url);
 			const headers = typeof this.proxyHeaders === "function" ? this.proxyHeaders() : { ...this.proxyHeaders };
@@ -23387,7 +23274,7 @@ var require_dist$2 = /* @__PURE__ */ __commonJSMin(((exports) => {
 }));
 //#endregion
 //#region node_modules/.pnpm/@typespec+ts-http-runtime@0.3.6/node_modules/@typespec/ts-http-runtime/dist/esm/policies/proxyPolicy.js
-var import_dist$1 = require_dist$4();
+var import_dist$1 = require_dist$3();
 var import_dist$2 = require_dist$2();
 const HTTPS_PROXY = "HTTPS_PROXY";
 const HTTP_PROXY = "HTTP_PROXY";
@@ -24294,28 +24181,28 @@ var AbortError = class extends Error {
 	}
 };
 //#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.0/node_modules/@azure/core-util/dist/esm/createAbortablePromise.js
+//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/createAbortablePromise.js
 /**
 * Creates an abortable promise.
 * @param buildPromise - A function that takes the resolve and reject functions as parameters.
 * @param options - The options for the abortable promise.
 * @returns A promise that can be aborted.
 */
-function createAbortablePromise$1(buildPromise, options) {
-	const { cleanupBeforeAbort, abortSignal, abortErrorMsg } = options !== null && options !== void 0 ? options : {};
+function createAbortablePromise(buildPromise, options) {
+	const { cleanupBeforeAbort, abortSignal, abortErrorMsg } = options ?? {};
 	return new Promise((resolve, reject) => {
 		function rejectOnAbort() {
-			reject(new AbortError(abortErrorMsg !== null && abortErrorMsg !== void 0 ? abortErrorMsg : "The operation was aborted."));
+			reject(new AbortError(abortErrorMsg ?? "The operation was aborted."));
 		}
 		function removeListeners() {
-			abortSignal === null || abortSignal === void 0 || abortSignal.removeEventListener("abort", onAbort);
+			abortSignal?.removeEventListener("abort", onAbort);
 		}
 		function onAbort() {
-			cleanupBeforeAbort === null || cleanupBeforeAbort === void 0 || cleanupBeforeAbort();
+			cleanupBeforeAbort?.();
 			removeListeners();
 			rejectOnAbort();
 		}
-		if (abortSignal === null || abortSignal === void 0 ? void 0 : abortSignal.aborted) return rejectOnAbort();
+		if (abortSignal?.aborted) return rejectOnAbort();
 		try {
 			buildPromise((x) => {
 				removeListeners();
@@ -24327,38 +24214,38 @@ function createAbortablePromise$1(buildPromise, options) {
 		} catch (err) {
 			reject(err);
 		}
-		abortSignal === null || abortSignal === void 0 || abortSignal.addEventListener("abort", onAbort);
+		abortSignal?.addEventListener("abort", onAbort);
 	});
 }
 //#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.0/node_modules/@azure/core-util/dist/esm/delay.js
-const StandardAbortMessage$1 = "The delay was aborted.";
+//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/delay.js
+const StandardAbortMessage = "The delay was aborted.";
 /**
 * A wrapper for setTimeout that resolves a promise after timeInMs milliseconds.
 * @param timeInMs - The number of milliseconds to be delayed.
 * @param options - The options for delay - currently abort options
 * @returns Promise that is resolved after timeInMs
 */
-function delay$2(timeInMs, options) {
+function delay$1(timeInMs, options) {
 	let token;
-	const { abortSignal, abortErrorMsg } = options !== null && options !== void 0 ? options : {};
-	return createAbortablePromise$1((resolve) => {
+	const { abortSignal, abortErrorMsg } = options ?? {};
+	return createAbortablePromise((resolve) => {
 		token = setTimeout(resolve, timeInMs);
 	}, {
 		cleanupBeforeAbort: () => clearTimeout(token),
 		abortSignal,
-		abortErrorMsg: abortErrorMsg !== null && abortErrorMsg !== void 0 ? abortErrorMsg : StandardAbortMessage$1
+		abortErrorMsg: abortErrorMsg ?? StandardAbortMessage
 	});
 }
 //#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.0/node_modules/@azure/core-util/dist/esm/error.js
+//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/error.js
 /**
 * Given what is thought to be an error object, return the message if possible.
 * If the message is missing, returns a stringified version of the input.
 * @param e - Something thrown from a try block
 * @returns The error message or a string of the input
 */
-function getErrorMessage$1(e) {
+function getErrorMessage(e) {
 	if (isError$1(e)) return e.message;
 	else {
 		let stringified;
@@ -24372,7 +24259,7 @@ function getErrorMessage$1(e) {
 	}
 }
 //#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.0/node_modules/@azure/core-util/dist/esm/index.js
+//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/index.js
 /**
 * Typeguard for an error object shape (has name and message)
 *
@@ -24380,6 +24267,14 @@ function getErrorMessage$1(e) {
 */
 function isError(e) {
 	return isError$1(e);
+}
+/**
+* Generated Universally Unique Identifier
+*
+* @returns RFC4122 v4 UUID.
+*/
+function randomUUID() {
+	return randomUUID$1();
 }
 /**
 * The helper that transforms bytes with specific character encoding into string
@@ -24459,9 +24354,9 @@ function tlsPolicy(tlsSettings) {
 	return tlsPolicy$1(tlsSettings);
 }
 //#endregion
-//#region node_modules/.pnpm/@azure+core-tracing@1.3.0/node_modules/@azure/core-tracing/dist/esm/tracingContext.js
+//#region node_modules/.pnpm/@azure+core-tracing@1.3.1/node_modules/@azure/core-tracing/dist/esm/tracingContext.js
 /** @internal */
-const knownContextKeys$1 = {
+const knownContextKeys = {
 	span: Symbol.for("@azure/core-tracing span"),
 	namespace: Symbol.for("@azure/core-tracing namespace")
 };
@@ -24472,19 +24367,20 @@ const knownContextKeys$1 = {
 *
 * @internal
 */
-function createTracingContext$1(options = {}) {
-	let context = new TracingContextImpl$1(options.parentContext);
-	if (options.span) context = context.setValue(knownContextKeys$1.span, options.span);
-	if (options.namespace) context = context.setValue(knownContextKeys$1.namespace, options.namespace);
+function createTracingContext(options = {}) {
+	let context = new TracingContextImpl(options.parentContext);
+	if (options.span) context = context.setValue(knownContextKeys.span, options.span);
+	if (options.namespace) context = context.setValue(knownContextKeys.namespace, options.namespace);
 	return context;
 }
 /** @internal */
-var TracingContextImpl$1 = class TracingContextImpl$1 {
+var TracingContextImpl = class TracingContextImpl {
+	_contextMap;
 	constructor(initialContext) {
-		this._contextMap = initialContext instanceof TracingContextImpl$1 ? new Map(initialContext._contextMap) : /* @__PURE__ */ new Map();
+		this._contextMap = initialContext instanceof TracingContextImpl ? new Map(initialContext._contextMap) : /* @__PURE__ */ new Map();
 	}
 	setValue(key, value) {
-		const newContext = new TracingContextImpl$1(this);
+		const newContext = new TracingContextImpl(this);
 		newContext._contextMap.set(key, value);
 		return newContext;
 	}
@@ -24492,7 +24388,7 @@ var TracingContextImpl$1 = class TracingContextImpl$1 {
 		return this._contextMap.get(key);
 	}
 	deleteValue(key) {
-		const newContext = new TracingContextImpl$1(this);
+		const newContext = new TracingContextImpl(this);
 		newContext._contextMap.delete(key);
 		return newContext;
 	}
@@ -24500,7 +24396,7 @@ var TracingContextImpl$1 = class TracingContextImpl$1 {
 /**
 * Defines the shared state between CJS and ESM by re-exporting the CJS state.
 */
-const state$2 = (/* @__PURE__ */ __commonJSMin(((exports) => {
+const state$1 = (/* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.state = void 0;
 	/**
@@ -24511,8 +24407,8 @@ const state$2 = (/* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.state = { instrumenterImplementation: void 0 };
 })))().state;
 //#endregion
-//#region node_modules/.pnpm/@azure+core-tracing@1.3.0/node_modules/@azure/core-tracing/dist/esm/instrumenter.js
-function createDefaultTracingSpan$1() {
+//#region node_modules/.pnpm/@azure+core-tracing@1.3.1/node_modules/@azure/core-tracing/dist/esm/instrumenter.js
+function createDefaultTracingSpan() {
 	return {
 		end: () => {},
 		isRecording: () => false,
@@ -24522,7 +24418,7 @@ function createDefaultTracingSpan$1() {
 		addEvent: () => {}
 	};
 }
-function createDefaultInstrumenter$1() {
+function createDefaultInstrumenter() {
 	return {
 		createRequestHeaders: () => {
 			return {};
@@ -24530,8 +24426,8 @@ function createDefaultInstrumenter$1() {
 		parseTraceparentHeader: () => {},
 		startSpan: (_name, spanOptions) => {
 			return {
-				span: createDefaultTracingSpan$1(),
-				tracingContext: createTracingContext$1({ parentContext: spanOptions.tracingContext })
+				span: createDefaultTracingSpan(),
+				tracingContext: createTracingContext({ parentContext: spanOptions.tracingContext })
 			};
 		},
 		withContext(_context, callback, ...callbackArgs) {
@@ -24544,34 +24440,37 @@ function createDefaultInstrumenter$1() {
 *
 * @returns The currently set instrumenter
 */
-function getInstrumenter$1() {
-	if (!state$2.instrumenterImplementation) state$2.instrumenterImplementation = createDefaultInstrumenter$1();
-	return state$2.instrumenterImplementation;
+function getInstrumenter() {
+	if (!state$1.instrumenterImplementation) state$1.instrumenterImplementation = createDefaultInstrumenter();
+	return state$1.instrumenterImplementation;
 }
 //#endregion
-//#region node_modules/.pnpm/@azure+core-tracing@1.3.0/node_modules/@azure/core-tracing/dist/esm/tracingClient.js
+//#region node_modules/.pnpm/@azure+core-tracing@1.3.1/node_modules/@azure/core-tracing/dist/esm/tracingClient.js
 /**
 * Creates a new tracing client.
 *
 * @param options - Options used to configure the tracing client.
 * @returns - An instance of {@link TracingClient}.
 */
-function createTracingClient$1(options) {
+function createTracingClient(options) {
 	const { namespace, packageName, packageVersion } = options;
 	function startSpan(name, operationOptions, spanOptions) {
-		var _a;
-		const startSpanResult = getInstrumenter$1().startSpan(name, Object.assign(Object.assign({}, spanOptions), {
+		const startSpanResult = getInstrumenter().startSpan(name, {
+			...spanOptions,
 			packageName,
 			packageVersion,
-			tracingContext: (_a = operationOptions === null || operationOptions === void 0 ? void 0 : operationOptions.tracingOptions) === null || _a === void 0 ? void 0 : _a.tracingContext
-		}));
+			tracingContext: operationOptions?.tracingOptions?.tracingContext
+		});
 		let tracingContext = startSpanResult.tracingContext;
 		const span = startSpanResult.span;
-		if (!tracingContext.getValue(knownContextKeys$1.namespace)) tracingContext = tracingContext.setValue(knownContextKeys$1.namespace, namespace);
-		span.setAttribute("az.namespace", tracingContext.getValue(knownContextKeys$1.namespace));
+		if (!tracingContext.getValue(knownContextKeys.namespace)) tracingContext = tracingContext.setValue(knownContextKeys.namespace, namespace);
+		span.setAttribute("az.namespace", tracingContext.getValue(knownContextKeys.namespace));
 		return {
 			span,
-			updatedOptions: Object.assign({}, operationOptions, { tracingOptions: Object.assign(Object.assign({}, operationOptions === null || operationOptions === void 0 ? void 0 : operationOptions.tracingOptions), { tracingContext }) })
+			updatedOptions: Object.assign({}, operationOptions, { tracingOptions: {
+				...operationOptions?.tracingOptions,
+				tracingContext
+			} })
 		};
 	}
 	async function withSpan(name, operationOptions, callback, spanOptions) {
@@ -24591,7 +24490,7 @@ function createTracingClient$1(options) {
 		}
 	}
 	function withContext(context, callback, ...callbackArgs) {
-		return getInstrumenter$1().withContext(context, callback, ...callbackArgs);
+		return getInstrumenter().withContext(context, callback, ...callbackArgs);
 	}
 	/**
 	* Parses a traceparent header value into a span identifier.
@@ -24600,7 +24499,7 @@ function createTracingClient$1(options) {
 	* @returns An implementation-specific identifier for the span.
 	*/
 	function parseTraceparentHeader(traceparentHeader) {
-		return getInstrumenter$1().parseTraceparentHeader(traceparentHeader);
+		return getInstrumenter().parseTraceparentHeader(traceparentHeader);
 	}
 	/**
 	* Creates a set of request headers to propagate tracing information to a backend.
@@ -24609,7 +24508,7 @@ function createTracingClient$1(options) {
 	* @returns The set of headers to add to a request.
 	*/
 	function createRequestHeaders(tracingContext) {
-		return getInstrumenter$1().createRequestHeaders(tracingContext);
+		return getInstrumenter().createRequestHeaders(tracingContext);
 	}
 	return {
 		startSpan,
@@ -24675,13 +24574,13 @@ function tracingPolicy(options = {}) {
 }
 function tryCreateTracingClient() {
 	try {
-		return createTracingClient$1({
+		return createTracingClient({
 			namespace: "",
 			packageName: "@azure/core-rest-pipeline",
 			packageVersion: SDK_VERSION$1
 		});
 	} catch (e) {
-		logger$4.warning(`Error when creating the TracingClient: ${getErrorMessage$1(e)}`);
+		logger$4.warning(`Error when creating the TracingClient: ${getErrorMessage(e)}`);
 		return;
 	}
 }
@@ -24702,7 +24601,7 @@ function tryCreateSpan(tracingClient, request, spanAttributes) {
 			tracingContext: updatedOptions.tracingOptions.tracingContext
 		};
 	} catch (e) {
-		logger$4.warning(`Skipping creating a tracing span due to an error: ${getErrorMessage$1(e)}`);
+		logger$4.warning(`Skipping creating a tracing span due to an error: ${getErrorMessage(e)}`);
 		return;
 	}
 }
@@ -24715,7 +24614,7 @@ function tryProcessError(span, error) {
 		if (isRestError(error) && error.statusCode) span.setAttribute("http.status_code", error.statusCode);
 		span.end();
 	} catch (e) {
-		logger$4.warning(`Skipping tracing span processing due to an error: ${getErrorMessage$1(e)}`);
+		logger$4.warning(`Skipping tracing span processing due to an error: ${getErrorMessage(e)}`);
 	}
 }
 function tryProcessResponse(span, response) {
@@ -24726,7 +24625,7 @@ function tryProcessResponse(span, response) {
 		if (response.status >= 400) span.setStatus({ status: "error" });
 		span.end();
 	} catch (e) {
-		logger$4.warning(`Skipping tracing span processing due to an error: ${getErrorMessage$1(e)}`);
+		logger$4.warning(`Skipping tracing span processing due to an error: ${getErrorMessage(e)}`);
 	}
 }
 //#endregion
@@ -24876,7 +24775,7 @@ async function beginRefresh(getAccessToken, retryIntervalInMs, refreshTimeout) {
 	}
 	let token = await tryGetAccessToken();
 	while (token === null) {
-		await delay$2(retryIntervalInMs);
+		await delay$1(retryIntervalInMs);
 		token = await tryGetAccessToken();
 	}
 	return token;
@@ -25155,94 +25054,6 @@ function getCaeChallengeClaims(challenges) {
 function isTokenCredential(credential) {
 	const castCredential = credential;
 	return castCredential && typeof castCredential.getToken === "function" && (castCredential.signRequest === void 0 || castCredential.getToken.length > 0);
-}
-//#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/createAbortablePromise.js
-/**
-* Creates an abortable promise.
-* @param buildPromise - A function that takes the resolve and reject functions as parameters.
-* @param options - The options for the abortable promise.
-* @returns A promise that can be aborted.
-*/
-function createAbortablePromise(buildPromise, options) {
-	const { cleanupBeforeAbort, abortSignal, abortErrorMsg } = options ?? {};
-	return new Promise((resolve, reject) => {
-		function rejectOnAbort() {
-			reject(new AbortError(abortErrorMsg ?? "The operation was aborted."));
-		}
-		function removeListeners() {
-			abortSignal?.removeEventListener("abort", onAbort);
-		}
-		function onAbort() {
-			cleanupBeforeAbort?.();
-			removeListeners();
-			rejectOnAbort();
-		}
-		if (abortSignal?.aborted) return rejectOnAbort();
-		try {
-			buildPromise((x) => {
-				removeListeners();
-				resolve(x);
-			}, (x) => {
-				removeListeners();
-				reject(x);
-			});
-		} catch (err) {
-			reject(err);
-		}
-		abortSignal?.addEventListener("abort", onAbort);
-	});
-}
-//#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/delay.js
-const StandardAbortMessage = "The delay was aborted.";
-/**
-* A wrapper for setTimeout that resolves a promise after timeInMs milliseconds.
-* @param timeInMs - The number of milliseconds to be delayed.
-* @param options - The options for delay - currently abort options
-* @returns Promise that is resolved after timeInMs
-*/
-function delay$1(timeInMs, options) {
-	let token;
-	const { abortSignal, abortErrorMsg } = options ?? {};
-	return createAbortablePromise((resolve) => {
-		token = setTimeout(resolve, timeInMs);
-	}, {
-		cleanupBeforeAbort: () => clearTimeout(token),
-		abortSignal,
-		abortErrorMsg: abortErrorMsg ?? StandardAbortMessage
-	});
-}
-//#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/error.js
-/**
-* Given what is thought to be an error object, return the message if possible.
-* If the message is missing, returns a stringified version of the input.
-* @param e - Something thrown from a try block
-* @returns The error message or a string of the input
-*/
-function getErrorMessage(e) {
-	if (isError$1(e)) return e.message;
-	else {
-		let stringified;
-		try {
-			if (typeof e === "object" && e) stringified = JSON.stringify(e);
-			else stringified = String(e);
-		} catch (err) {
-			stringified = "[unable to stringify input]";
-		}
-		return `Unknown error ${stringified}`;
-	}
-}
-//#endregion
-//#region node_modules/.pnpm/@azure+core-util@1.13.1/node_modules/@azure/core-util/dist/esm/index.js
-/**
-* Generated Universally Unique Identifier
-*
-* @returns RFC4122 v4 UUID.
-*/
-function randomUUID() {
-	return randomUUID$1();
 }
 //#endregion
 //#region node_modules/.pnpm/@azure+storage-common@12.4.1_@azure+core-client@1.10.2/node_modules/@azure/storage-common/dist/esm/BuffersStream.js
@@ -31807,7 +31618,7 @@ const MapperTypeNames = {
 /**
 * Defines the shared state between CJS and ESM by re-exporting the CJS state.
 */
-const state$1 = (/* @__PURE__ */ __commonJSMin(((exports) => {
+const state = (/* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.state = void 0;
 	/**
@@ -31880,10 +31691,10 @@ function hasOriginalRequest(request) {
 }
 function getOperationRequestInfo(request) {
 	if (hasOriginalRequest(request)) return getOperationRequestInfo(request[originalRequestSymbol$1]);
-	let info = state$1.operationRequestMap.get(request);
+	let info = state.operationRequestMap.get(request);
 	if (!info) {
 		info = {};
-		state$1.operationRequestMap.set(request, info);
+		state.operationRequestMap.set(request, info);
 	}
 	return info;
 }
@@ -51371,171 +51182,6 @@ var Batch = class {
 	}
 };
 //#endregion
-//#region node_modules/.pnpm/@azure+core-tracing@1.3.1/node_modules/@azure/core-tracing/dist/esm/tracingContext.js
-/** @internal */
-const knownContextKeys = {
-	span: Symbol.for("@azure/core-tracing span"),
-	namespace: Symbol.for("@azure/core-tracing namespace")
-};
-/**
-* Creates a new {@link TracingContext} with the given options.
-* @param options - A set of known keys that may be set on the context.
-* @returns A new {@link TracingContext} with the given options.
-*
-* @internal
-*/
-function createTracingContext(options = {}) {
-	let context = new TracingContextImpl(options.parentContext);
-	if (options.span) context = context.setValue(knownContextKeys.span, options.span);
-	if (options.namespace) context = context.setValue(knownContextKeys.namespace, options.namespace);
-	return context;
-}
-/** @internal */
-var TracingContextImpl = class TracingContextImpl {
-	_contextMap;
-	constructor(initialContext) {
-		this._contextMap = initialContext instanceof TracingContextImpl ? new Map(initialContext._contextMap) : /* @__PURE__ */ new Map();
-	}
-	setValue(key, value) {
-		const newContext = new TracingContextImpl(this);
-		newContext._contextMap.set(key, value);
-		return newContext;
-	}
-	getValue(key) {
-		return this._contextMap.get(key);
-	}
-	deleteValue(key) {
-		const newContext = new TracingContextImpl(this);
-		newContext._contextMap.delete(key);
-		return newContext;
-	}
-};
-/**
-* Defines the shared state between CJS and ESM by re-exporting the CJS state.
-*/
-const state = (/* @__PURE__ */ __commonJSMin(((exports) => {
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.state = void 0;
-	/**
-	* @internal
-	*
-	* Holds the singleton instrumenter, to be shared across CJS and ESM imports.
-	*/
-	exports.state = { instrumenterImplementation: void 0 };
-})))().state;
-//#endregion
-//#region node_modules/.pnpm/@azure+core-tracing@1.3.1/node_modules/@azure/core-tracing/dist/esm/instrumenter.js
-function createDefaultTracingSpan() {
-	return {
-		end: () => {},
-		isRecording: () => false,
-		recordException: () => {},
-		setAttribute: () => {},
-		setStatus: () => {},
-		addEvent: () => {}
-	};
-}
-function createDefaultInstrumenter() {
-	return {
-		createRequestHeaders: () => {
-			return {};
-		},
-		parseTraceparentHeader: () => {},
-		startSpan: (_name, spanOptions) => {
-			return {
-				span: createDefaultTracingSpan(),
-				tracingContext: createTracingContext({ parentContext: spanOptions.tracingContext })
-			};
-		},
-		withContext(_context, callback, ...callbackArgs) {
-			return callback(...callbackArgs);
-		}
-	};
-}
-/**
-* Gets the currently set instrumenter, a No-Op instrumenter by default.
-*
-* @returns The currently set instrumenter
-*/
-function getInstrumenter() {
-	if (!state.instrumenterImplementation) state.instrumenterImplementation = createDefaultInstrumenter();
-	return state.instrumenterImplementation;
-}
-//#endregion
-//#region node_modules/.pnpm/@azure+core-tracing@1.3.1/node_modules/@azure/core-tracing/dist/esm/tracingClient.js
-/**
-* Creates a new tracing client.
-*
-* @param options - Options used to configure the tracing client.
-* @returns - An instance of {@link TracingClient}.
-*/
-function createTracingClient(options) {
-	const { namespace, packageName, packageVersion } = options;
-	function startSpan(name, operationOptions, spanOptions) {
-		const startSpanResult = getInstrumenter().startSpan(name, {
-			...spanOptions,
-			packageName,
-			packageVersion,
-			tracingContext: operationOptions?.tracingOptions?.tracingContext
-		});
-		let tracingContext = startSpanResult.tracingContext;
-		const span = startSpanResult.span;
-		if (!tracingContext.getValue(knownContextKeys.namespace)) tracingContext = tracingContext.setValue(knownContextKeys.namespace, namespace);
-		span.setAttribute("az.namespace", tracingContext.getValue(knownContextKeys.namespace));
-		return {
-			span,
-			updatedOptions: Object.assign({}, operationOptions, { tracingOptions: {
-				...operationOptions?.tracingOptions,
-				tracingContext
-			} })
-		};
-	}
-	async function withSpan(name, operationOptions, callback, spanOptions) {
-		const { span, updatedOptions } = startSpan(name, operationOptions, spanOptions);
-		try {
-			const result = await withContext(updatedOptions.tracingOptions.tracingContext, () => Promise.resolve(callback(updatedOptions, span)));
-			span.setStatus({ status: "success" });
-			return result;
-		} catch (err) {
-			span.setStatus({
-				status: "error",
-				error: err
-			});
-			throw err;
-		} finally {
-			span.end();
-		}
-	}
-	function withContext(context, callback, ...callbackArgs) {
-		return getInstrumenter().withContext(context, callback, ...callbackArgs);
-	}
-	/**
-	* Parses a traceparent header value into a span identifier.
-	*
-	* @param traceparentHeader - The traceparent header to parse.
-	* @returns An implementation-specific identifier for the span.
-	*/
-	function parseTraceparentHeader(traceparentHeader) {
-		return getInstrumenter().parseTraceparentHeader(traceparentHeader);
-	}
-	/**
-	* Creates a set of request headers to propagate tracing information to a backend.
-	*
-	* @param tracingContext - The context containing the span to serialize.
-	* @returns The set of headers to add to a request.
-	*/
-	function createRequestHeaders(tracingContext) {
-		return getInstrumenter().createRequestHeaders(tracingContext);
-	}
-	return {
-		startSpan,
-		withSpan,
-		withContext,
-		parseTraceparentHeader,
-		createRequestHeaders
-	};
-}
-//#endregion
 //#region node_modules/.pnpm/@azure+storage-blob@12.33.0/node_modules/@azure/storage-blob/dist/esm/utils/tracing.js
 /**
 * Creates a span using the global tracer.
@@ -66001,7 +65647,7 @@ var require_minimatch = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	minimatch.Minimatch = Minimatch;
 }));
 //#endregion
-//#region node_modules/.pnpm/readdir-glob@1.1.2/node_modules/readdir-glob/index.js
+//#region node_modules/.pnpm/readdir-glob@1.1.3/node_modules/readdir-glob/index.js
 var require_readdir_glob = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = readdirGlob;
 	const fs$6 = __require("fs");
@@ -83026,7 +82672,7 @@ var require_commonjs$4 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.minimatch.unescape = unescape_js_1.unescape;
 }));
 //#endregion
-//#region node_modules/.pnpm/lru-cache@10.2.0/node_modules/lru-cache/dist/commonjs/index.js
+//#region node_modules/.pnpm/lru-cache@10.4.3/node_modules/lru-cache/dist/commonjs/index.js
 var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	/**
 	* @module LRUCache
@@ -83118,6 +82764,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		#dispose;
 		#disposeAfter;
 		#fetchMethod;
+		#memoMethod;
 		/**
 		* {@link LRUCache.OptionsBase.ttl}
 		*/
@@ -83259,6 +82906,9 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		get fetchMethod() {
 			return this.#fetchMethod;
 		}
+		get memoMethod() {
+			return this.#memoMethod;
+		}
 		/**
 		* {@link LRUCache.OptionsBase.dispose} (read-only)
 		*/
@@ -83272,7 +82922,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			return this.#disposeAfter;
 		}
 		constructor(options) {
-			const { max = 0, ttl, ttlResolution = 1, ttlAutopurge, updateAgeOnGet, updateAgeOnHas, allowStale, dispose, disposeAfter, noDisposeOnSet, noUpdateTTL, maxSize = 0, maxEntrySize = 0, sizeCalculation, fetchMethod, noDeleteOnFetchRejection, noDeleteOnStaleGet, allowStaleOnFetchRejection, allowStaleOnFetchAbort, ignoreFetchAbort } = options;
+			const { max = 0, ttl, ttlResolution = 1, ttlAutopurge, updateAgeOnGet, updateAgeOnHas, allowStale, dispose, disposeAfter, noDisposeOnSet, noUpdateTTL, maxSize = 0, maxEntrySize = 0, sizeCalculation, fetchMethod, memoMethod, noDeleteOnFetchRejection, noDeleteOnStaleGet, allowStaleOnFetchRejection, allowStaleOnFetchAbort, ignoreFetchAbort } = options;
 			if (max !== 0 && !isPosInt(max)) throw new TypeError("max option must be a nonnegative integer");
 			const UintArray = max ? getUintArray(max) : Array;
 			if (!UintArray) throw new Error("invalid max value: " + max);
@@ -83284,6 +82934,8 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				if (!this.#maxSize && !this.maxEntrySize) throw new TypeError("cannot set sizeCalculation without setting maxSize or maxEntrySize");
 				if (typeof this.sizeCalculation !== "function") throw new TypeError("sizeCalculation set to non-function");
 			}
+			if (memoMethod !== void 0 && typeof memoMethod !== "function") throw new TypeError("memoMethod must be a function if defined");
+			this.#memoMethod = memoMethod;
 			if (fetchMethod !== void 0 && typeof fetchMethod !== "function") throw new TypeError("fetchMethod must be a function if specified");
 			this.#fetchMethod = fetchMethod;
 			this.#hasFetchMethod = !!fetchMethod;
@@ -83341,7 +82993,8 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			}
 		}
 		/**
-		* Return the remaining TTL time for a given entry key
+		* Return the number of ms left in the item's TTL. If item is not in cache,
+		* returns `0`. Returns `Infinity` if item is in cache without a defined TTL.
 		*/
 		getRemainingTTL(key) {
 			return this.#keyMap.has(key) ? Infinity : 0;
@@ -83356,7 +83009,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				ttls[index] = ttl;
 				if (ttl !== 0 && this.ttlAutopurge) {
 					const t = setTimeout(() => {
-						if (this.#isStale(index)) this.delete(this.#keyList[index]);
+						if (this.#isStale(index)) this.#delete(this.#keyList[index], "expire");
 					}, ttl + 1);
 					/* c8 ignore start */
 					if (t.unref) t.unref();
@@ -83524,13 +83177,14 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			return this.entries();
 		}
 		/**
-		* A String value that is used in the creation of the default string description of an object.
-		* Called by the built-in method Object.prototype.toString.
+		* A String value that is used in the creation of the default string
+		* description of an object. Called by the built-in method
+		* `Object.prototype.toString`.
 		*/
 		[Symbol.toStringTag] = "LRUCache";
 		/**
 		* Find a value for which the supplied fn method returns a truthy value,
-		* similar to Array.find().  fn is called as fn(value, key, cache).
+		* similar to `Array.find()`. fn is called as `fn(value, key, cache)`.
 		*/
 		find(fn, getOptions = {}) {
 			for (const i of this.#indexes()) {
@@ -83541,10 +83195,15 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			}
 		}
 		/**
-		* Call the supplied function on each item in the cache, in order from
-		* most recently used to least recently used.  fn is called as
-		* fn(value, key, cache).  Does not update age or recenty of use.
-		* Does not iterate over stale values.
+		* Call the supplied function on each item in the cache, in order from most
+		* recently used to least recently used.
+		*
+		* `fn` is called as `fn(value, key, cache)`.
+		*
+		* If `thisp` is provided, function will be called in the `this`-context of
+		* the provided object, or the cache if no `thisp` object is provided.
+		*
+		* Does not update age or recenty of use, or iterate over stale values.
 		*/
 		forEach(fn, thisp = this) {
 			for (const i of this.#indexes()) {
@@ -83573,16 +83232,22 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		purgeStale() {
 			let deleted = false;
 			for (const i of this.#rindexes({ allowStale: true })) if (this.#isStale(i)) {
-				this.delete(this.#keyList[i]);
+				this.#delete(this.#keyList[i], "expire");
 				deleted = true;
 			}
 			return deleted;
 		}
 		/**
 		* Get the extended info about a given entry, to get its value, size, and
-		* TTL info simultaneously. Like {@link LRUCache#dump}, but just for a
-		* single key. Always returns stale values, if their info is found in the
-		* cache, so be sure to check for expired TTLs if relevant.
+		* TTL info simultaneously. Returns `undefined` if the key is not present.
+		*
+		* Unlike {@link LRUCache#dump}, which is designed to be portable and survive
+		* serialization, the `start` value is always the current timestamp, and the
+		* `ttl` is a calculated remaining time to live (negative if expired).
+		*
+		* Always returns stale values, if their info is found in the cache, so be
+		* sure to check for expirations (ie, a negative {@link LRUCache.Entry#ttl})
+		* if relevant.
 		*/
 		info(key) {
 			const i = this.#keyMap.get(key);
@@ -83604,7 +83269,16 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		/**
 		* Return an array of [key, {@link LRUCache.Entry}] tuples which can be
-		* passed to cache.load()
+		* passed to {@link LRLUCache#load}.
+		*
+		* The `start` fields are calculated relative to a portable `Date.now()`
+		* timestamp, even if `performance.now()` is available.
+		*
+		* Stale entries are always included in the `dump`, even if
+		* {@link LRUCache.OptionsBase.allowStale} is false.
+		*
+		* Note: this returns an actual array, not a generator, so it can be more
+		* easily passed around.
 		*/
 		dump() {
 			const arr = [];
@@ -83626,8 +83300,12 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		/**
 		* Reset the cache and load in the items in entries in the order listed.
-		* Note that the shape of the resulting cache may be different if the
-		* same options are not used in both caches.
+		*
+		* The shape of the resulting cache may be different if the same options are
+		* not used in both caches.
+		*
+		* The `start` fields are assumed to be calculated relative to a portable
+		* `Date.now()` timestamp, even if `performance.now()` is available.
 		*/
 		load(arr) {
 			this.clear();
@@ -83644,6 +83322,30 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		*
 		* Note: if `undefined` is specified as a value, this is an alias for
 		* {@link LRUCache#delete}
+		*
+		* Fields on the {@link LRUCache.SetOptions} options param will override
+		* their corresponding values in the constructor options for the scope
+		* of this single `set()` operation.
+		*
+		* If `start` is provided, then that will set the effective start
+		* time for the TTL calculation. Note that this must be a previous
+		* value of `performance.now()` if supported, or a previous value of
+		* `Date.now()` if not.
+		*
+		* Options object may also include `size`, which will prevent
+		* calling the `sizeCalculation` function and just use the specified
+		* number if it is a positive integer, and `noDisposeOnSet` which
+		* will prevent calling a `dispose` function in the case of
+		* overwrites.
+		*
+		* If the `size` (or return value of `sizeCalculation`) for a given
+		* entry is greater than `maxEntrySize`, then the item will not be
+		* added to the cache.
+		*
+		* Will update the recency of the entry.
+		*
+		* If the value is `undefined`, then this is an alias for
+		* `cache.delete(key)`. `undefined` is never stored in the cache.
 		*/
 		set(k, v, setOptions = {}) {
 			if (v === void 0) {
@@ -83658,7 +83360,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 					status.set = "miss";
 					status.maxEntrySizeExceeded = true;
 				}
-				this.delete(k);
+				this.#delete(k, "set");
 				return this;
 			}
 			let index = this.#size === 0 ? void 0 : this.#keyMap.get(k);
@@ -83772,6 +83474,14 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		* Will return false if the item is stale, even though it is technically
 		* in the cache.
 		*
+		* Check if a key is in the cache, without updating the recency of
+		* use. Age is updated if {@link LRUCache.OptionsBase.updateAgeOnHas} is set
+		* to `true` in either the options or the constructor.
+		*
+		* Will return `false` if the item is stale, even though it is technically in
+		* the cache. The difference can be determined (if it matters) by using a
+		* `status` argument, and inspecting the `has` field.
+		*
 		* Will not update item age unless
 		* {@link LRUCache.OptionsBase.updateAgeOnHas} is set.
 		*/
@@ -83831,7 +83541,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				if (aborted && !ignoreAbort && !updateCache) return fetchFail(ac.signal.reason);
 				const bf = p;
 				if (this.#valList[index] === p) if (v === void 0) if (bf.__staleWhileFetching) this.#valList[index] = bf.__staleWhileFetching;
-				else this.delete(k);
+				else this.#delete(k, "fetch");
 				else {
 					if (options.status) options.status.fetchUpdated = true;
 					this.set(k, v, fetchOpts.options);
@@ -83852,7 +83562,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				const noDelete = allowStale || options.noDeleteOnFetchRejection;
 				const bf = p;
 				if (this.#valList[index] === p) {
-					if (!noDelete || bf.__staleWhileFetching === void 0) this.delete(k);
+					if (!noDelete || bf.__staleWhileFetching === void 0) this.#delete(k, "fetch");
 					else if (!allowStaleAborted) this.#valList[index] = bf.__staleWhileFetching;
 				}
 				if (allowStale) {
@@ -83950,6 +83660,24 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				return staleVal ? p.__staleWhileFetching : p.__returned = p;
 			}
 		}
+		async forceFetch(k, fetchOptions = {}) {
+			const v = await this.fetch(k, fetchOptions);
+			if (v === void 0) throw new Error("fetch() returned undefined");
+			return v;
+		}
+		memo(k, memoOptions = {}) {
+			const memoMethod = this.#memoMethod;
+			if (!memoMethod) throw new Error("no memoMethod provided to constructor");
+			const { context, forceRefresh, ...options } = memoOptions;
+			const v = this.get(k, options);
+			if (!forceRefresh && v !== void 0) return v;
+			const vv = memoMethod(k, v, {
+				options,
+				context
+			});
+			this.set(k, vv, options);
+			return vv;
+		}
 		/**
 		* Return a value from the cache. Will update the recency of the cache
 		* entry found.
@@ -83966,7 +83694,7 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 				if (this.#isStale(index)) {
 					if (status) status.get = "stale";
 					if (!fetching) {
-						if (!noDeleteOnStaleGet) this.delete(k);
+						if (!noDeleteOnStaleGet) this.#delete(k, "expire");
 						if (status && allowStale) status.returnedStale = true;
 						return allowStale ? value : void 0;
 					} else {
@@ -83996,25 +83724,29 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		/**
 		* Deletes a key out of the cache.
+		*
 		* Returns true if the key was deleted, false otherwise.
 		*/
 		delete(k) {
+			return this.#delete(k, "delete");
+		}
+		#delete(k, reason) {
 			let deleted = false;
 			if (this.#size !== 0) {
 				const index = this.#keyMap.get(k);
 				if (index !== void 0) {
 					deleted = true;
-					if (this.#size === 1) this.clear();
+					if (this.#size === 1) this.#clear(reason);
 					else {
 						this.#removeItemSize(index);
 						const v = this.#valList[index];
 						if (this.#isBackgroundFetch(v)) v.__abortController.abort(/* @__PURE__ */ new Error("deleted"));
 						else if (this.#hasDispose || this.#hasDisposeAfter) {
-							if (this.#hasDispose) this.#dispose?.(v, k, "delete");
+							if (this.#hasDispose) this.#dispose?.(v, k, reason);
 							if (this.#hasDisposeAfter) this.#disposed?.push([
 								v,
 								k,
-								"delete"
+								reason
 							]);
 						}
 						this.#keyMap.delete(k);
@@ -84044,16 +83776,19 @@ var require_commonjs$3 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		* Clear the cache entirely, throwing away all values.
 		*/
 		clear() {
+			return this.#clear("delete");
+		}
+		#clear(reason) {
 			for (const index of this.#rindexes({ allowStale: true })) {
 				const v = this.#valList[index];
 				if (this.#isBackgroundFetch(v)) v.__abortController.abort(/* @__PURE__ */ new Error("deleted"));
 				else {
 					const k = this.#keyList[index];
-					if (this.#hasDispose) this.#dispose?.(v, k, "delete");
+					if (this.#hasDispose) this.#dispose?.(v, k, reason);
 					if (this.#hasDisposeAfter) this.#disposed?.push([
 						v,
 						k,
-						"delete"
+						reason
 					]);
 				}
 			}
@@ -86526,7 +86261,7 @@ var require_commonjs$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.PathScurry = process.platform === "win32" ? PathScurryWin32 : process.platform === "darwin" ? PathScurryDarwin : PathScurryPosix;
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/pattern.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/pattern.js
 var require_pattern = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.Pattern = void 0;
@@ -86689,7 +86424,7 @@ var require_pattern = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/ignore.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/ignore.js
 var require_ignore = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.Ignore = void 0;
@@ -86767,7 +86502,7 @@ var require_ignore = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.Ignore = Ignore;
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/processor.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/processor.js
 var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.Processor = exports.SubWalks = exports.MatchRecord = exports.HasWalkedCache = void 0;
@@ -86961,7 +86696,7 @@ var require_processor = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/walker.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/walker.js
 var require_walker = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.GlobStream = exports.GlobWalker = exports.GlobUtil = void 0;
@@ -87255,7 +86990,7 @@ var require_walker = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.GlobStream = GlobStream;
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/glob.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/glob.js
 var require_glob = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.Glob = void 0;
@@ -87454,7 +87189,7 @@ var require_glob = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.Glob = Glob;
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/has-magic.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/has-magic.js
 var require_has_magic = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.hasMagic = void 0;
@@ -87478,7 +87213,7 @@ var require_has_magic = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.hasMagic = hasMagic;
 }));
 //#endregion
-//#region node_modules/.pnpm/glob@10.5.0/node_modules/glob/dist/commonjs/index.js
+//#region node_modules/.pnpm/glob@10.4.5/node_modules/glob/dist/commonjs/index.js
 var require_commonjs = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.glob = exports.sync = exports.iterate = exports.iterateSync = exports.stream = exports.streamSync = exports.Ignore = exports.hasMagic = exports.Glob = exports.unescape = exports.escape = void 0;
