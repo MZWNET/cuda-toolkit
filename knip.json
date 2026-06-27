@@ -3,5 +3,9 @@
   "workspaces": {
     ".": {},
     "scripts/update-links": {}
-  }
+  },
+  "ignore": [
+    "dist",
+    "node_modules"
+  ]
 }
