@@ -100,3 +100,14 @@ __tests__/runner/*
 # IDE files
 .idea
 *.code-workspace
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

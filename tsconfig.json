@@ -12,9 +12,9 @@
     "src/**/*.ts",
     "src/**/*.json",
     "scripts/update-links/*.json",
-    "eslint.config.ts",
-    "vitest.config.ts",
-    "rollup.config.ts"
+    "oxfmt.config.ts",
+    "oxlint.config.ts",
+    "vitest.config.ts"
   ],
   "exclude": [
     "dist",
