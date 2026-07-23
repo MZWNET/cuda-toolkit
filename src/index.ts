@@ -33,16 +33,10 @@ export async function run(): Promise<void> {
     core.debug(`Desired log file suffix: ${logFileSuffix}`)
 
     // Parse subPackages array
-    const subPackagesArray: string[] = await parsePackages(
-      subPackages,
-      subPackagesArgName,
-    )
+    const subPackagesArray: string[] = await parsePackages(subPackages, subPackagesArgName)
 
     // Parse nonCudaSubPackages array
-    const nonCudaSubPackagesArray: string[] = await parsePackages(
-      nonCudaSubPackages,
-      nonCudaSubPackagesArgName,
-    )
+    const nonCudaSubPackagesArray: string[] = await parsePackages(nonCudaSubPackages, nonCudaSubPackagesArgName)
 
     // Parse method
     const methodParsed: Method = parseMethod(methodString)
@@ -56,8 +50,7 @@ export async function run(): Promise<void> {
     try {
       linuxLocalArgsArray = JSON.parse(linuxLocalArgs) as string[]
       // TODO verify that elements are valid package names (--samples, --driver, --toolkit, etc.)
-    }
-    catch (error) {
+    } catch (error) {
       core.debug(`Json parsing error: ${String(error)}`)
       const errString = `Error parsing input 'linux-local-args' to a JSON string array: ${linuxLocalArgs}`
       core.debug(errString)
@@ -65,47 +58,24 @@ export async function run(): Promise<void> {
     }
 
     // Check if subPackages are specified in 'local' method on Linux
-    if (
-      methodParsed === 'local'
-      && subPackagesArray.length > 0
-      && (await getOs()) === OSType.linux
-    ) {
-      throw new Error(
-        `Subpackages on 'local' method is not supported on Linux, use 'network' instead`,
-      )
+    if (methodParsed === 'local' && subPackagesArray.length > 0 && (await getOs()) === OSType.linux) {
+      throw new Error(`Subpackages on 'local' method is not supported on Linux, use 'network' instead`)
     }
 
     // Linux network install (uses apt repository)
     const useAptInstall = await useApt(methodParsed)
     if (useAptInstall) {
       // Setup aptitude repos
-      await aptSetup(version)
+      const channel = await aptSetup(version)
       // Install packages
-      const installResult = await aptInstall(
-        version,
-        subPackagesArray,
-        nonCudaSubPackagesArray,
-      )
+      const installResult = await aptInstall(version, subPackagesArray, nonCudaSubPackagesArray, channel)
       core.debug(`Install result: ${installResult}`)
-    }
-    else {
+    } else {
       // Download
-      const executablePath: string = await download(
-        version,
-        methodParsed,
-        useLocalCache,
-        useGitHubCache,
-      )
+      const executablePath: string = await download(version, methodParsed, useLocalCache, useGitHubCache)
 
       // Install
-      await install(
-        executablePath,
-        version,
-        subPackagesArray,
-        linuxLocalArgsArray,
-        methodString,
-        logFileSuffix,
-      )
+      await install(executablePath, version, subPackagesArray, linuxLocalArgsArray, methodString, logFileSuffix)
     }
 
     // Add CUDA environment variables to GitHub environment variables
@@ -114,12 +84,10 @@ export async function run(): Promise<void> {
     // Set output variables
     core.setOutput('cuda', cuda)
     core.setOutput('CUDA_PATH', cudaPath)
-  }
-  catch (error) {
+  } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error)
-    }
-    else {
+    } else {
       core.setFailed('Unknown error')
     }
   }

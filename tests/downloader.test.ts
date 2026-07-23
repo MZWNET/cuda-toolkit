@@ -8,6 +8,7 @@ import { CPUArch, getArch } from '@/src/arch.js'
 import { download } from '@/src/downloader.js'
 import { getFilesRecursive } from '@/src/fs-utils.js'
 import { getLinks } from '@/src/links/get-links.js'
+import { WindowsLinks } from '@/src/links/windows-links.js'
 import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 vi.mock('@actions/cache', () => ({
@@ -57,7 +58,7 @@ vi.mock('@/src/links/get-links.js', () => ({
 }))
 
 // Mock node:fs
-vi.mock('node:fs', async (importOriginal) => {
+vi.mock('node:fs', async importOriginal => {
   const actual = await importOriginal<typeof import('node:fs')>()
   return {
     default: {
@@ -82,11 +83,11 @@ describe('downloader', () => {
     vi.mocked(getRelease).mockResolvedValue('22.04')
     vi.mocked(getFilesRecursive).mockResolvedValue(['/mock/path/installer.run'])
 
-    const mockLinks = {
+    const mockLinks = Object.assign(Object.create(WindowsLinks.prototype) as WindowsLinks, {
       getLocalURLFromCudaVersion: vi.fn().mockResolvedValue(new URL('https://developer.nvidia.com/mock.run')),
-      getNetworkURLFromCudaVersion: vi.fn().mockReturnValue(new URL('https://developer.nvidia.com/mock_network.exe')),
-    }
-    vi.mocked(getLinks).mockResolvedValue(mockLinks as unknown as Awaited<ReturnType<typeof getLinks>>)
+      getNetworkURLFromCudaVersion: vi.fn().mockResolvedValue(new URL('https://developer.nvidia.com/mock_network.exe')),
+    })
+    vi.mocked(getLinks).mockResolvedValue(mockLinks)
   })
 
   describe('download', () => {
@@ -109,7 +110,10 @@ describe('downloader', () => {
 
       await download(version, method, true, true)
 
-      expect(cache.restoreCache).toHaveBeenCalledWith(['cuda_installer-linux-22.04-x64-12.1.0'], 'cuda_installer-linux-22.04-x64-12.1.0')
+      expect(cache.restoreCache).toHaveBeenCalledWith(
+        ['cuda_installer-linux-22.04-x64-12.1.0'],
+        'cuda_installer-linux-22.04-x64-12.1.0',
+      )
       expect(tc.downloadTool).not.toHaveBeenCalled()
     })
 
@@ -128,18 +132,46 @@ describe('downloader', () => {
       await download(version, method, true, true)
 
       // Download occurred
-      expect(tc.downloadTool).toHaveBeenCalledWith('https://developer.nvidia.com/mock.run', 'cuda_download/cuda_installer-linux-22.04-x64_12.1.0.run')
+      expect(tc.downloadTool).toHaveBeenCalledWith(
+        'https://developer.nvidia.com/mock.run',
+        'cuda_download/cuda_installer-linux-22.04-x64_12.1.0.run',
+      )
 
       // Local caching occurred
-      expect(tc.cacheFile).toHaveBeenCalledWith('cuda_download/cuda_installer-linux-22.04-x64_12.1.0.run', 'cuda_installer-linux-22.04-x64_12.1.0.run', 'cuda_installer-linux-x64', '12.1.0')
+      expect(tc.cacheFile).toHaveBeenCalledWith(
+        'cuda_download/cuda_installer-linux-22.04-x64_12.1.0.run',
+        'cuda_installer-linux-22.04-x64_12.1.0.run',
+        'cuda_installer-linux-x64',
+        '12.1.0',
+      )
 
       // GitHub caching occurred
       expect(io.mkdirP).toHaveBeenCalledWith('cuda_installer-linux-22.04-x64-12.1.0')
-      expect(io.mv).toHaveBeenCalledWith('cuda_download/cuda_installer-linux-22.04-x64_12.1.0.run', 'cuda_installer-linux-22.04-x64-12.1.0')
-      expect(cache.saveCache).toHaveBeenCalledWith(['cuda_installer-linux-22.04-x64-12.1.0'], 'cuda_installer-linux-22.04-x64-12.1.0')
+      expect(io.mv).toHaveBeenCalledWith(
+        'cuda_download/cuda_installer-linux-22.04-x64_12.1.0.run',
+        'cuda_installer-linux-22.04-x64-12.1.0',
+      )
+      expect(cache.saveCache).toHaveBeenCalledWith(
+        ['cuda_installer-linux-22.04-x64-12.1.0'],
+        'cuda_installer-linux-22.04-x64-12.1.0',
+      )
 
       // Chmod for linux
       expect(fs.promises.chmod).toHaveBeenCalledWith(expect.any(String), '0755')
+    })
+
+    it('downloads the architecture-selected Windows network installer', async () => {
+      vi.mocked(getOs).mockResolvedValue(OSType.windows)
+      vi.mocked(getArch).mockResolvedValue(CPUArch.arm64)
+      vi.mocked(fs.promises.stat).mockRejectedValue(new Error('ENOENT'))
+      vi.mocked(getFilesRecursive).mockResolvedValue(['/mock/path/installer.exe'])
+
+      await download(version, 'network', false, false)
+
+      expect(tc.downloadTool).toHaveBeenCalledWith(
+        'https://developer.nvidia.com/mock_network.exe',
+        'cuda_download/cuda_installer-windows-22.04-arm64_12.1.0.exe',
+      )
     })
 
     it('should throw error if zero files in cache', async () => {

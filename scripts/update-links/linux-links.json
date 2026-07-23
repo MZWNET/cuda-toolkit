@@ -135,5 +135,21 @@
       "11.0.2": "https://developer.download.nvidia.com/compute/cuda/11.0.2/local_installers/cuda_11.0.2_450.51.05_linux_sbsa.run",
       "11.0.1": "https://developer.download.nvidia.com/compute/cuda/11.0.1/local_installers/cuda_11.0.1_450.36.06_linux_sbsa.run"
     }
+  },
+  "network": {
+    "x86_64": {
+      "13.4.0": {
+        "22.04": "https://packages.nvidia.com/jammy/nvidia-preview-keyring.deb",
+        "24.04": "https://packages.nvidia.com/noble/nvidia-preview-keyring.deb",
+        "26.04": "https://packages.nvidia.com/resolute/nvidia-preview-keyring.deb"
+      }
+    },
+    "arm64": {
+      "13.4.0": {
+        "22.04": "https://packages.nvidia.com/jammy/nvidia-preview-keyring.deb",
+        "24.04": "https://packages.nvidia.com/noble/nvidia-preview-keyring.deb",
+        "26.04": "https://packages.nvidia.com/resolute/nvidia-preview-keyring.deb"
+      }
+    }
   }
 }

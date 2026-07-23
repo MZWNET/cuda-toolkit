@@ -1,9 +1,13 @@
 import { pickAllMatches, pickFirstMatch, PATCHES_REGEX } from './utils/regex-match.js'
 
-const LEGACY_LINUX_RUNFILE_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_linux[^"'\s><]*/gi
-const LEGACY_LINUX_ARM64_RUNFILE_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_(?:linux_sbsa|linux_aarch64|linux_arm64)[^"'\s><]*/gi
-const LEGACY_WINDOWS_LOCAL_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*(?:win|windows)[^"'\s><]*/gi
-const LEGACY_WINDOWS_NETWORK_REGEX = /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/network_installers2?\/[^"'\s><]*(?:win|windows)[^"'\s><]*_network(?:\.exe)?/gi
+const LEGACY_LINUX_RUNFILE_REGEX =
+  /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_linux[^"'\s><]*/gi
+const LEGACY_LINUX_ARM64_RUNFILE_REGEX =
+  /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*_(?:linux_sbsa|linux_aarch64|linux_arm64)[^"'\s><]*/gi
+const LEGACY_WINDOWS_LOCAL_REGEX =
+  /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/local_installers2?\/[^"'\s><]*(?:win|windows)[^"'\s><]*/gi
+const LEGACY_WINDOWS_NETWORK_REGEX =
+  /(?:https?:\/\/developer\.download\.nvidia\.com)?\/compute\/cuda\/[0-9.]+(?:\/Prod[^/]*)?\/network_installers2?\/[^"'\s><]*(?:win|windows)[^"'\s><]*_network(?:\.exe)?/gi
 const WIN10_REGEX = /win10/i
 
 export interface LegacyDownloadLinks {
@@ -15,7 +19,7 @@ export interface LegacyDownloadLinks {
 
 export function normalizeLegacyUrl(url: string): string {
   const trimmed = url.split('<')[0]?.trim() ?? url.trim()
-  const safe = trimmed.split('"')[0]?.split('\'')[0]?.trim() ?? trimmed
+  const safe = trimmed.split('"')[0]?.split("'")[0]?.trim() ?? trimmed
 
   if (safe.startsWith('/compute/')) {
     return `https://developer.download.nvidia.com${safe}`
@@ -27,8 +31,7 @@ export function normalizeLegacyUrl(url: string): string {
 }
 
 export function pickWin10Preferred(urls: string[]): string | null {
-  if (urls.length === 0)
-    return null
+  if (urls.length === 0) return null
   return urls.find(url => WIN10_REGEX.test(url)) ?? urls[0]
 }
 

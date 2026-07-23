@@ -1,42 +1,19 @@
 import type { AbstractLinks } from '@/src/links/links.js'
-import type { WindowsLinks } from '@/src/links/windows-links.js'
 import type { Method } from '@/src/method.js'
 import * as core from '@actions/core'
 import { SemVer } from 'semver'
 import { getLinks } from '@/src/links/get-links.js'
-import { getOs, OSType } from '@/src/platform.js'
 
 // Helper for converting string to SemVer and verifying it exists in the links
-export async function getVersion(
-  versionString: string,
-  method: Method,
-): Promise<SemVer> {
+export async function getVersion(versionString: string, method: Method): Promise<SemVer> {
   const version = new SemVer(versionString)
   const links: AbstractLinks = await getLinks()
-  let versions
-  switch (method) {
-    case 'local':
-      versions = links.getAvailableLocalCudaVersions()
-      break
-    case 'network':
-      switch (await getOs()) {
-        case OSType.linux:
-          // TODO adapt this to actual available network versions for linux
-          versions = links.getAvailableLocalCudaVersions()
-          break
-        case OSType.windows:
-          versions = (
-            links as unknown as WindowsLinks
-          ).getAvailableNetworkCudaVersions()
-          break
-      }
-  }
+  const versions = await links.getAvailableCudaVersions(method)
   core.debug(`Available versions: ${versions.map(v => v.toString()).join(', ')}`)
   if (versions.some(v => v.compare(version) === 0)) {
     core.debug(`Version available: ${version.toString()}`)
     return version
-  }
-  else {
+  } else {
     core.debug(`Version not available error!`)
     throw new Error(`Version not available: ${version.toString()}`)
   }

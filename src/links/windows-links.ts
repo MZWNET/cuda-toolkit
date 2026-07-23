@@ -1,42 +1,35 @@
-import type { CudaLinksModel } from '@/src/links/links.js'
-import { SemVer } from 'semver'
+import type { CudaLinksModel, CudaVersionUrlMap, LinkArchitecture } from '@/src/links/links.js'
+import type { Method } from '@/src/method.js'
+import type { SemVer } from 'semver'
 import windowsLinks from '@/scripts/update-links/windows-links.json' with { type: 'json' }
-import { AbstractLinks } from '@/src/links/links.js'
+import { getArch } from '@/src/arch.js'
+import { AbstractLinks, getLinkArchitecture } from '@/src/links/links.js'
 
-const windowsLinksModel = windowsLinks as unknown as CudaLinksModel
-const cudaVersionToLocalData = windowsLinksModel.local.x86_64
-const cudaVersionToNetworkData = windowsLinksModel.network?.x86_64 ?? {}
+const model = windowsLinks as unknown as CudaLinksModel
 
-/**
- * Singleton class for windows links.
- */
 export class WindowsLinks extends AbstractLinks {
-  // Singleton instance
   private static _instance: WindowsLinks
 
-  private cudaVersionToNetworkUrl: Map<string, string>
+  private getMap(method: Method, arch: LinkArchitecture): CudaVersionUrlMap {
+    return model[method]?.[arch] ?? {}
+  }
 
-  // Private constructor to prevent instantiation
-  private constructor() {
-    super()
-    // Map of cuda SemVer version to download URL
-    this.cudaVersionToURL = new Map(Object.entries(cudaVersionToLocalData))
-    this.cudaVersionToNetworkUrl = new Map(Object.entries(cudaVersionToNetworkData))
+  async getAvailableCudaVersions(method: Method): Promise<SemVer[]> {
+    const arch = getLinkArchitecture(await getArch())
+    return this.getVersions(this.getMap(method, arch))
+  }
+
+  async getLocalURLFromCudaVersion(version: SemVer): Promise<URL> {
+    const arch = getLinkArchitecture(await getArch())
+    return this.getUrl(this.getMap('local', arch), version)
+  }
+
+  async getNetworkURLFromCudaVersion(version: SemVer): Promise<URL> {
+    const arch = getLinkArchitecture(await getArch())
+    return this.getUrl(this.getMap('network', arch), version)
   }
 
   static get Instance(): WindowsLinks {
     return this._instance ?? (this._instance = new this())
-  }
-
-  getAvailableNetworkCudaVersions(): SemVer[] {
-    return Array.from(this.cudaVersionToNetworkUrl.keys(), s => new SemVer(s))
-  }
-
-  getNetworkURLFromCudaVersion(version: SemVer): URL {
-    const urlString = this.cudaVersionToNetworkUrl.get(`${version.toString()}`)
-    if (urlString === undefined) {
-      throw new Error(`Invalid version: ${version.toString()}`)
-    }
-    return new URL(urlString)
   }
 }

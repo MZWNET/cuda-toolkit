@@ -10,42 +10,39 @@ export interface ArchiveEntry {
   label: string
   baseVersion: string | null
   version: string
+  channel: ReleaseChannel
 }
 
-export async function fetchArchiveVersions(): Promise<ArchiveEntry[]> {
-  const html = await fetchText(CUDA_ARCHIVE_URL, 'Failed to fetch CUDA toolkit archive')
+export type ReleaseChannel = 'stable' | 'preview'
+
+export function parseArchiveVersions(html: string): ArchiveEntry[] {
   const entries: ArchiveEntry[] = []
   const seen = new Set<string>()
   for (const match of html.matchAll(ARCHIVE_LINK_REGEX)) {
     const href = match[1]?.trim()
     const label = match[2]?.trim()
-    if (href === undefined || href === '' || label === undefined || label === '')
-      continue
+    if (href === undefined || href === '' || label === undefined || label === '') continue
 
-    if (!label.startsWith('CUDA Toolkit'))
-      continue
-    if (label.includes('BSP'))
-      continue
+    if (!label.startsWith('CUDA Toolkit')) continue
+    if (label.includes('BSP')) continue
 
     const versionMatch = label.match(ARCHIVE_LEADING_VERSION_REGEX)
     const baseVersion = versionMatch?.[1] ?? null
-    if (baseVersion === null)
-      continue
+    if (baseVersion === null) continue
 
     const dedupeKey = `${label}|${href}`
-    if (seen.has(dedupeKey))
-      continue
+    if (seen.has(dedupeKey)) continue
 
     entries.push({
       url: new URL(href, CUDA_ARCHIVE_URL).toString(),
       label,
       baseVersion,
       version: label.replace(CUDA_TOOLKIT_PREFIX_REGEX, ''),
+      channel: label.includes('Developer Preview') ? 'preview' : 'stable',
     })
     seen.add(dedupeKey)
 
-    if (baseVersion === '7.5')
-      break
+    if (baseVersion === '7.5') break
   }
 
   const hasTarget = entries.some(entry => entry.baseVersion === '7.5')
@@ -54,4 +51,9 @@ export async function fetchArchiveVersions(): Promise<ArchiveEntry[]> {
   }
 
   return entries
+}
+
+export async function fetchArchiveVersions(): Promise<ArchiveEntry[]> {
+  const html = await fetchText(CUDA_ARCHIVE_URL, 'Failed to fetch CUDA toolkit archive')
+  return parseArchiveVersions(html)
 }

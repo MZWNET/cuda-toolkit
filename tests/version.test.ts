@@ -1,60 +1,36 @@
+import type { AbstractLinks } from '@/src/links/links.js'
 import type { Method } from '@/src/method.js'
 import { SemVer } from 'semver'
-import { vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { getLinks } from '@/src/links/get-links.js'
 import { getVersion } from '@/src/version.js'
 
-vi.mock('node:os', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('node:os')>()
-  const isDarwin = mod.platform() === 'darwin'
-  return {
-    ...mod,
-    default: {
-      ...mod,
-      platform: () => (isDarwin ? 'linux' : mod.platform()),
-    },
-    platform: () => (isDarwin ? 'linux' : mod.platform()),
-  }
+vi.mock('@actions/core', async () => import('@/fixtures/core.js'))
+vi.mock('@/src/links/get-links.js', () => ({ getLinks: vi.fn() }))
+
+describe('getVersion', () => {
+  const getAvailableCudaVersions = vi.fn()
+
+  beforeEach(() => {
+    getAvailableCudaVersions.mockResolvedValue([new SemVer('13.4.0'), new SemVer('11.2.2')])
+    vi.mocked(getLinks).mockResolvedValue({
+      getAvailableCudaVersions,
+    } as unknown as AbstractLinks)
+  })
+
+  it.each<Method>(['local', 'network'])('checks availability in only the %s mapping', async method => {
+    const version = await getVersion('11.2.2', method)
+
+    expect(version).toEqual(new SemVer('11.2.2'))
+    expect(getAvailableCudaVersions).toHaveBeenCalledWith(method)
+  })
+
+  it.each<Method>(['local', 'network'])('throws on an invalid version string for method %s', async method => {
+    const versionString = 'invalid version string that does not conform to semver'
+    await expect(getVersion(versionString, method)).rejects.toThrow(new TypeError(`Invalid Version: ${versionString}`))
+  })
+
+  it.each<Method>(['local', 'network'])('throws the existing unavailable error for method %s', async method => {
+    await expect(getVersion('0.0.1', method)).rejects.toThrow('Version not available: 0.0.1')
+  })
 })
-
-it.each<Method>(['local', 'network'])(
-  'successfully parse correct version for method %s',
-  async (method) => {
-    const versionString = '11.2.2'
-    try {
-      const version = await getVersion(versionString, method)
-      expect(version).toBeInstanceOf(SemVer)
-      expect(version.compare(new SemVer(versionString))).toBe(0)
-    }
-    catch (error) {
-      throw new Error(`Error parsing version: ${String(error)}`)
-      // Other OS
-    }
-  },
-)
-
-it.each<Method>(['local', 'network'])(
-  'expect error to be thrown on invalid version string for method %s',
-  async (method) => {
-    const versionString
-      = 'invalid version string that does not conform to semver'
-    await expect(getVersion(versionString, method)).rejects.toThrow(
-      new TypeError(`Invalid Version: ${versionString}`),
-    )
-  },
-)
-
-it.each<Method>(['local', 'network'])(
-  'expect error to be thrown on unavailable version for method %s',
-  async (method) => {
-    const versionString = '0.0.1'
-    try {
-      await expect(getVersion(versionString, method)).rejects.toThrow(
-        `Version not available: ${versionString}`,
-      )
-    }
-    catch (error) {
-      throw new Error(`Error checking version availability: ${String(error)}`)
-      // Other OS
-    }
-  },
-)

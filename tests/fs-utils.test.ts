@@ -37,10 +37,7 @@ describe('fs-utils', () => {
 
       const files = await getFilesRecursive(mockDir)
 
-      expect(files).toEqual([
-        path.join(mockDir, 'file1.txt'),
-        path.join(mockDir, 'subdir', 'file2.txt'),
-      ])
+      expect(files).toEqual([path.join(mockDir, 'file1.txt'), path.join(mockDir, 'subdir', 'file2.txt')])
       expect(fs.promises.readdir).toHaveBeenCalledTimes(2)
     })
 
@@ -55,9 +52,8 @@ describe('fs-utils', () => {
     it('should filter out non-readable or missing files', async () => {
       const files = ['/path/readable.txt', '/path/missing.txt', '/path/noaccess.txt']
 
-      vi.mocked(fs.promises.access).mockImplementation(async (p) => {
-        if (p === '/path/readable.txt')
-          return Promise.resolve()
+      vi.mocked(fs.promises.access).mockImplementation(async p => {
+        if (p === '/path/readable.txt') return Promise.resolve()
         throw new Error('Access denied or not found')
       })
 

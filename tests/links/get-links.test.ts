@@ -3,7 +3,7 @@ import { getLinks } from '@/src/links/get-links.js'
 import { LinuxLinks } from '@/src/links/linux-links.js'
 import { WindowsLinks } from '@/src/links/windows-links.js'
 
-vi.mock('node:os', async (importOriginal) => {
+vi.mock('node:os', async importOriginal => {
   const mod = await importOriginal<typeof import('node:os')>()
   const isDarwin = mod.platform() === 'darwin'
   return {
@@ -18,24 +18,9 @@ vi.mock('node:os', async (importOriginal) => {
 it.concurrent('getLinks gives a valid ILinks class', async () => {
   try {
     const links = await getLinks()
-    expect(
-      links instanceof LinuxLinks || links instanceof WindowsLinks,
-    ).toBeTruthy()
-  }
-  catch (error) {
+    expect(links instanceof LinuxLinks || links instanceof WindowsLinks).toBeTruthy()
+  } catch (error) {
     throw new Error(`Error getting links: ${String(error)}`)
     // Other OS
   }
-})
-
-it.concurrent('getLinks return same versions in same order', async () => {
-  const linuxLinks = LinuxLinks.Instance.getAvailableLocalCudaVersions()
-  const windowsLinks = WindowsLinks.Instance.getAvailableLocalCudaVersions()
-  const windowsNetworkLinks
-    = WindowsLinks.Instance.getAvailableNetworkCudaVersions()
-
-  expect(linuxLinks.length).toBe(windowsLinks.length)
-  expect(windowsLinks.length).toBe(windowsNetworkLinks.length)
-  expect(linuxLinks).toEqual(windowsLinks)
-  expect(windowsLinks).toEqual(windowsNetworkLinks)
 })

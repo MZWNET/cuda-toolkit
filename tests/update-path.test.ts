@@ -47,7 +47,10 @@ describe('update-path', () => {
     expect(core.addPath).toHaveBeenCalledWith(expectedBinPath)
 
     const expectedLibPath = path.join('/usr/local/cuda-12.1', 'lib64')
-    expect(core.exportVariable).toHaveBeenCalledWith('LD_LIBRARY_PATH', `${expectedLibPath}${path.delimiter}/some/existing/lib`)
+    expect(core.exportVariable).toHaveBeenCalledWith(
+      'LD_LIBRARY_PATH',
+      `${expectedLibPath}${path.delimiter}/some/existing/lib`,
+    )
   })
 
   it('should update paths correctly on Linux with empty LD_LIBRARY_PATH', async () => {

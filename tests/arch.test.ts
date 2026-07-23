@@ -21,18 +21,9 @@ describe('arch', () => {
     expect(detectedArch).toBe(CPUArch.arm64)
   })
 
-  const unsupportedArches = [
-    'arm',
-    'ia32',
-    'loong64',
-    'mips',
-    'mipsel',
-    'ppc64',
-    'riscv64',
-    's390x',
-  ]
+  const unsupportedArches = ['arm', 'ia32', 'loong64', 'mips', 'mipsel', 'ppc64', 'riscv64', 's390x']
 
-  it.each(unsupportedArches)('should throw error for unsupported architecture: %s', async (archString) => {
+  it.each(unsupportedArches)('should throw error for unsupported architecture: %s', async archString => {
     vi.mocked(os.arch).mockReturnValue(archString as unknown as ReturnType<typeof os.arch>)
     await expect(getArch()).rejects.toThrow(`Unsupported architecture: ${archString}`)
   })

@@ -10,7 +10,9 @@ import { getOs, getRelease, OSType } from '@/src/platform.js'
 
 vi.mock('@actions/artifact', () => {
   const DefaultArtifactClientMock = vi.fn()
-  ;(DefaultArtifactClientMock.prototype as { uploadArtifact: unknown }).uploadArtifact = vi.fn().mockResolvedValue({ id: 123 })
+  ;(DefaultArtifactClientMock.prototype as { uploadArtifact: unknown }).uploadArtifact = vi
+    .fn()
+    .mockResolvedValue({ id: 123 })
   return {
     DefaultArtifactClient: DefaultArtifactClientMock,
   }
@@ -25,7 +27,7 @@ vi.mock('@actions/exec', () => ({
   exec: vi.fn().mockResolvedValue(0),
 }))
 
-vi.mock('node:os', async (importOriginal) => {
+vi.mock('node:os', async importOriginal => {
   const actual = await importOriginal<typeof import('node:os')>()
   return {
     ...actual,
@@ -49,7 +51,9 @@ vi.mock('@/src/fs-utils.js', () => ({
 function expectCudaInstallLogUploaded() {
   expect(DefaultArtifactClient).toHaveBeenCalled()
   const mockedClient = vi.mocked(DefaultArtifactClient)
-  const clientInstance = (mockedClient.mock.results[0]?.value ?? mockedClient.mock.instances[0]) as { uploadArtifact: Mock }
+  const clientInstance = (mockedClient.mock.results[0]?.value ?? mockedClient.mock.instances[0]) as {
+    uploadArtifact: Mock
+  }
   expect(clientInstance.uploadArtifact).toHaveBeenCalledWith(
     `cuda-install-linux-22.04-local-local-linux`,
     ['/var/log/cuda-installer.log'],
@@ -120,7 +124,9 @@ describe('installer', () => {
       const executionError = new Error('Execution Failed')
       vi.mocked(exec).mockRejectedValueOnce(executionError)
 
-      await expect(install(executablePath, version, [], linuxLocalArgsArray, method, logFileSuffix)).rejects.toThrow('Execution Failed')
+      await expect(install(executablePath, version, [], linuxLocalArgsArray, method, logFileSuffix)).rejects.toThrow(
+        'Execution Failed',
+      )
 
       expect(core.warning).toHaveBeenCalledWith(`Error during installation: Error: Execution Failed`)
 

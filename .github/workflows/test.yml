@@ -19,6 +19,54 @@ permissions:
   contents: read
 
 jobs:
+  developer-preview:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            method: network
+          - os: ubuntu-24.04-arm
+            method: network
+          - os: windows-2025
+            method: local
+          - os: windows-11-arm
+            method: local
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          check-latest: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Install CUDA 13.4.0 Developer Preview
+        uses: ./
+        with:
+          cuda: 13.4.0
+          method: ${{ matrix.method }}
+          sub-packages: '["nvcc"]'
+          log-file-suffix: '13.4.0-${{ matrix.method }}-${{ matrix.os }}'
+
+      - name: Test if nvcc is available
+        run: nvcc -V
+
   test:
     strategy:
       fail-fast: false
@@ -66,8 +114,7 @@ jobs:
           method: ${{matrix.method}}
           log-file-suffix: '${{matrix.method}}-${{matrix.os}}'
 
-      - name:
-          Run the action on this runner with nvcc and libcublas subpackages
+      - name: Run the action on this runner with nvcc and libcublas subpackages
           (Linux)
         if: runner.os == 'Linux' && matrix.method == 'network'
         uses: ./

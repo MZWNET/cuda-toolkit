@@ -1,92 +1,100 @@
+import type { Method } from '@/src/method.js'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { SemVer } from 'semver'
-import { vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { CPUArch, getArch } from '@/fixtures/arch.js'
 import { LinuxLinks } from '@/src/links/linux-links.js'
 
 vi.mock('@/src/arch.js', async () => import('@/fixtures/arch.js'))
 
+type Arch = 'x86_64' | 'arm64'
+type NetworkMap = Record<string, Record<string, string>>
+
 const linuxLinksJsonPath = resolve('scripts/update-links/linux-links.json')
 const linuxLinksData = JSON.parse(readFileSync(linuxLinksJsonPath, 'utf8')) as {
-  local: {
-    x86_64: Record<string, string>
-    arm64?: Record<string, string>
-  }
+  local: Record<Arch, Record<string, string>>
+  network: Record<Arch, NetworkMap>
 }
 
-const arm64Versions = Object.keys(linuxLinksData.local.arm64 ?? {})
-const x86Versions = Object.keys(linuxLinksData.local.x86_64)
-const x86OnlyVersions = x86Versions.filter(version => !arm64Versions.includes(version))
+const cases: Array<{ arch: Arch; cpuArch: CPUArch; method: Method }> = [
+  { arch: 'x86_64', cpuArch: CPUArch.x86_64, method: 'local' },
+  { arch: 'x86_64', cpuArch: CPUArch.x86_64, method: 'network' },
+  { arch: 'arm64', cpuArch: CPUArch.arm64, method: 'local' },
+  { arch: 'arm64', cpuArch: CPUArch.arm64, method: 'network' },
+]
 
-it('linux Cuda versions in descending order', async () => {
-  vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
-  const versions = LinuxLinks.Instance.getAvailableLocalCudaVersions()
-  for (let i = 0; i < versions.length - 1; i++) {
-    const versionA: SemVer = versions[i]
-    const versionB: SemVer = versions[i + 1]
-    expect(versionA.compare(versionB)).toBe(1) // A should be greater than B
-  }
-})
+function expectedVersions(arch: Arch, method: Method): string[] {
+  const versions =
+    method === 'local'
+      ? Object.keys(linuxLinksData.local[arch])
+      : [...Object.keys(linuxLinksData.local[arch]), ...Object.keys(linuxLinksData.network[arch])]
+  return Array.from(new Set(versions)).sort((a, b) => new SemVer(b).compare(new SemVer(a)))
+}
 
-it(
-  'linux Cuda version to URL map contains valid URLs',
-  async () => {
-    vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
-    for (const version of LinuxLinks.Instance.getAvailableLocalCudaVersions()) {
-      const url: URL = await LinuxLinks.Instance.getLocalURLFromCudaVersion(version)
-      expect(url).toBeInstanceOf(URL)
-    }
-  },
-)
+describe('linuxLinks', () => {
+  it.each(cases)('reads only $arch $method availability and sorts it descending', async ({ arch, cpuArch, method }) => {
+    vi.mocked(getArch).mockResolvedValue(cpuArch)
 
-it('there is at least linux 1 version url pair', async () => {
-  vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
-  expect(
-    LinuxLinks.Instance.getAvailableLocalCudaVersions().length,
-  ).toBeGreaterThanOrEqual(1)
-})
+    const actual = await LinuxLinks.Instance.getAvailableCudaVersions(method)
 
-it(
-  'local Linux links should start with https://developer.(download.)nvidia.com and end with a known Linux installer suffix',
-  async () => {
-    vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
-    const versions = LinuxLinks.Instance.getAvailableLocalCudaVersions()
-    const filteredVersions = versions.filter((version) => {
-      return (
-        version.version !== '10.0.130'
-        && version.version !== '9.2.148'
-        && version.version !== '8.0.61'
-      )
-    })
-    for (const version of filteredVersions) {
-      const url: URL = await LinuxLinks.Instance.getLocalURLFromCudaVersion(version)
-      expect(url.toString()).toMatch(
-        /^https:\/\/developer\.(download\.)?nvidia\.com.+(\.run|-run|_linux)$/,
+    expect(actual.map(version => version.toString())).toEqual(expectedVersions(arch, method))
+  })
+
+  it.each([
+    { arch: 'x86_64' as const, cpuArch: CPUArch.x86_64 },
+    { arch: 'arm64' as const, cpuArch: CPUArch.arm64 },
+  ])('resolves $arch local URLs', async ({ arch, cpuArch }) => {
+    vi.mocked(getArch).mockResolvedValue(cpuArch)
+    for (const [version, expectedUrl] of Object.entries(linuxLinksData.local[arch])) {
+      await expect(LinuxLinks.Instance.getLocalURLFromCudaVersion(new SemVer(version))).resolves.toEqual(
+        new URL(expectedUrl),
       )
     }
-  },
-)
+  })
 
-it('linux arm64 versions resolve to URLs when available', async () => {
-  vi.mocked(getArch).mockResolvedValue(CPUArch.arm64)
-  for (const versionString of arm64Versions) {
-    const url = await LinuxLinks.Instance.getLocalURLFromCudaVersion(
-      new SemVer(versionString),
+  it('does not resolve an x86_64-only local version on ARM64', async () => {
+    const arm64Versions = new Set(Object.keys(linuxLinksData.local.arm64))
+    const version = Object.keys(linuxLinksData.local.x86_64).find(candidate => !arm64Versions.has(candidate))
+    expect(version).toBeDefined()
+    vi.mocked(getArch).mockResolvedValue(CPUArch.arm64)
+
+    await expect(LinuxLinks.Instance.getLocalURLFromCudaVersion(new SemVer(version!))).rejects.toThrow(
+      `Invalid version: ${version}`,
     )
-    expect(url).toBeInstanceOf(URL)
-  }
-})
+  })
 
-it('linux arm64 throws on x86_64-only versions', async () => {
-  vi.mocked(getArch).mockResolvedValue(CPUArch.arm64)
-  const [sampleVersion] = x86OnlyVersions
-  if (sampleVersion === undefined) {
-    return
-  }
-  await expect(
-    LinuxLinks.Instance.getLocalURLFromCudaVersion(
-      new SemVer(sampleVersion),
-    ),
-  ).rejects.toThrow('does not support ARM64 downloads')
+  it.each([
+    { arch: 'x86_64' as const, cpuArch: CPUArch.x86_64 },
+    { arch: 'arm64' as const, cpuArch: CPUArch.arm64 },
+  ])('resolves $arch preview keyrings by Ubuntu version', async ({ arch, cpuArch }) => {
+    vi.mocked(getArch).mockResolvedValue(cpuArch)
+    for (const [version, ubuntuLinks] of Object.entries(linuxLinksData.network[arch])) {
+      for (const [ubuntuVersion, expectedUrl] of Object.entries(ubuntuLinks)) {
+        await expect(LinuxLinks.Instance.getNetworkKeyringURL(new SemVer(version), ubuntuVersion)).resolves.toEqual(
+          new URL(expectedUrl),
+        )
+      }
+    }
+  })
+
+  it('returns null for a stable network version without an explicit keyring', async () => {
+    vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
+    const stableVersion = Object.keys(linuxLinksData.local.x86_64).find(
+      version => linuxLinksData.network.x86_64[version] === undefined,
+    )
+    expect(stableVersion).toBeDefined()
+
+    await expect(LinuxLinks.Instance.getNetworkKeyringURL(new SemVer(stableVersion!), '24.04')).resolves.toBeNull()
+  })
+
+  it('uses the existing unavailable error for an unmapped preview Ubuntu version', async () => {
+    vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
+    const previewVersion = Object.keys(linuxLinksData.network.x86_64)[0]
+    expect(previewVersion).toBeDefined()
+
+    await expect(LinuxLinks.Instance.getNetworkKeyringURL(new SemVer(previewVersion), '20.04')).rejects.toThrow(
+      `Version not available: ${previewVersion}`,
+    )
+  })
 })

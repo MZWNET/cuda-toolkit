@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vitest/globals"],
+    "types": ["node", "vitest/globals"],
     "allowJs": true,
     "noEmit": true
   },
@@ -14,10 +14,8 @@
     "scripts/update-links/*.json",
     "oxfmt.config.ts",
     "oxlint.config.ts",
+    "tsdown.config.ts",
     "vitest.config.ts"
   ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "exclude": ["dist", "node_modules"]
 }

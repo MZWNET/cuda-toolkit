@@ -5,7 +5,9 @@ it('normalizeLegacyUrl upgrades http to https', () => {
 })
 
 it('normalizeLegacyUrl prepends the host for /compute paths', () => {
-  expect(normalizeLegacyUrl('/compute/cuda/x_linux.run')).toBe('https://developer.download.nvidia.com/compute/cuda/x_linux.run')
+  expect(normalizeLegacyUrl('/compute/cuda/x_linux.run')).toBe(
+    'https://developer.download.nvidia.com/compute/cuda/x_linux.run',
+  )
 })
 
 it('normalizeLegacyUrl strips trailing markup', () => {

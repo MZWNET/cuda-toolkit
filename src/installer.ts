@@ -51,13 +51,16 @@ export async function install(
       // Install silently
       installArgs = ['-s']
       // Add subpackages to command args (if any)
-      installArgs = [...installArgs, ...subPackages.map((subPackage) => {
-        // Display driver sub package name is not dependent on version
-        if (subPackage === 'Display.Driver') {
-          return subPackage
-        }
-        return `${subPackage}_${version.major}.${version.minor}`
-      })]
+      installArgs = [
+        ...installArgs,
+        ...subPackages.map(subPackage => {
+          // Display driver sub package name is not dependent on version
+          if (subPackage === 'Display.Driver') {
+            return subPackage
+          }
+          return `${subPackage}_${version.major}.${version.minor}`
+        }),
+      ]
       break
   }
 
@@ -66,12 +69,10 @@ export async function install(
     core.debug(`Running install executable: ${executablePath}`)
     const exitCode = await exec(command, installArgs, execOptions)
     core.debug(`Installer exit code: ${exitCode}`)
-  }
-  catch (error) {
+  } catch (error) {
     core.warning(`Error during installation: ${String(error)}`)
     throw error
-  }
-  finally {
+  } finally {
     // Always upload installation log regardless of error
     const osType = await getOs()
     const osRelease = await getRelease()
@@ -89,14 +90,9 @@ export async function install(
         }
         const rootDirectory = '/var/log'
         const artifact = new DefaultArtifactClient()
-        const uploadResult = await artifact.uploadArtifact(
-          artifactName,
-          files,
-          rootDirectory,
-        )
+        const uploadResult = await artifact.uploadArtifact(artifactName, files, rootDirectory)
         core.debug(`Upload result: ${JSON.stringify(uploadResult)}`)
-      }
-      else {
+      } else {
         core.debug(`No log file to upload`)
       }
     }

@@ -30,19 +30,13 @@ describe('index', () => {
 
   beforeEach(() => {
     // Default mock returns
-    vi.mocked(core.getInput).mockImplementation((name) => {
-      if (name === 'cuda')
-        return '12.1.0'
-      if (name === 'sub-packages')
-        return '[]'
-      if (name === 'non-cuda-sub-packages')
-        return '[]'
-      if (name === 'method')
-        return 'local'
-      if (name === 'linux-local-args')
-        return '["--toolkit"]'
-      if (name === 'log-file-suffix')
-        return 'suffix'
+    vi.mocked(core.getInput).mockImplementation(name => {
+      if (name === 'cuda') return '12.1.0'
+      if (name === 'sub-packages') return '[]'
+      if (name === 'non-cuda-sub-packages') return '[]'
+      if (name === 'method') return 'local'
+      if (name === 'linux-local-args') return '["--toolkit"]'
+      if (name === 'log-file-suffix') return 'suffix'
       return ''
     })
     vi.mocked(core.getBooleanInput).mockReturnValue(true)
@@ -52,6 +46,7 @@ describe('index', () => {
     vi.mocked(getVersion).mockResolvedValue(mockVersion)
     vi.mocked(getOs).mockResolvedValue(OSType.linux)
     vi.mocked(useApt).mockResolvedValue(false)
+    vi.mocked(aptSetup).mockResolvedValue('stable')
     vi.mocked(download).mockResolvedValue(mockExecutablePath)
     vi.mocked(updatePath).mockResolvedValue(mockCudaPath)
   })
@@ -72,17 +67,12 @@ describe('index', () => {
   })
 
   it('should run successful network apt installation on Linux', async () => {
-    vi.mocked(core.getInput).mockImplementation((name) => {
-      if (name === 'method')
-        return 'network'
-      if (name === 'cuda')
-        return '12.1.0'
-      if (name === 'sub-packages')
-        return '["nvcc"]'
-      if (name === 'non-cuda-sub-packages')
-        return '["libcublas"]'
-      if (name === 'linux-local-args')
-        return '[]'
+    vi.mocked(core.getInput).mockImplementation(name => {
+      if (name === 'method') return 'network'
+      if (name === 'cuda') return '12.1.0'
+      if (name === 'sub-packages') return '["nvcc"]'
+      if (name === 'non-cuda-sub-packages') return '["libcublas"]'
+      if (name === 'linux-local-args') return '[]'
       return 'suffix'
     })
 
@@ -93,7 +83,7 @@ describe('index', () => {
     await run()
 
     expect(aptSetup).toHaveBeenCalledWith(mockVersion)
-    expect(aptInstall).toHaveBeenCalledWith(mockVersion, ['nvcc'], ['libcublas'])
+    expect(aptInstall).toHaveBeenCalledWith(mockVersion, ['nvcc'], ['libcublas'], 'stable')
     expect(download).not.toHaveBeenCalled()
     expect(install).not.toHaveBeenCalled()
 
@@ -101,9 +91,8 @@ describe('index', () => {
   })
 
   it('should handle json parsing error for linux-local-args', async () => {
-    vi.mocked(core.getInput).mockImplementation((name) => {
-      if (name === 'linux-local-args')
-        return 'invalid-json'
+    vi.mocked(core.getInput).mockImplementation(name => {
+      if (name === 'linux-local-args') return 'invalid-json'
       return ''
     })
 
@@ -114,7 +103,7 @@ describe('index', () => {
   })
 
   it('should fail if method is local and subPackages exist on Linux', async () => {
-    vi.mocked(parsePackages).mockImplementation(async (val, key) => key === 'sub-packages' ? ['nvcc'] : [])
+    vi.mocked(parsePackages).mockImplementation(async (val, key) => (key === 'sub-packages' ? ['nvcc'] : []))
 
     await run()
 

@@ -1,20 +1,8 @@
 {
   "name": "cuda-toolkit",
-  "type": "module",
   "version": "0.2.30",
   "private": true,
-  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065",
   "description": "GitHub Action to install the NVIDIA CUDA Toolkit",
-  "author": "mzwing",
-  "license": "MIT",
-  "homepage": "https://github.com/MZWNET/cuda-toolkit",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MZWNET/cuda-toolkit.git"
-  },
-  "bugs": {
-    "url": "https://github.com/MZWNET/cuda-toolkit/issues"
-  },
   "keywords": [
     "actions",
     "cuda",
@@ -23,22 +11,30 @@
     "nvidia",
     "toolkit"
   ],
+  "homepage": "https://github.com/MZWNET/cuda-toolkit",
+  "bugs": {
+    "url": "https://github.com/MZWNET/cuda-toolkit/issues"
+  },
+  "license": "MIT",
+  "author": "mzwing",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MZWNET/cuda-toolkit.git"
+  },
+  "type": "module",
   "exports": {
     ".": "./dist/index.js"
   },
-  "engines": {
-    "node": ">=24"
-  },
   "scripts": {
     "all": "pnpm run lint && pnpm run typecheck && pnpm run knip && pnpm run test && pnpm run coverage && pnpm run build",
-    "build": "tsgo -b && rolldown src/index.ts --format esm --platform node --file dist/index.js --sourcemap",
+    "build": "tsgo -b && tsdown",
     "build:watch": "pnpm run build --watch",
     "coverage": "make-coverage-badge --output-path ./badges/coverage.svg",
     "knip": "knip",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "test": "vitest run",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsgo --noEmit && pnpm --filter @cuda-toolkit/update-links typecheck",
     "update-links": "pnpm --filter @cuda-toolkit/update-links start",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check ."
@@ -54,16 +50,16 @@
     "semver": "^7.8.5"
   },
   "devDependencies": {
-    "@mzwing/oxc-config": "^0.1.1",
+    "@mzwing/oxc-config": "^0.1.4",
     "@types/node": "^26.1.1",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitest/coverage-v8": "^4.1.10",
-    "knip": "^6.27.0",
+    "knip": "^6.28.0",
     "make-coverage-badge": "^1.2.0",
-    "oxfmt": "^0.59.0",
+    "oxfmt": "^0.60.0",
     "oxlint": "1.75.0",
-    "oxlint-tsgolint": "^0.25.0",
-    "rolldown": "^1.2.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "tsdown": "^0.22.13",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   },
@@ -73,5 +69,9 @@
       "oxlint --fix"
     ],
     "*.{css,graphql,gql,html,json,json5,jsonc,less,md,mdx,scss,svelte,toml,yaml,yml}": "oxfmt --write"
-  }
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.16.0+sha512.b767e9a98fc87aec0f42daefcd0e84941c2cdb45d73c4e1e68860fb2bdfdbe032ab592105479e5e05c237f740c8a5ffdbbb52385797ddc2296745a1bbb883e8d"
 }

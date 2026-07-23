@@ -2,10 +2,7 @@ import type { Buffer } from 'node:buffer'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 
-export async function execReturnOutput(
-  command: string,
-  args: string[] = [],
-): Promise<string> {
+export async function execReturnOutput(command: string, args: string[] = []): Promise<string> {
   let result = ''
   const execOptions = {
     listeners: {

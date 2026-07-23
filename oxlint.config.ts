@@ -1,9 +1,7 @@
 import oxlint from '@mzwing/oxc-config'
 
 export default oxlint({
-  // ignores: ['**/coverage', '**/dist', '**/linter', '**/node_modules', '**/.licenses', 'scripts/**'],
+  type: 'lib',
+  ignores: ['**/dist'],
   typescript: true,
-  rules: {
-    'ts/no-explicit-any': 'error',
-  },
 })

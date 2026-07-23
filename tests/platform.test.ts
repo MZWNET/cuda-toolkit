@@ -22,19 +22,9 @@ describe('platform', () => {
     expect(osPlatform).toBe(OSType.windows)
   })
 
-  const unsupportedPlatforms = [
-    'aix',
-    'android',
-    'darwin',
-    'freebsd',
-    'haiku',
-    'openbsd',
-    'sunos',
-    'cygwin',
-    'netbsd',
-  ]
+  const unsupportedPlatforms = ['aix', 'android', 'darwin', 'freebsd', 'haiku', 'openbsd', 'sunos', 'cygwin', 'netbsd']
 
-  it.each(unsupportedPlatforms)('should throw error for unsupported OS: %s', async (platform) => {
+  it.each(unsupportedPlatforms)('should throw error for unsupported OS: %s', async platform => {
     vi.mocked(os.platform).mockReturnValue(platform as unknown as ReturnType<typeof os.platform>)
     await expect(getOs()).rejects.toThrow(`Unsupported OS: ${platform}`)
   })

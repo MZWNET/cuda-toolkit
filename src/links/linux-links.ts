@@ -1,42 +1,52 @@
+import type { CudaVersionUrlMap, LinkArchitecture } from '@/src/links/links.js'
+import type { Method } from '@/src/method.js'
 import type { SemVer } from 'semver'
 import linuxLinks from '@/scripts/update-links/linux-links.json' with { type: 'json' }
-import { CPUArch, getArch } from '@/src/arch.js'
-import { AbstractLinks } from '@/src/links/links.js'
+import { getArch } from '@/src/arch.js'
+import { AbstractLinks, getLinkArchitecture } from '@/src/links/links.js'
+
+type PreviewNetworkMap = Record<string, Record<string, string>>
 
 interface LinuxLinksModel {
-  local: {
-    x86_64: Record<string, string>
-    arm64?: Record<string, string>
-  }
+  local: Record<LinkArchitecture, CudaVersionUrlMap>
+  network: Record<LinkArchitecture, PreviewNetworkMap>
 }
 
-/**
- * Singleton class for linux links.
- */
-export class LinuxLinks extends AbstractLinks {
-  // Singleton instance
-  private static _instance: LinuxLinks
-  private cudaVersionToArm64URL: Map<string, string>
+const model = linuxLinks as unknown as LinuxLinksModel
 
-  // Private constructor to prevent instantiation
-  private constructor() {
-    super()
-    // Map of cuda SemVer version to download URL
-    const model = linuxLinks as unknown as LinuxLinksModel
-    this.cudaVersionToURL = new Map(Object.entries(model.local.x86_64))
-    this.cudaVersionToArm64URL = new Map(Object.entries(model.local.arm64 ?? {}))
+export class LinuxLinks extends AbstractLinks {
+  private static _instance: LinuxLinks
+
+  private getLocalMap(arch: LinkArchitecture): CudaVersionUrlMap {
+    return model.local[arch] ?? {}
+  }
+
+  private getNetworkMap(arch: LinkArchitecture): PreviewNetworkMap {
+    return model.network?.[arch] ?? {}
+  }
+
+  async getAvailableCudaVersions(method: Method): Promise<SemVer[]> {
+    const arch = getLinkArchitecture(await getArch())
+    const local = this.getLocalMap(arch)
+    if (method === 'local') return this.getVersions(local)
+
+    const versions = new Set([...Object.keys(local), ...Object.keys(this.getNetworkMap(arch))])
+    return this.getVersions(Object.fromEntries(Array.from(versions, version => [version, ''])))
   }
 
   async getLocalURLFromCudaVersion(version: SemVer): Promise<URL> {
-    const arch: CPUArch = await getArch()
-    if (arch === CPUArch.arm64) {
-      const urlString = this.cudaVersionToArm64URL.get(`${version.toString()}`)
-      if (urlString === undefined) {
-        throw new Error(`CUDA Toolkit ${version.toString()} does not support ARM64 downloads`)
-      }
-      return new URL(urlString)
-    }
-    return super.getLocalURLFromCudaVersion(version)
+    const arch = getLinkArchitecture(await getArch())
+    return this.getUrl(this.getLocalMap(arch), version)
+  }
+
+  async getNetworkKeyringURL(version: SemVer, ubuntuVersion: string): Promise<URL | null> {
+    const arch = getLinkArchitecture(await getArch())
+    const versionData = this.getNetworkMap(arch)[version.toString()]
+    if (versionData === undefined) return null
+
+    const url = versionData[ubuntuVersion]
+    if (url === undefined) throw new Error(`Version not available: ${version.toString()}`)
+    return new URL(url)
   }
 
   static get Instance(): LinuxLinks {

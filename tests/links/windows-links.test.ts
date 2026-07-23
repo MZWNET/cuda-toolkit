@@ -1,122 +1,73 @@
-import type { SemVer } from 'semver'
-import type { AbstractLinks } from '@/src/links/links.js'
+import type { Method } from '@/src/method.js'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { SemVer } from 'semver'
+import { describe, expect, it, vi } from 'vitest'
+import { CPUArch, getArch } from '@/fixtures/arch.js'
 import { WindowsLinks } from '@/src/links/windows-links.js'
 
-it.concurrent('windows Cuda versions in descending order', async () => {
-  const wLinks: AbstractLinks = WindowsLinks.Instance
-  const versions = wLinks.getAvailableLocalCudaVersions()
-  for (let i = 0; i < versions.length - 1; i++) {
-    const versionA: SemVer = versions[i]
-    const versionB: SemVer = versions[i + 1]
-    expect(versionA.compare(versionB)).toBe(1) // A should be greater than B
-  }
+vi.mock('@/src/arch.js', async () => import('@/fixtures/arch.js'))
+
+type Arch = 'x86_64' | 'arm64'
+
+const windowsLinksJsonPath = resolve('scripts/update-links/windows-links.json')
+const windowsLinksData = JSON.parse(readFileSync(windowsLinksJsonPath, 'utf8')) as {
+  local: Record<Arch, Record<string, string>>
+  network: Record<Arch, Record<string, string>>
+}
+
+const cases: Array<{ arch: Arch; cpuArch: CPUArch; method: Method }> = [
+  { arch: 'x86_64', cpuArch: CPUArch.x86_64, method: 'local' },
+  { arch: 'x86_64', cpuArch: CPUArch.x86_64, method: 'network' },
+  { arch: 'arm64', cpuArch: CPUArch.arm64, method: 'local' },
+  { arch: 'arm64', cpuArch: CPUArch.arm64, method: 'network' },
+]
+
+describe('windowsLinks', () => {
+  it.each(cases)('reads only $arch $method availability and sorts it descending', async ({ arch, cpuArch, method }) => {
+    vi.mocked(getArch).mockResolvedValue(cpuArch)
+
+    const actual = await WindowsLinks.Instance.getAvailableCudaVersions(method)
+    const expected = Object.keys(windowsLinksData[method][arch])
+
+    expect(actual.map(version => version.toString())).toEqual(expected)
+    for (let i = 0; i < actual.length - 1; i += 1) {
+      expect(actual[i].compare(actual[i + 1])).toBe(1)
+    }
+  })
+
+  it.each([
+    { arch: 'x86_64' as const, cpuArch: CPUArch.x86_64 },
+    { arch: 'arm64' as const, cpuArch: CPUArch.arm64 },
+  ])('resolves $arch local URLs', async ({ arch, cpuArch }) => {
+    vi.mocked(getArch).mockResolvedValue(cpuArch)
+    for (const [version, expectedUrl] of Object.entries(windowsLinksData.local[arch])) {
+      await expect(WindowsLinks.Instance.getLocalURLFromCudaVersion(new SemVer(version))).resolves.toEqual(
+        new URL(expectedUrl),
+      )
+    }
+  })
+
+  it.each([
+    { arch: 'x86_64' as const, cpuArch: CPUArch.x86_64 },
+    { arch: 'arm64' as const, cpuArch: CPUArch.arm64 },
+  ])('resolves $arch network URLs', async ({ arch, cpuArch }) => {
+    vi.mocked(getArch).mockResolvedValue(cpuArch)
+    for (const [version, expectedUrl] of Object.entries(windowsLinksData.network[arch])) {
+      await expect(WindowsLinks.Instance.getNetworkURLFromCudaVersion(new SemVer(version))).resolves.toEqual(
+        new URL(expectedUrl),
+      )
+    }
+  })
+
+  it('does not expose a local-only version through the network mapping', async () => {
+    vi.mocked(getArch).mockResolvedValue(CPUArch.x86_64)
+    const networkVersions = new Set(Object.keys(windowsLinksData.network.x86_64))
+    const localOnlyVersion = Object.keys(windowsLinksData.local.x86_64).find(version => !networkVersions.has(version))
+    expect(localOnlyVersion).toBeDefined()
+
+    await expect(WindowsLinks.Instance.getNetworkURLFromCudaVersion(new SemVer(localOnlyVersion!))).rejects.toThrow(
+      `Invalid version: ${localOnlyVersion}`,
+    )
+  })
 })
-
-it.concurrent(
-  'windows Cuda version to URL map contains valid URLs',
-  async () => {
-    for (const version of WindowsLinks.Instance.getAvailableLocalCudaVersions()) {
-      const url: URL
-        = await WindowsLinks.Instance.getLocalURLFromCudaVersion(version)
-      expect(url).toBeInstanceOf(URL)
-    }
-  },
-)
-
-it.concurrent('there is at least windows 1 version url pair', async () => {
-  expect(
-    WindowsLinks.Instance.getAvailableLocalCudaVersions().length,
-  ).toBeGreaterThanOrEqual(1)
-})
-
-it.concurrent('windows links are scoped to x86_64 only', async () => {
-  const windowsLinksJsonPath = resolve('scripts/update-links/windows-links.json')
-  const windowsLinksData = JSON.parse(readFileSync(windowsLinksJsonPath, 'utf8')) as {
-    local: Record<string, Record<string, string>>
-    network?: Record<string, Record<string, string>>
-  }
-  const localArchs = Object.keys(windowsLinksData.local)
-  const networkArchs = Object.keys(windowsLinksData.network ?? {})
-
-  expect(localArchs).toEqual(['x86_64'])
-  if (networkArchs.length > 0) {
-    expect(networkArchs).toEqual(['x86_64'])
-  }
-})
-
-it.concurrent(
-  'windows Cuda network versions in descending order',
-  async () => {
-    const wLinks = WindowsLinks.Instance
-    const versions = wLinks.getAvailableNetworkCudaVersions()
-    for (let i = 0; i < versions.length - 1; i++) {
-      const versionA: SemVer = versions[i]
-      const versionB: SemVer = versions[i + 1]
-      expect(versionA.compare(versionB)).toBe(1) // A should be greater than B
-    }
-  },
-)
-
-it.concurrent(
-  'windows network Cuda version to URL map contains valid URLs',
-  async () => {
-    for (const version of WindowsLinks.Instance.getAvailableNetworkCudaVersions()) {
-      const url: URL
-        = WindowsLinks.Instance.getNetworkURLFromCudaVersion(version)
-      expect(url).toBeInstanceOf(URL)
-    }
-  },
-)
-
-it.concurrent(
-  'there is at least windows network 1 version url pair',
-  async () => {
-    expect(
-      WindowsLinks.Instance.getAvailableNetworkCudaVersions().length,
-    ).toBeGreaterThanOrEqual(1)
-  },
-)
-
-it.concurrent(
-  'local Windows links should start with https://developer.(.download.)nvidia.com and end with a known Windows installer suffix',
-  async () => {
-    const versions = WindowsLinks.Instance.getAvailableLocalCudaVersions()
-    const filteredVersions = versions.filter((version) => {
-      return (
-        version.version !== '10.0.130'
-        && version.version !== '9.2.148'
-        && version.version !== '8.0.61'
-      )
-    })
-    for (const version of filteredVersions) {
-      const url: URL
-        = await WindowsLinks.Instance.getLocalURLFromCudaVersion(version)
-      expect(url.toString()).toMatch(
-        /^https:\/\/developer\.(download\.)?nvidia\.com.+(\.exe|-exe|_win10)$/,
-      )
-    }
-  },
-)
-
-it.concurrent(
-  'network Windows links should start with https://developer.(download.)nvidia.com and end with a known Windows network installer suffix',
-  async () => {
-    const versions = WindowsLinks.Instance.getAvailableNetworkCudaVersions()
-    const filteredVersions = versions.filter((version) => {
-      return (
-        version.version !== '10.0.130'
-        && version.version !== '9.2.148'
-        && version.version !== '8.0.61'
-      )
-    })
-    for (const version of filteredVersions) {
-      const url: URL
-        = WindowsLinks.Instance.getNetworkURLFromCudaVersion(version)
-      expect(url.toString()).toMatch(
-        /^https:\/\/developer\.(download\.)?nvidia\.com.+(network\.exe|_win10_network)$/,
-      )
-    }
-  },
-)

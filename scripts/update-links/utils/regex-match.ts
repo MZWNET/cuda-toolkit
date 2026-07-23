@@ -3,8 +3,7 @@ export const PATCHES_REGEX = /patches/i
 export function pickFirstMatch(regex: RegExp, input: string): string | null {
   regex.lastIndex = 0
   const match = regex.exec(input)
-  if (match === null)
-    return null
+  if (match === null) return null
   return match[0] ?? null
 }
 

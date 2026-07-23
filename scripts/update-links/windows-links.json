@@ -1,6 +1,7 @@
 {
   "local": {
     "x86_64": {
+      "13.4.0": "https://packages.nvidia.com/prerelease/cuda/13.4.0/local_installers/cuda_13.4.0_windows_x86_64.exe",
       "13.3.1": "https://developer.download.nvidia.com/compute/cuda/13.3.1/local_installers/cuda_13.3.1_windows.exe",
       "13.3.0": "https://developer.download.nvidia.com/compute/cuda/13.3.0/local_installers/cuda_13.3.0_windows.exe",
       "13.2.2": "https://developer.download.nvidia.com/compute/cuda/13.2.2/local_installers/cuda_13.2.2_windows.exe",
@@ -72,6 +73,9 @@
       "8.0.61": "https://developer.download.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_win10-exe",
       "8.0.44": "https://developer.download.nvidia.com/compute/cuda/8.0/prod/local_installers/cuda_8.0.44_win10-exe",
       "7.5.18": "https://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_win10.exe"
+    },
+    "arm64": {
+      "13.4.0": "https://packages.nvidia.com/prerelease/cuda/13.4.0/local_installers/cuda_13.4.0_windows_arm64.exe"
     }
   },
   "network": {
@@ -147,6 +151,7 @@
       "8.0.61": "https://developer.download.nvidia.com/compute/cuda/8.0/Prod2/network_installers/cuda_8.0.61_win10_network",
       "8.0.44": "https://developer.download.nvidia.com/compute/cuda/8.0/prod/network_installers/cuda_8.0.44_win10_network",
       "7.5.18": "https://developer.download.nvidia.com/compute/cuda/7.5/Prod/network_installers/cuda_7.5.18_win10_network.exe"
-    }
+    },
+    "arm64": {}
   }
 }

@@ -1,28 +1,32 @@
+import type { Method } from '@/src/method.js'
 import { SemVer } from 'semver'
+import { CPUArch } from '@/src/arch.js'
 
-/**
- * Shared type for CUDA version-to-URL mapping used by both Linux and Windows links.
- */
-type CudaVersionUrlMap = Record<string, string>
+export type CudaVersionUrlMap = Record<string, string>
+export type LinkArchitecture = 'x86_64' | 'arm64'
 
-/**
- * Unified structure for links JSON files.
- */
 export interface CudaLinksModel {
-  local: Record<string, CudaVersionUrlMap>
-  network?: Record<string, CudaVersionUrlMap>
+  local: Record<LinkArchitecture, CudaVersionUrlMap>
+  network: Record<LinkArchitecture, CudaVersionUrlMap>
 }
 
-// Interface for getting cuda versions and corresponding download URLs
-export abstract class AbstractLinks {
-  protected cudaVersionToURL: Map<string, string> = new Map()
+export function getLinkArchitecture(arch: CPUArch): LinkArchitecture {
+  return arch === CPUArch.arm64 ? 'arm64' : 'x86_64'
+}
 
-  getAvailableLocalCudaVersions(): SemVer[] {
-    return Array.from(this.cudaVersionToURL.keys(), s => new SemVer(s))
+export abstract class AbstractLinks {
+  abstract getAvailableCudaVersions(method: Method): Promise<SemVer[]>
+
+  abstract getLocalURLFromCudaVersion(version: SemVer): Promise<URL>
+
+  protected getVersions(map: CudaVersionUrlMap): SemVer[] {
+    return Object.keys(map)
+      .map(version => new SemVer(version))
+      .sort((a, b) => b.compare(a))
   }
 
-  async getLocalURLFromCudaVersion(version: SemVer): Promise<URL> {
-    const urlString = this.cudaVersionToURL.get(`${version.toString()}`)
+  protected getUrl(map: CudaVersionUrlMap, version: SemVer): URL {
+    const urlString = map[version.toString()]
     if (urlString === undefined) {
       throw new Error(`Invalid version: ${version.toString()}`)
     }

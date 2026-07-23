@@ -1,25 +1,36 @@
-import type { SemVer } from 'semver'
 import type { Method } from '@/src/method.js'
+import type { SemVer } from 'semver'
 import process from 'node:process'
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 import { CPUArch, getArch } from '@/src/arch.js'
+import { LinuxLinks } from '@/src/links/linux-links.js'
 import { getOs, OSType } from '@/src/platform.js'
 import { execReturnOutput } from '@/src/run-command.js'
+
+export type AptReleaseChannel = 'stable' | 'preview'
 
 export async function useApt(method: Method): Promise<boolean> {
   return method === 'network' && (await getOs()) === OSType.linux
 }
 
-export async function aptSetup(version: SemVer): Promise<void> {
+export async function aptSetup(version: SemVer): Promise<AptReleaseChannel> {
   const osType = await getOs()
   if (osType !== OSType.linux) {
-    throw new Error(
-      `apt setup can only be run on linux runners! Current os type: ${osType}`,
-    )
+    throw new Error(`apt setup can only be run on linux runners! Current os type: ${osType}`)
   }
   core.debug(`Setup packages for ${version.toString()}`)
   const ubuntuVersion: string = await execReturnOutput('lsb_release', ['-sr'])
+  const previewKeyringUrl = await LinuxLinks.Instance.getNetworkKeyringURL(version, ubuntuVersion)
+  if (previewKeyringUrl !== null) {
+    const keyringFilename = 'nvidia-preview-keyring.deb'
+    core.debug(`Preview keyring url: ${previewKeyringUrl.toString()}`)
+    await exec(`wget ${previewKeyringUrl.toString()} -O ${keyringFilename}`)
+    await exec(`sudo dpkg -i ${keyringFilename}`)
+    await exec(`sudo apt-get update`)
+    return 'preview'
+  }
+
   const ubuntuVersionNoDot = ubuntuVersion.replace('.', '')
 
   // Dynamically determine architecture
@@ -28,14 +39,11 @@ export async function aptSetup(version: SemVer): Promise<void> {
     if ((await getArch()) === CPUArch.arm64) {
       arch = 'sbsa' // This might not work in the future, they are merging arm64 and sbsa
     }
-  }
-  catch (error) {
+  } catch (error) {
     core.debug(`Error detecting architecture: ${String(error)}`)
     core.warning(`Could not detect architecture, using default ${arch}`)
   }
-  core.debug(
-    `Detected architecture: ${process.arch}, using arch string: ${arch}`,
-  )
+  core.debug(`Detected architecture: ${process.arch}, using arch string: ${arch}`)
 
   const pinFilename = `cuda-ubuntu${ubuntuVersionNoDot}.pin`
   const pinUrl = `https://developer.download.nvidia.com/compute/cuda/repos/ubuntu${ubuntuVersionNoDot}/${arch}/${pinFilename}`
@@ -54,40 +62,34 @@ export async function aptSetup(version: SemVer): Promise<void> {
 
   core.debug('Adding CUDA Repository')
   await exec(`wget ${pinUrl}`)
-  await exec(
-    `sudo mv ${pinFilename} /etc/apt/preferences.d/cuda-repository-pin-600`,
-  )
+  await exec(`sudo mv ${pinFilename} /etc/apt/preferences.d/cuda-repository-pin-600`)
   await exec(`sudo add-apt-repository "deb ${repoUrl} /"`)
   await exec(`sudo apt-get update`)
+  return 'stable'
 }
 
 export async function aptInstall(
   version: SemVer,
   subPackages: string[],
   nonCudaSubPackages: string[],
+  channel: AptReleaseChannel,
 ): Promise<number> {
   const osType = await getOs()
   if (osType !== OSType.linux) {
-    throw new Error(
-      `apt install can only be run on linux runners! Current os type: ${osType}`,
-    )
+    throw new Error(`apt install can only be run on linux runners! Current os type: ${osType}`)
   }
   if (subPackages.length === 0) {
     // Install everything
-    const packageName = `cuda-${version.major}-${version.minor}`
+    const packagePrefix = channel === 'preview' ? 'cuda-toolkit' : 'cuda'
+    const packageName = `${packagePrefix}-${version.major}-${version.minor}`
     core.debug(`Install package: ${packageName}`)
     return exec(`sudo apt-get -y install`, [packageName])
-  }
-  else {
+  } else {
     // Only install specified packages
-    const prefixedSubPackages = subPackages.map(
-      subPackage => `cuda-${subPackage}`,
+    const prefixedSubPackages = subPackages.map(subPackage => `cuda-${subPackage}`)
+    const versionedSubPackages = [...prefixedSubPackages, ...nonCudaSubPackages].map(
+      nonCudaSubPackage => `${nonCudaSubPackage}-${version.major}-${version.minor}`,
     )
-    const versionedSubPackages = [...prefixedSubPackages, ...nonCudaSubPackages]
-      .map(
-        nonCudaSubPackage =>
-          `${nonCudaSubPackage}-${version.major}-${version.minor}`,
-      )
     core.debug(`Only install subpackages: ${versionedSubPackages.join(', ')}`)
     return exec(`sudo apt-get -y install`, versionedSubPackages)
   }
