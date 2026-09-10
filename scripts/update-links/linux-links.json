@@ -1,6 +1,7 @@
 {
   "local": {
     "x86_64": {
+      "13.4.1": "https://developer.download.nvidia.com/compute/cuda/13.4.1/local_installers/cuda_13.4.1_linux.run",
       "13.3.1": "https://developer.download.nvidia.com/compute/cuda/13.3.1/local_installers/cuda_13.3.1_610.43.02_linux.run",
       "13.3.0": "https://developer.download.nvidia.com/compute/cuda/13.3.0/local_installers/cuda_13.3.0_610.43.02_linux.run",
       "13.2.2": "https://developer.download.nvidia.com/compute/cuda/13.2.2/local_installers/cuda_13.2.2_595.71.05_linux.run",
@@ -74,6 +75,7 @@
       "7.5.18": "https://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_linux.run"
     },
     "arm64": {
+      "13.4.1": "https://developer.download.nvidia.com/compute/cuda/13.4.1/local_installers/cuda_13.4.1_linux_sbsa.run",
       "13.3.1": "https://developer.download.nvidia.com/compute/cuda/13.3.1/local_installers/cuda_13.3.1_610.43.02_linux_sbsa.run",
       "13.3.0": "https://developer.download.nvidia.com/compute/cuda/13.3.0/local_installers/cuda_13.3.0_610.43.02_linux_sbsa.run",
       "13.2.2": "https://developer.download.nvidia.com/compute/cuda/13.2.2/local_installers/cuda_13.2.2_595.71.05_linux_sbsa.run",
