@@ -8,5 +8,3 @@ packages:
 allowBuilds:
   esbuild: true
 
-minimumReleaseAgeExclude:
-  - '@mzwing/oxc-config@0.1.4'
