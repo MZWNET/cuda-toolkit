@@ -39,27 +39,27 @@
     "format:check": "oxfmt --check ."
   },
   "dependencies": {
-    "@actions/artifact": "^6.2.1",
+    "@actions/artifact": "^6.3.1",
     "@actions/cache": "^6.3.0",
     "@actions/core": "^3.0.1",
     "@actions/exec": "^3.0.0",
     "@actions/io": "^3.0.2",
     "@actions/tool-cache": "^4.0.0",
     "@types/semver": "^7.8.0",
-    "semver": "^7.8.5"
+    "semver": "^7.8.6"
   },
   "devDependencies": {
     "@mzwing/oxc-config": "^0.1.6",
-    "@types/node": "^26.6.4",
-    "@vitest/coverage-v8": "^5.0.3",
-    "knip": "^6.39.0",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.1.1",
+    "knip": "^6.48.0",
     "make-coverage-badge": "^1.2.0",
-    "oxfmt": "^0.71.0",
-    "oxlint": "1.86.0",
-    "oxlint-tsgolint": "^7.0.2003",
-    "tsdown": "^0.23.0",
+    "oxfmt": "^0.79.0",
+    "oxlint": "1.94.0",
+    "oxlint-tsgolint": "^7.0.2008",
+    "tsdown": "^0.23.7",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.3"
+    "vitest": "^5.1.1"
   },
   "lint-staged": {
     "*.{cjs,cjsx,cts,ctsx,js,jsx,mjs,mjsx,mts,mtsx,ts,tsx,vue}": [
@@ -71,5 +71,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@12.8.1"
+  "packageManager": "pnpm@12.23.0"
 }
